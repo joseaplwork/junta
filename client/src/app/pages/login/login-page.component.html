@@ -1,0 +1,20 @@
+<div class="login">
+  <form class="login__form">
+    <mat-form-field>
+      <mat-label>Email</mat-label>
+      <input matInput [formControl]="email" placeholder="Ex. test@test.com" />
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Password</mat-label>
+      <input
+        matInput
+        [formControl]="password"
+        type="password"
+        placeholder="******" />
+    </mat-form-field>
+    <button (click)="handleClick()" mat-fab extended>login</button>
+    <p *ngIf="displayLoginErrorMessage" class="login__form-error-message">
+      Login credentials invalid
+    </p>
+  </form>
+</div>
