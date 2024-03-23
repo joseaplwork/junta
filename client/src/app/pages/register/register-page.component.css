@@ -1,0 +1,17 @@
+.register {
+  display: grid;
+  height: 100dvh;
+  align-items: center;
+  justify-items: center;
+}
+
+.register__form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.register__form-error-message {
+  color: red;
+  margin: 10px;
+}

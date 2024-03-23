@@ -1,1 +1,6 @@
-<h1>Welcome {{ name }}</h1>
+<ng-container *ngIf="admin$ | async as admin">
+  <h1>Welcome {{ admin.username }}</h1>
+  <button (click)="handleButtonClick()" mat-fab extended>
+    Fetch profile again
+  </button>
+</ng-container>

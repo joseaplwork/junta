@@ -1,0 +1,38 @@
+<div class="register">
+  <form class="register__form">
+    <mat-form-field>
+      <mat-label>Email</mat-label>
+      <input matInput [formControl]="email" placeholder="Ex. test@test.com" />
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Password</mat-label>
+      <input
+        matInput
+        [formControl]="password"
+        type="password"
+        placeholder="******" />
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Name</mat-label>
+      <input matInput [formControl]="name" type="text" placeholder="John" />
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Surname</mat-label>
+      <input matInput [formControl]="surname" type="text" placeholder="Doe" />
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Phone</mat-label>
+      <input
+        matInput
+        [formControl]="phone"
+        type="number"
+        placeholder="+34 62346793" />
+    </mat-form-field>
+    <button (click)="handleClick()" mat-fab extended>register</button>
+    <p
+      *ngIf="displayRegistrationErrorMessage"
+      class="register__form-error-message">
+      register failed
+    </p>
+  </form>
+</div>

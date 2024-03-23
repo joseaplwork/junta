@@ -1,4 +1,4 @@
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -11,7 +11,8 @@ import { RouterModule, provideRouter } from '@angular/router';
 
 import { AppComponent } from './app.component';
 import { appRoutes } from './app.routes';
-import { DashboardPageComponent, LoginPageComponent } from './pages';
+import { AuthInterceptor } from './interceptors';
+import { pages } from './pages';
 
 @NgModule({
   imports: [
@@ -25,8 +26,12 @@ import { DashboardPageComponent, LoginPageComponent } from './pages';
     MatButtonModule,
     MatIconModule,
   ],
-  providers: [provideRouter(appRoutes), provideAnimations()],
-  declarations: [AppComponent, LoginPageComponent, DashboardPageComponent],
+  providers: [
+    provideRouter(appRoutes),
+    provideAnimations(),
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+  ],
+  declarations: [AppComponent, ...pages],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

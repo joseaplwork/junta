@@ -1,4 +1,10 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 import { User } from '../users/user.entity';
 
@@ -13,6 +19,7 @@ export class Admin {
   @Column({ type: 'varchar' })
   password: string;
 
-  @Column({ type: 'uuid' })
-  user?: User;
+  @OneToOne(() => User)
+  @JoinColumn()
+  user: User;
 }

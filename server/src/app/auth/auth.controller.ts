@@ -27,26 +27,25 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async login(@Res() res: Response, @NestRequest() req: RequestWithUser) {
-    const { accessToken, refreshToken } = await this.authService.login(
+    const { access_token, refresh_token } = await this.authService.login(
       req.user,
     );
 
-    res.cookie('refreshToken', refreshToken, {
+    res.cookie('refresh_token', refresh_token, {
       httpOnly: true,
       secure: true,
       sameSite: 'none',
     });
 
-    return res.send({ accessToken });
+    return res.send({ access_token });
   }
 
+  @Public()
   @Post('refresh')
   async refresh(@Res() res: Response, @Req() req: Request) {
-    const oldRefreshToken = req.cookies.refreshToken;
+    const oldRefreshToken = req.cookies.refresh_token;
 
     const user = await this.authService.decodeRefreshToken(oldRefreshToken);
-    console.log('THEE', user);
-
     const newAccessToken = await this.authService.createAccessToken({
       username: user.id,
       sub: user.id,
@@ -56,13 +55,13 @@ export class AuthController {
       sub: user.id,
     });
 
-    res.cookie('refreshToken', newRefreshToken, {
+    res.cookie('refresh_token', newRefreshToken, {
       httpOnly: true,
       secure: true,
-      sameSite: 'strict',
+      sameSite: 'none',
     });
 
-    return res.send({ accessToken: newAccessToken });
+    return res.send({ access_token: newAccessToken });
   }
 
   @Get('profile')
@@ -72,6 +71,6 @@ export class AuthController {
 
   @Get('logout')
   async logout(@Res({ passthrough: true }) res: Response) {
-    res.cookie('refreshToken', '', { expires: new Date() });
+    res.cookie('refresh_token', '', { expires: new Date() });
   }
 }

@@ -20,6 +20,8 @@ import { UserModule } from './users/user.module';
       database: 'juntas',
       entities: [User, Admin],
       synchronize: true,
+      logging: true,
+      logger: 'advanced-console',
     }),
     AuthModule,
     UserModule,

@@ -1,8 +1,12 @@
 import { randomUUID } from 'crypto';
 
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NotAcceptableException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-
+import * as bcrypt from 'bcrypt';
 import { Admin } from '../admins/admin.entity';
 import { AdminService } from '../admins/admin.service';
 
@@ -13,13 +17,17 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async validateUser(username: string, pass: string) {
+  async validateUser(username: string, password: string) {
     const user = await this.adminService.findOne(username);
 
-    if (user && user.password === pass) {
-      const { password, ...result } = user;
+    if (!user) {
+      throw new NotAcceptableException('could not find the user');
+    }
 
-      return result;
+    const passwordValid = await bcrypt.compare(password, user.password);
+
+    if (user && passwordValid) {
+      return user;
     }
 
     return null;
@@ -29,8 +37,8 @@ export class AuthService {
     const payload = { username: admin.email, sub: admin.id };
 
     return {
-      accessToken: await this.createAccessToken(payload),
-      refreshToken: await this.createRefreshToken(payload),
+      access_token: await this.createAccessToken(payload),
+      refresh_token: await this.createRefreshToken(payload),
     };
   }
 
@@ -43,7 +51,7 @@ export class AuthService {
   }
 
   async createAccessToken(payload: { username: string; sub: string }) {
-    return this.jwtService.sign(payload, { expiresIn: '15m' });
+    return this.jwtService.sign(payload);
   }
 
   async createRefreshToken(payload: { username: string; sub: string }) {

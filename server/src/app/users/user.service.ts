@@ -15,11 +15,12 @@ export class UserService {
     return this.usersRepository.find();
   }
 
-  setUser(): Promise<User> {
-    const user = new User();
-    user.name = 'Jose';
-    user.surname = 'Paredes';
-    user.phone_number = '123456789';
+  createOne(name: string, surname: string, phonNumber: string): Promise<User> {
+    const user = this.usersRepository.create({
+      name,
+      surname,
+      phone_number: phonNumber,
+    });
 
     return this.usersRepository.save(user);
   }

@@ -6,11 +6,13 @@ import {
   HttpRequest,
 } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { auth } from '@client/lib';
+import { AuthService } from '@client/services';
 import { Observable, catchError, switchMap, throwError } from 'rxjs';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
+  constructor(private authService: AuthService) {}
+
   intercept(
     req: HttpRequest<any>,
     next: HttpHandler,
@@ -19,7 +21,7 @@ export class AuthInterceptor implements HttpInterceptor {
     const authorizedReq = req.clone({
       headers: req.headers.set(
         'Authorization',
-        'Bearer ' + auth.getAccessToken(),
+        'Bearer ' + this.authService.getAccessToken(),
       ),
     });
 
@@ -27,19 +29,21 @@ export class AuthInterceptor implements HttpInterceptor {
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           // Access token is expired, try refreshing
-          return auth.refreshToken().pipe(
+          return this.authService.refreshToken().pipe(
             switchMap((newToken: string) => {
               // Set the new token in authService for in-memory storage
-              auth.setAccessToken(newToken);
+              this.authService.setAccessToken(newToken);
 
               // Use the new token for the retry
               const retriedReq = req.clone({
                 headers: req.headers.set('Authorization', 'Bearer ' + newToken),
               });
+
               return next.handle(retriedReq);
             }),
           );
         }
+
         return throwError(() => new Error(error.error));
       }),
     );
