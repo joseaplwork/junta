@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { jwtDecode } from 'jwt-decode';
 import { Observable, map, tap } from 'rxjs';
 
-const ACCESS_TOKEN_KEY = 'access_token';
+const ACCESS_TOKEN_KEY = 'accessToken';
 
 @Injectable({
   providedIn: 'root',
@@ -15,8 +15,7 @@ export class AuthService {
     sessionStorage.setItem(ACCESS_TOKEN_KEY, accessToken);
   };
 
-  public isTokenExpired(token?: string | null): boolean {
-    if (!token) token = this.getAccessToken();
+  public isTokenExpired(token: string | null = this.getAccessToken()): boolean {
     if (!token) return true;
 
     const date = this._getAccessTokenExpirationDate(token);
@@ -44,7 +43,7 @@ export class AuthService {
 
   public refreshToken(): Observable<string> {
     return this.httpClient
-      .post<{ access_token: string }>(
+      .post<{ accessToken: string }>(
         'http://localhost:3000/api/auth/refresh',
         null,
         { withCredentials: true },
@@ -52,7 +51,7 @@ export class AuthService {
       .pipe(map(this._mapToAccessToken), tap(this.setAccessToken));
   }
 
-  private _mapToAccessToken = (response: { access_token: string }): string => {
-    return response.access_token;
+  private _mapToAccessToken = (response: { accessToken: string }): string => {
+    return response.accessToken;
   };
 }

@@ -9,7 +9,9 @@ import { LoginService } from './services/login.service';
 })
 export class LoginPageComponent {
   public email = new FormControl('', [Validators.required, Validators.email]);
+
   public password = new FormControl('', [Validators.required]);
+
   public displayLoginErrorMessage = false;
 
   constructor(private readonly _loginService: LoginService) {}

@@ -7,6 +7,7 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { Request, Response } from 'express';
 
 import { Admin } from '../admins/admin.entity';
@@ -27,23 +28,23 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async login(@Res() res: Response, @NestRequest() req: RequestWithUser) {
-    const { access_token, refresh_token } = await this.authService.login(
+    const { accessToken, refreshToken } = await this.authService.login(
       req.user,
     );
 
-    res.cookie('refresh_token', refresh_token, {
+    res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
       secure: true,
       sameSite: 'none',
     });
 
-    return res.send({ access_token });
+    return res.send({ accessToken });
   }
 
   @Public()
   @Post('refresh')
   async refresh(@Res() res: Response, @Req() req: Request) {
-    const oldRefreshToken = req.cookies.refresh_token;
+    const oldRefreshToken = req.cookies.refreshToken;
 
     const user = await this.authService.decodeRefreshToken(oldRefreshToken);
     const newAccessToken = await this.authService.createAccessToken({
@@ -55,13 +56,13 @@ export class AuthController {
       sub: user.id,
     });
 
-    res.cookie('refresh_token', newRefreshToken, {
+    res.cookie('refreshToken', newRefreshToken, {
       httpOnly: true,
       secure: true,
       sameSite: 'none',
     });
 
-    return res.send({ access_token: newAccessToken });
+    return res.send({ accessToken: newAccessToken });
   }
 
   @Get('profile')
@@ -71,6 +72,6 @@ export class AuthController {
 
   @Get('logout')
   async logout(@Res({ passthrough: true }) res: Response) {
-    res.cookie('refresh_token', '', { expires: new Date() });
+    res.cookie('refreshToken', '', { expires: new Date() });
   }
 }

@@ -9,10 +9,15 @@ import { LoginService } from './services/register.service';
 })
 export class RegisterPageComponent {
   public email = new FormControl('', [Validators.required, Validators.email]);
+
   public password = new FormControl('', [Validators.required]);
+
   public name = new FormControl('', [Validators.required]);
+
   public surname = new FormControl('', [Validators.required]);
+
   public phone = new FormControl('', [Validators.required]);
+
   public displayRegistrationErrorMessage = false;
 
   constructor(private readonly _loginService: LoginService) {}

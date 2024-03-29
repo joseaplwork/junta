@@ -1,11 +1,7 @@
 {
   "root": true,
   "ignorePatterns": ["**/*"],
-  "extends": [
-    "airbnb-base",
-    "airbnb-typescript/base",
-    "plugin:prettier/recommended"
-  ],
+  "extends": ["plugin:prettier/recommended"],
   "parserOptions": {
     "project": "./tsconfig.base.json"
   },
@@ -44,15 +40,6 @@
               "internal",
               "index"
             ]
-          }
-        ],
-        "import/prefer-default-export": "off",
-        "class-methods-use-this": "off",
-        "import/no-extraneous-dependencies": [
-          "error",
-          {
-            "devDependencies": true,
-            "allowModules": ["bcrypt", "@types/bcrypt"]
           }
         ]
       }

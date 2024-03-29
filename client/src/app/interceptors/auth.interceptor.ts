@@ -6,22 +6,22 @@ import {
   HttpRequest,
 } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { AuthService } from '@client/services';
 import { Observable, catchError, switchMap, throwError } from 'rxjs';
+import { AuthService } from '../services/auth.service';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
   constructor(private authService: AuthService) {}
 
   intercept(
-    req: HttpRequest<any>,
+    req: HttpRequest<unknown>,
     next: HttpHandler,
-  ): Observable<HttpEvent<any>> {
+  ): Observable<HttpEvent<unknown>> {
     // Attach access token to request headers
     const authorizedReq = req.clone({
       headers: req.headers.set(
         'Authorization',
-        'Bearer ' + this.authService.getAccessToken(),
+        `Bearer ${this.authService.getAccessToken()}`,
       ),
     });
 
@@ -36,7 +36,7 @@ export class AuthInterceptor implements HttpInterceptor {
 
               // Use the new token for the retry
               const retriedReq = req.clone({
-                headers: req.headers.set('Authorization', 'Bearer ' + newToken),
+                headers: req.headers.set('Authorization', `Bearer ${newToken}`),
               });
 
               return next.handle(retriedReq);

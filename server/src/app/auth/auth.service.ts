@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+
 import { Admin } from '../admins/admin.entity';
 import { AdminService } from '../admins/admin.service';
 
@@ -37,8 +38,8 @@ export class AuthService {
     const payload = { username: admin.email, sub: admin.id };
 
     return {
-      access_token: await this.createAccessToken(payload),
-      refresh_token: await this.createRefreshToken(payload),
+      accessToken: await this.createAccessToken(payload),
+      refreshToken: await this.createRefreshToken(payload),
     };
   }
 

@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from '@client/services';
+
 import { tap } from 'rxjs';
+import { AuthService } from '../../../services/auth.service';
 import { LoginResponse } from '../interfaces/login-response.interface';
 import { LoginDataService } from './login-data.service';
 
@@ -20,8 +21,9 @@ export class LoginService {
       .login(email, password)
       .pipe(tap(this._handleLoginSuccess), tap(this._redirectToDashboard));
   }
-  private _handleLoginSuccess = ({ access_token }: LoginResponse): void => {
-    this._authService.setAccessToken(access_token);
+
+  private _handleLoginSuccess = ({ accessToken }: LoginResponse): void => {
+    this._authService.setAccessToken(accessToken);
   };
 
   private _redirectToDashboard = () => {
