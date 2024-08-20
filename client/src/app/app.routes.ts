@@ -1,18 +1,18 @@
 import { Route } from '@angular/router';
 
-import { AlreadyLoggedInGuard, AuthGuard } from './guards';
+import { AuthGuard, LoggedOutGuard } from './guards';
 import {
   DashboardPageComponent,
   LoginPageComponent,
-  RegisterPageComponent
+  RegisterPageComponent,
 } from './pages';
 
 export const appRoutes: Route[] = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   {
     path: 'login',
-    canActivate: [AlreadyLoggedInGuard],
-    component: LoginPageComponent
+    canActivate: [LoggedOutGuard],
+    component: LoginPageComponent,
   },
   {
     path: 'dashboard',
@@ -21,8 +21,8 @@ export const appRoutes: Route[] = [
       { path: '', component: DashboardPageComponent },
       {
         path: 'register',
-        component: RegisterPageComponent
-      }
-    ]
-  }
+        component: RegisterPageComponent,
+      },
+    ],
+  },
 ];

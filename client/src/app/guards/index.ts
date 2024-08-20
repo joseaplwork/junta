@@ -1,2 +1,3 @@
-export * from './already-logged-in.guard';
 export * from './auth.guard';
+export * from './logged-out.guard';
+
