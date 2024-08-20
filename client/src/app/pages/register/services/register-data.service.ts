@@ -1,12 +1,16 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
+import { ConfigService } from '../../../shared/services/config.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RegisterDataService {
-  constructor(private _http: HttpClient) {}
+  constructor(
+    private _http: HttpClient,
+    private _config: ConfigService
+  ) {}
 
   signUp(
     email: string,
@@ -24,7 +28,7 @@ export class RegisterDataService {
     };
 
     return firstValueFrom(
-      this._http.post<void>('http://localhost:3000/api/signup', data)
+      this._http.post<void>(`${this._config.apiUrl}/signup`, data)
     );
   }
 }

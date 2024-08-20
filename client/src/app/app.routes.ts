@@ -4,7 +4,7 @@ import { AuthGuard, LoggedOutGuard } from './guards';
 import {
   DashboardPageComponent,
   LoginPageComponent,
-  RegisterPageComponent,
+  RegisterPageComponent
 } from './pages';
 
 export const appRoutes: Route[] = [
@@ -12,7 +12,7 @@ export const appRoutes: Route[] = [
   {
     path: 'login',
     canActivate: [LoggedOutGuard],
-    component: LoginPageComponent,
+    component: LoginPageComponent
   },
   {
     path: 'dashboard',
@@ -21,8 +21,8 @@ export const appRoutes: Route[] = [
       { path: '', component: DashboardPageComponent },
       {
         path: 'register',
-        component: RegisterPageComponent,
-      },
-    ],
-  },
+        component: RegisterPageComponent
+      }
+    ]
+  }
 ];
