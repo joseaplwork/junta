@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class RegisterDataService {
   constructor(private _http: HttpClient) {}
@@ -13,19 +13,19 @@ export class RegisterDataService {
     password: string,
     name: string,
     surname: string,
-    phone: string,
+    phone: string
   ): Observable<void> {
     const registrationData = {
       email,
       password,
       name,
       surname,
-      phone,
+      phone
     };
 
     return this._http.post<void>(
       'http://localhost:3000/api/signup',
-      registrationData,
+      registrationData
     );
   }
 }

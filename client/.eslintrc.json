@@ -1,6 +1,6 @@
 {
   "extends": ["../.eslintrc.json"],
-  "ignorePatterns": ["!**/*", "index.html"],
+  "ignorePatterns": ["!**/*", "index.html", "tailwind.config.js"],
   "parserOptions": {
     "project": ["client/tsconfig*.json"]
   },

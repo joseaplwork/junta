@@ -13,14 +13,14 @@ export class AdminController {
     @Body('email') email: string,
     @Body('name') name: string,
     @Body('surname') surname: string,
-    @Body('phone') phone: string,
+    @Body('phone') phone: string
   ): Promise<Admin> {
     const result = await this.adminService.createOne(
       email,
       password,
       name,
       surname,
-      phone,
+      phone
     );
 
     return result;

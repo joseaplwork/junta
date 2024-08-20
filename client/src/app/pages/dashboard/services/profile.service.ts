@@ -4,7 +4,7 @@ import { AdminProfile } from '../interfaces/admin-profile.interface';
 import { ProfileDataService } from './profile-data.service';
 
 @Injectable({
-  providedIn: 'any',
+  providedIn: 'any'
 })
 export class ProfileService {
   constructor(private _profileDataService: ProfileDataService) {}

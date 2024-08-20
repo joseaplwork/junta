@@ -1,15 +1,18 @@
 {
   "tabWidth": 2,
   "useTabs": false,
-  "singleQuote": true,
+  "proseWrap": "always",
   "semi": true,
   "bracketSpacing": true,
   "arrowParens": "avoid",
-  "trailingComma": "all",
+  "singleQuote": true,
+  "trailingComma": "none",
+  "endOfLine": "auto",
   "bracketSameLine": true,
   "printWidth": 80,
   "importOrderSeparation": true,
   "importOrderSortSpecifiers": true,
   "importOrder": ["<THIRD_PARTY_MODULES>", "^@client(.*)$", "^../", "^[./]"],
-  "importOrderParserPlugins": ["typescript", "decorators-legacy"]
+  "importOrderParserPlugins": ["typescript", "decorators-legacy"],
+  "plugins": ["prettier-plugin-tailwindcss"]
 }

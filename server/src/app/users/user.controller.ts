@@ -15,7 +15,7 @@ export class UserController {
   setUser(
     @Body('name') name: string,
     @Body('surname') surname: string,
-    @Body('phone') phone: string,
+    @Body('phone') phone: string
   ) {
     return this.appService.createOne(name, surname, phone);
   }

@@ -3,7 +3,7 @@ import { randomUUID } from 'crypto';
 import {
   Injectable,
   NotAcceptableException,
-  UnauthorizedException,
+  UnauthorizedException
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
@@ -15,7 +15,7 @@ import { AdminService } from '../admins/admin.service';
 export class AuthService {
   constructor(
     private adminService: AdminService,
-    private jwtService: JwtService,
+    private jwtService: JwtService
   ) {}
 
   async validateUser(username: string, password: string) {
@@ -39,7 +39,7 @@ export class AuthService {
 
     return {
       accessToken: await this.createAccessToken(payload),
-      refreshToken: await this.createRefreshToken(payload),
+      refreshToken: await this.createRefreshToken(payload)
     };
   }
 

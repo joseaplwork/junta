@@ -6,7 +6,7 @@ import { Observable, map, tap } from 'rxjs';
 const ACCESS_TOKEN_KEY = 'accessToken';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class AuthService {
   constructor(private httpClient: HttpClient) {}
@@ -43,11 +43,11 @@ export class AuthService {
 
   public refreshToken(): Observable<string> {
     return this.httpClient
-      .post<{ accessToken: string }>(
-        'http://localhost:3000/api/auth/refresh',
-        null,
-        { withCredentials: true },
-      )
+      .post<{
+        accessToken: string;
+      }>('http://localhost:3000/api/auth/refresh', null, {
+        withCredentials: true
+      })
       .pipe(map(this._mapToAccessToken), tap(this.setAccessToken));
   }
 

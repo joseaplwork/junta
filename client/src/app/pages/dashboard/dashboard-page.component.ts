@@ -4,7 +4,7 @@ import { AdminProfile } from './interfaces/admin-profile.interface';
 import { ProfileService } from './services/profile.service';
 
 @Component({
-  templateUrl: './dashboard-page.component.html',
+  templateUrl: './dashboard-page.component.html'
 })
 export class DashboardPageComponent implements OnInit {
   constructor(private _profile: ProfileService) {}

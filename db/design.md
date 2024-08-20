@@ -25,7 +25,7 @@ We need to store the information of "La junta" which is a conceptual idea that i
 - An Administrator can register users
 - A Junta has the money managed physically
 
-# Collect data points
+# Data points collection
 
 - Name
 - Surname

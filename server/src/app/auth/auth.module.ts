@@ -17,8 +17,8 @@ import { LocalStrategy } from './local.strategy';
     JwtModule.register({
       global: true,
       secret: jwtConstants.secret,
-      signOptions: { expiresIn: '30m' },
-    }),
+      signOptions: { expiresIn: '30m' }
+    })
   ],
   providers: [
     AuthService,
@@ -26,9 +26,9 @@ import { LocalStrategy } from './local.strategy';
     JwtStrategy,
     {
       provide: APP_GUARD,
-      useClass: AuthGuard,
-    },
+      useClass: AuthGuard
+    }
   ],
-  controllers: [AuthController],
+  controllers: [AuthController]
 })
 export class AuthModule {}

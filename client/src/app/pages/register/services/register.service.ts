@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { RegisterDataService } from './register-data.service';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
-export class LoginService {
+export class RegistrationService {
   constructor(private _registerDataService: RegisterDataService) {}
 
   public register(
@@ -12,14 +12,14 @@ export class LoginService {
     password: string,
     name: string,
     surname: string,
-    phone: string,
+    phone: string
   ) {
     return this._registerDataService.signup(
       email,
       password,
       name,
       surname,
-      phone,
+      phone
     );
   }
 }

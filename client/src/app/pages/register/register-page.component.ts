@@ -1,42 +1,39 @@
 import { Component } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 
-import { LoginService } from './services/register.service';
+import { RegistrationService } from './services/register.service';
 
 @Component({
   templateUrl: './register-page.component.html',
-  styleUrl: './register-page.component.css',
+  styleUrl: './register-page.component.css'
 })
 export class RegisterPageComponent {
-  public email = new FormControl('', [Validators.required, Validators.email]);
+  public form = this._fb.group({
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', [Validators.required]],
+    name: ['', [Validators.required]],
+    surname: ['', [Validators.required]],
+    phone: ['', [Validators.required]]
+  });
 
-  public password = new FormControl('', [Validators.required]);
+  public showFormError = false;
 
-  public name = new FormControl('', [Validators.required]);
+  constructor(
+    private readonly _fb: FormBuilder,
+    private readonly _registration: RegistrationService
+  ) {}
 
-  public surname = new FormControl('', [Validators.required]);
+  public onSubmit() {
+    const { email, password, name, surname, phone } = this.form.value;
 
-  public phone = new FormControl('', [Validators.required]);
-
-  public displayRegistrationErrorMessage = false;
-
-  constructor(private readonly _loginService: LoginService) {}
-
-  handleClick() {
-    this._loginService
-      .register(
-        this.email.value!,
-        this.password.value!,
-        this.name.value!,
-        this.surname.value!,
-        this.phone.value!,
-      )
+    this._registration
+      .register(email!, password!, name!, surname!, phone!)
       .subscribe({
-        error: this._displayWrongCredentialsMessage,
+        error: this._displayFormError
       });
   }
 
-  private _displayWrongCredentialsMessage = (): void => {
-    this.displayRegistrationErrorMessage = true;
+  private _displayFormError = (): void => {
+    this.showFormError = true;
   };
 }

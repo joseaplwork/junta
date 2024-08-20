@@ -1,30 +1,38 @@
 import { Component } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 
 import { LoginService } from './services/login.service';
 
 @Component({
   templateUrl: './login-page.component.html',
-  styleUrl: './login-page.component.css',
+  styleUrl: './login-page.component.css'
 })
 export class LoginPageComponent {
-  public email = new FormControl('', [Validators.required, Validators.email]);
+  public form = this._fb.group({
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', Validators.required]
+  });
 
-  public password = new FormControl('', [Validators.required]);
+  public showFormError = false;
 
-  public displayLoginErrorMessage = false;
+  constructor(
+    private readonly _fb: FormBuilder,
+    private readonly _login: LoginService
+  ) {}
 
-  constructor(private readonly _loginService: LoginService) {}
+  public onSubmit(): void {
+    const { email, password } = this.form.value;
 
-  handleClick() {
-    this._loginService
-      .login(this.email.value!, this.password.value!)
-      .subscribe({
-        error: this._displayWrongCredentialsMessage,
-      });
+    if (!email || !password) {
+      return;
+    }
+
+    this._login.signIn(email, password).subscribe({
+      error: this._displayFormError
+    });
   }
 
-  private _displayWrongCredentialsMessage = (): void => {
-    this.displayLoginErrorMessage = true;
+  private _displayFormError = (): void => {
+    this.showFormError = true;
   };
 }

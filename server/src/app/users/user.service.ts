@@ -8,7 +8,7 @@ import { User } from './user.entity';
 export class UserService {
   constructor(
     @InjectRepository(User)
-    private usersRepository: Repository<User>,
+    private usersRepository: Repository<User>
   ) {}
 
   findAll(): Promise<User[]> {
@@ -19,7 +19,7 @@ export class UserService {
     const user = this.usersRepository.create({
       name,
       surname,
-      phone_number: phonNumber,
+      phone_number: phonNumber
     });
 
     return this.usersRepository.save(user);

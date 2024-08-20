@@ -5,7 +5,7 @@ import { RegisterPageComponent } from './register/register-page.component';
 export const pages = [
   DashboardPageComponent,
   LoginPageComponent,
-  RegisterPageComponent,
+  RegisterPageComponent
 ];
 
 export * from './dashboard/dashboard-page.component';

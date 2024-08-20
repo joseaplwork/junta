@@ -5,7 +5,7 @@ import {
   Post,
   Req,
   Res,
-  UseGuards,
+  UseGuards
 } from '@nestjs/common';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { Request, Response } from 'express';
@@ -29,13 +29,13 @@ export class AuthController {
   @Post('login')
   async login(@Res() res: Response, @NestRequest() req: RequestWithUser) {
     const { accessToken, refreshToken } = await this.authService.login(
-      req.user,
+      req.user
     );
 
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
       secure: true,
-      sameSite: 'none',
+      sameSite: 'none'
     });
 
     return res.send({ accessToken });
@@ -49,17 +49,17 @@ export class AuthController {
     const user = await this.authService.decodeRefreshToken(oldRefreshToken);
     const newAccessToken = await this.authService.createAccessToken({
       username: user.id,
-      sub: user.id,
+      sub: user.id
     });
     const newRefreshToken = await this.authService.createRefreshToken({
       username: user.id,
-      sub: user.id,
+      sub: user.id
     });
 
     res.cookie('refreshToken', newRefreshToken, {
       httpOnly: true,
       secure: true,
-      sameSite: 'none',
+      sameSite: 'none'
     });
 
     return res.send({ accessToken: newAccessToken });
