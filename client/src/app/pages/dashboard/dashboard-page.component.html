@@ -1,4 +1,4 @@
-<ng-container *ngIf="admin$ | async as admin">
+<ng-container *ngIf="admin">
   <h1>Welcome {{ admin.username }}</h1>
   <button (click)="handleButtonClick()">Fetch profile again</button>
   <p class="mt-2"><a routerLink="/dashboard/register">Register</a></p>

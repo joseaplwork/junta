@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 
-import { LoginService } from './services/login.service';
+import { LoginDataService } from './services/login-data.service';
 
 @Component({
   templateUrl: './login-page.component.html',
@@ -17,19 +17,17 @@ export class LoginPageComponent {
 
   constructor(
     private readonly _fb: FormBuilder,
-    private readonly _login: LoginService
+    private readonly _login: LoginDataService
   ) {}
 
   public onSubmit(): void {
     const { email, password } = this.form.value;
 
-    if (!email || !password) {
-      return;
+    try {
+      this._login.signIn(email!, password!);
+    } catch (_) {
+      this._displayFormError();
     }
-
-    this._login.signIn(email, password).subscribe({
-      error: this._displayFormError
-    });
   }
 
   private _displayFormError = (): void => {

@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable({
   providedIn: 'any'
@@ -8,18 +8,21 @@ import { Observable } from 'rxjs';
 export class LoginDataService {
   constructor(private _http: HttpClient) {}
 
-  login(email: string, password: string): Observable<{ accessToken: string }> {
-    const loginData = {
+  signIn(email: string, password: string): Promise<{ accessToken: string }> {
+    const options = {
+      withCredentials: true
+    };
+    const data = {
       email,
       password
     };
 
-    return this._http.post<{ accessToken: string }>(
-      'http://localhost:3000/api/auth/login',
-      loginData,
-      {
-        withCredentials: true
-      }
+    return firstValueFrom(
+      this._http.post<{ accessToken: string }>(
+        'http://localhost:3000/api/auth/login',
+        data,
+        options
+      )
     );
   }
 }

@@ -1,21 +1,24 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable, of } from 'rxjs';
 import { AdminProfile } from './interfaces/admin-profile.interface';
-import { ProfileService } from './services/profile.service';
+import { ProfileDataService } from './services/profile-data.service';
 
 @Component({
   templateUrl: './dashboard-page.component.html'
 })
 export class DashboardPageComponent implements OnInit {
-  constructor(private _profile: ProfileService) {}
+  admin: AdminProfile | null = null;
 
-  public admin$: Observable<AdminProfile | null> = of(null);
+  constructor(private _profile: ProfileDataService) {}
 
-  public ngOnInit() {
-    this.admin$ = this._profile.getProfile();
+  ngOnInit() {
+    this._requestAdminProfile();
   }
 
-  public handleButtonClick() {
-    this.admin$ = this._profile.getProfile();
+  handleButtonClick() {
+    this._requestAdminProfile();
+  }
+
+  private async _requestAdminProfile() {
+    this.admin = await this._profile.fetch();
   }
 }

@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-
-import { RegistrationService } from './services/register.service';
+import { RegisterDataService } from './services/register-data.service';
 
 @Component({
   templateUrl: './register-page.component.html',
@@ -20,17 +19,17 @@ export class RegisterPageComponent {
 
   constructor(
     private readonly _fb: FormBuilder,
-    private readonly _registration: RegistrationService
+    private readonly _registration: RegisterDataService
   ) {}
 
   public onSubmit() {
     const { email, password, name, surname, phone } = this.form.value;
 
-    this._registration
-      .register(email!, password!, name!, surname!, phone!)
-      .subscribe({
-        error: this._displayFormError
-      });
+    try {
+      this._registration.signUp(email!, password!, name!, surname!, phone!);
+    } catch (error) {
+      this._displayFormError();
+    }
   }
 
   private _displayFormError = (): void => {

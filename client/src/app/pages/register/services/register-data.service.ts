@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -8,14 +8,14 @@ import { Observable } from 'rxjs';
 export class RegisterDataService {
   constructor(private _http: HttpClient) {}
 
-  signup(
+  signUp(
     email: string,
     password: string,
     name: string,
     surname: string,
     phone: string
-  ): Observable<void> {
-    const registrationData = {
+  ): Promise<void> {
+    const data = {
       email,
       password,
       name,
@@ -23,9 +23,8 @@ export class RegisterDataService {
       phone
     };
 
-    return this._http.post<void>(
-      'http://localhost:3000/api/signup',
-      registrationData
+    return firstValueFrom(
+      this._http.post<void>('http://localhost:3000/api/signup', data)
     );
   }
 }
