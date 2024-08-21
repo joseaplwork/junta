@@ -15,7 +15,7 @@ export class ProfileDataService {
     private _config: ConfigService,
   ) {}
 
-  async fetch(): Promise<AdminProfile> {
+  fetch(): Promise<AdminProfile> {
     return firstValueFrom(
       this._http.get<AdminProfile>(`${this._config.apiUrl}/auth/profile`),
     );

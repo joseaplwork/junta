@@ -27,10 +27,8 @@ export class AuthController {
   @Public()
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  async login(@Res() res: Response, @NestRequest() req: RequestWithUser) {
-    const { accessToken, refreshToken } = await this.authService.login(
-      req.user,
-    );
+  login(@Res() res: Response, @NestRequest() req: RequestWithUser) {
+    const { accessToken, refreshToken } = this.authService.login(req.user);
 
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
@@ -47,11 +45,11 @@ export class AuthController {
     const oldRefreshToken = req.cookies.refreshToken;
 
     const user = await this.authService.decodeRefreshToken(oldRefreshToken);
-    const newAccessToken = await this.authService.createAccessToken({
+    const newAccessToken = this.authService.createAccessToken({
       username: user.id,
       sub: user.id,
     });
-    const newRefreshToken = await this.authService.createRefreshToken({
+    const newRefreshToken = this.authService.createRefreshToken({
       username: user.id,
       sub: user.id,
     });

@@ -32,12 +32,12 @@ export class AuthService {
     return null;
   }
 
-  async login(admin: Admin) {
+  login(admin: Admin) {
     const payload = { username: admin.email, sub: admin.id };
 
     return {
-      accessToken: await this.createAccessToken(payload),
-      refreshToken: await this.createRefreshToken(payload),
+      accessToken: this.createAccessToken(payload),
+      refreshToken: this.createRefreshToken(payload),
     };
   }
 
@@ -49,11 +49,11 @@ export class AuthService {
     }
   }
 
-  async createAccessToken(payload: { username: string; sub: string }) {
+  createAccessToken(payload: { username: string; sub: string }) {
     return this.jwtService.sign(payload);
   }
 
-  async createRefreshToken(payload: { username: string; sub: string }) {
+  createRefreshToken(payload: { username: string; sub: string }) {
     const tokenId = randomUUID();
 
     return this.jwtService.sign({ ...payload, tokenId }, { expiresIn: '7d' });

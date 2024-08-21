@@ -9,19 +9,7 @@
   "printWidth": 80,
   "importOrderSeparation": true,
   "importOrderSortSpecifiers": true,
-  "importOrder": [
-    "<THIRD_PARTY_MODULES>",
-    "^@(client|server)(.*)$",
-    "^../",
-    "^[./]"
-  ],
-  "importOrderParserPlugins": [
-    "typescript",
-    "classProperties",
-    "decorators-legacy"
-  ],
-  "plugins": [
-    "prettier-plugin-tailwindcss",
-    "@trivago/prettier-plugin-sort-imports"
-  ]
+  "importOrder": ["<THIRD_PARTY_MODULES>", "^@(client|server)(.*)$", "^../", "^[./]"],
+  "importOrderParserPlugins": ["typescript", "classProperties", "decorators-legacy"],
+  "plugins": ["prettier-plugin-tailwindcss", "@trivago/prettier-plugin-sort-imports"]
 }

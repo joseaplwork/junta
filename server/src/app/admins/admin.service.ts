@@ -15,7 +15,7 @@ export class AdminService {
     private userService: UserService,
   ) {}
 
-  async findOne(email: string): Promise<Admin> {
+  findOne(email: string): Promise<Admin> {
     return this.adminRepository.findOne({ where: { email } });
   }
 
