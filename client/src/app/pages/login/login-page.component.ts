@@ -8,19 +8,19 @@ import { LoginDataService } from './services/login-data.service';
   styleUrl: './login-page.component.css',
 })
 export class LoginPageComponent {
-  public form = this._fb.group({
+  form = this._fb.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', Validators.required],
   });
 
-  public showFormError = false;
+  showFormError = false;
 
   constructor(
     private readonly _fb: FormBuilder,
     private readonly _login: LoginDataService,
   ) {}
 
-  public onSubmit(): void {
+  onSubmit(): void {
     const { email, password } = this.form.value;
 
     try {

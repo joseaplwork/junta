@@ -53,7 +53,7 @@ import { Component, Input } from '@angular/core';
   `,
 })
 export class BackButtonIconComponent {
-  @Input() public size: number = 20;
+  @Input() size: number = 20;
 
-  @Input() public color: 'white' | 'black' = 'white';
+  @Input() color: 'white' | 'black' = 'white';
 }

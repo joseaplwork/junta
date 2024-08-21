@@ -5,9 +5,9 @@ import { Component, Input } from '@angular/core';
   templateUrl: './button.component.html',
 })
 export class ButtonComponent {
-  @Input() public type: HTMLButtonElement['type'] = 'button';
+  @Input() type: HTMLButtonElement['type'] = 'button';
 
-  @Input() public disabled = false;
+  @Input() disabled = false;
 
-  @Input() public text = '';
+  @Input() text = '';
 }

@@ -8,7 +8,7 @@ import { RegisterDataService } from './services/register-data.service';
   styleUrl: './register-page.component.css',
 })
 export class RegisterPageComponent {
-  public form = this._fb.group({
+  form = this._fb.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required]],
     name: ['', [Validators.required]],
@@ -16,14 +16,14 @@ export class RegisterPageComponent {
     phone: ['', [Validators.required]],
   });
 
-  public showFormError = false;
+  showFormError = false;
 
   constructor(
     private readonly _fb: FormBuilder,
     private readonly _registration: RegisterDataService,
   ) {}
 
-  public onSubmit() {
+  onSubmit() {
     const { email, password, name, surname, phone } = this.form.value;
 
     try {

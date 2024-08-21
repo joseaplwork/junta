@@ -27,30 +27,30 @@ import {
 export class InputFieldComponent
   implements ControlValueAccessor, AfterViewInit
 {
-  @Input() public placeholder? = '';
+  @Input() placeholder? = '';
 
-  @Input() public error = '';
+  @Input() error = '';
 
-  @Input() public label = '';
+  @Input() label = '';
 
-  @Input() public name = '';
+  @Input() name = '';
 
-  @Input() public type = 'text';
+  @Input() type = 'text';
 
-  public value: string | number = '';
+  value: string | number = '';
 
-  public required = false;
+  required = false;
 
-  public controlDir!: NgControl;
+  controlDir!: NgControl;
 
-  public onChange: ((event: Event) => void) | undefined;
+  onChange: ((event: Event) => void) | undefined;
 
   constructor(
     private injector: Injector,
     private cdr: ChangeDetectorRef,
   ) {}
 
-  public ngAfterViewInit() {
+  ngAfterViewInit() {
     this.controlDir = this.injector.get(NgControl);
     const validator = this.controlDir.control?.validator?.(
       {} as AbstractControl,
@@ -60,20 +60,20 @@ export class InputFieldComponent
     this.cdr.detectChanges();
   }
 
-  public onTouched() {}
+  onTouched() {}
 
-  public writeValue(value: string | number): void {
+  writeValue(value: string | number): void {
     this.value = value;
   }
 
-  public registerOnChange(fn: (val: string) => unknown): void {
+  registerOnChange(fn: (val: string) => unknown): void {
     this.onChange = (event: Event) => {
       const { value } = event.target as HTMLInputElement;
       fn(value);
     };
   }
 
-  public registerOnTouched(fn: () => unknown): void {
+  registerOnTouched(fn: () => unknown): void {
     this.onTouched = fn;
   }
 }

@@ -66,12 +66,12 @@ export class AuthController {
   }
 
   @Get('profile')
-  public getProfile(@NestRequest() req: RequestWithUser) {
+  getProfile(@NestRequest() req: RequestWithUser) {
     return req.user;
   }
 
   @Get('logout')
-  async logout(@Res({ passthrough: true }) res: Response) {
+  logout(@Res({ passthrough: true }) res: Response) {
     res.cookie('refreshToken', '', { expires: new Date() });
   }
 }
