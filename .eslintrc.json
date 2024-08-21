@@ -1,7 +1,6 @@
 {
   "root": true,
   "ignorePatterns": ["**/*"],
-  "extends": ["plugin:prettier/recommended"],
   "parserOptions": {
     "project": "./tsconfig.base.json"
   },
@@ -19,7 +18,7 @@
           "error",
           {
             "enforceBuildableLibDependency": true,
-            "allow": [],
+            "allow": ["@client/**", "@server/**"],
             "depConstraints": [
               {
                 "sourceTag": "*",
@@ -33,13 +32,27 @@
           {
             "newlines-between": "always",
             "groups": [
-              "builtin",
-              "external",
+              ["builtin", "external"],
+              "internal",
               "parent",
               "sibling",
-              "internal",
               "index"
-            ]
+            ],
+            "pathGroups": [
+              {
+                "pattern": "@server/**",
+                "group": "internal"
+              },
+              {
+                "pattern": "@client/**",
+                "group": "internal"
+              }
+            ],
+            "pathGroupsExcludedImportTypes": ["builtin"],
+            "alphabetize": {
+              "order": "asc",
+              "caseInsensitive": true
+            }
           }
         ]
       }

@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
 
-import { UserService } from '../users/user.service';
+import { UserService } from '@server/users';
 
 import { Admin } from './admin.entity';
 
@@ -12,7 +12,7 @@ export class AdminService {
   constructor(
     @InjectRepository(Admin)
     private adminRepository: Repository<Admin>,
-    private userService: UserService
+    private userService: UserService,
   ) {}
 
   async findOne(email: string): Promise<Admin> {
@@ -24,14 +24,14 @@ export class AdminService {
     plainPassword: string,
     name: string,
     surname: string,
-    phone: string
+    phone: string,
   ): Promise<Admin> {
     const user = await this.userService.createOne(name, surname, phone);
     const password = await bcrypt.hash(plainPassword, 10);
     const admin = this.adminRepository.create({
       email,
       password,
-      user
+      user,
     });
 
     await this.adminRepository.save(admin);

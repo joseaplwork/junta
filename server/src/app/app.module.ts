@@ -21,13 +21,13 @@ import { UserModule } from './users/user.module';
       entities: [User, Admin],
       synchronize: true,
       logging: true,
-      logger: 'advanced-console'
+      logger: 'advanced-console',
     }),
     AuthModule,
     UserModule,
-    AdminModule
+    AdminModule,
   ],
   controllers: [AppController],
-  providers: [AppService]
+  providers: [AppService],
 })
 export class AppModule {}

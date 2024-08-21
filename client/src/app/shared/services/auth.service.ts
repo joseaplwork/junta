@@ -2,17 +2,18 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { jwtDecode } from 'jwt-decode';
 import { Observable, map, tap } from 'rxjs';
+
 import { ConfigService } from './config.service';
 
 const ACCESS_TOKEN_KEY = 'accessToken';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
   constructor(
     private _http: HttpClient,
-    private _config: ConfigService
+    private _config: ConfigService,
   ) {}
 
   setAccessToken = (accessToken: string): void => {
@@ -38,7 +39,7 @@ export class AuthService {
       .post<{
         accessToken: string;
       }>(`${this._config.apiUrl}/auth/refresh`, null, {
-        withCredentials: true
+        withCredentials: true,
       })
       .pipe(map(this._mapToAccessToken), tap(this.setAccessToken));
   }

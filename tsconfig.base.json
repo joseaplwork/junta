@@ -15,7 +15,8 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@client/*": ["client/src/app/*"]
+      "@client/*": ["client/src/app/*"],
+      "@server/*": ["server/src/app/*"]
     }
   },
   "exclude": ["node_modules", "tmp"]

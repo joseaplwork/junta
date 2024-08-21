@@ -5,19 +5,19 @@ import { LoginDataService } from './services/login-data.service';
 
 @Component({
   templateUrl: './login-page.component.html',
-  styleUrl: './login-page.component.css'
+  styleUrl: './login-page.component.css',
 })
 export class LoginPageComponent {
   public form = this._fb.group({
     email: ['', [Validators.required, Validators.email]],
-    password: ['', Validators.required]
+    password: ['', Validators.required],
   });
 
   public showFormError = false;
 
   constructor(
     private readonly _fb: FormBuilder,
-    private readonly _login: LoginDataService
+    private readonly _login: LoginDataService,
   ) {}
 
   public onSubmit(): void {

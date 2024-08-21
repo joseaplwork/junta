@@ -4,13 +4,13 @@ import {
   Component,
   Injector,
   Input,
-  forwardRef
+  forwardRef,
 } from '@angular/core';
 import {
   AbstractControl,
   ControlValueAccessor,
   NG_VALUE_ACCESSOR,
-  NgControl
+  NgControl,
 } from '@angular/forms';
 
 @Component({
@@ -20,9 +20,9 @@ import {
     {
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => InputFieldComponent),
-      multi: true
-    }
-  ]
+      multi: true,
+    },
+  ],
 })
 export class InputFieldComponent
   implements ControlValueAccessor, AfterViewInit
@@ -47,13 +47,13 @@ export class InputFieldComponent
 
   constructor(
     private injector: Injector,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
   ) {}
 
   public ngAfterViewInit() {
     this.controlDir = this.injector.get(NgControl);
     const validator = this.controlDir.control?.validator?.(
-      {} as AbstractControl
+      {} as AbstractControl,
     );
     this.required = !!validator && !!validator['required'];
 

@@ -1,15 +1,16 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
-import { ConfigService } from '../../../shared/services/config.service';
+
+import { ConfigService } from '@client/shared/services';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class RegisterDataService {
   constructor(
     private _http: HttpClient,
-    private _config: ConfigService
+    private _config: ConfigService,
   ) {}
 
   signUp(
@@ -17,18 +18,18 @@ export class RegisterDataService {
     password: string,
     name: string,
     surname: string,
-    phone: string
+    phone: string,
   ): Promise<void> {
     const data = {
       email,
       password,
       name,
       surname,
-      phone
+      phone,
     };
 
     return firstValueFrom(
-      this._http.post<void>(`${this._config.apiUrl}/signup`, data)
+      this._http.post<void>(`${this._config.apiUrl}/signup`, data),
     );
   }
 }

@@ -3,7 +3,7 @@ const webpack = require('webpack');
 
 module.exports = composePlugins(
   withNx({
-    target: 'node'
+    target: 'node',
   }),
   config => {
     config.plugins.push(
@@ -30,7 +30,7 @@ module.exports = composePlugins(
             'sqlite3',
             'typeorm-aurora-data-api-driver',
             'react-native-sqlite-storage',
-            'mssql'
+            'mssql',
             // etc...
           ];
           if (!lazyImports.includes(resource)) {
@@ -42,9 +42,9 @@ module.exports = composePlugins(
             return true;
           }
           return false;
-        }
-      })
+        },
+      }),
     );
     return config;
-  }
+  },
 );

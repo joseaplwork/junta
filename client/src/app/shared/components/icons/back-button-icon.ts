@@ -50,7 +50,7 @@ import { Component, Input } from '@angular/core';
         </g>
       </g>
     </svg>
-  `
+  `,
 })
 export class BackButtonIconComponent {
   @Input() public size: number = 20;

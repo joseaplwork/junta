@@ -3,10 +3,10 @@ import {
   Entity,
   JoinColumn,
   OneToOne,
-  PrimaryGeneratedColumn
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 
-import { User } from '../users/user.entity';
+import { User } from '@server/users';
 
 @Entity('Administrators')
 export class Admin {

@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+
 import { InputFieldComponent } from './input-field.component';
 
 describe('InputFieldComponent', () => {
@@ -7,7 +8,7 @@ describe('InputFieldComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [InputFieldComponent]
+      imports: [InputFieldComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(InputFieldComponent);
