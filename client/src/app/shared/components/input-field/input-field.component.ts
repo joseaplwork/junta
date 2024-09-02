@@ -50,6 +50,12 @@ export class InputFieldComponent
     private cdr: ChangeDetectorRef,
   ) {}
 
+  get hasError() {
+    return (
+      this.controlDir?.control?.touched && this.controlDir?.control?.errors
+    );
+  }
+
   ngAfterViewInit() {
     this.controlDir = this.injector.get(NgControl);
     const validator = this.controlDir.control?.validator?.(
@@ -75,5 +81,17 @@ export class InputFieldComponent
 
   registerOnTouched(fn: () => unknown): void {
     this.onTouched = fn;
+  }
+
+  getErrorMessage() {
+    if (this.controlDir?.control?.errors?.['required']) {
+      return 'This field is required';
+    }
+
+    if (this.controlDir?.control?.errors?.['email']) {
+      return 'Invalid email';
+    }
+
+    return '';
   }
 }

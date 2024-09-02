@@ -10,7 +10,7 @@ import {
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { Request, Response } from 'express';
 
-import { Admin } from '@server/admins';
+import { Admin } from '@server/admins/admin.entity';
 import { Public } from '@server/decorators';
 
 import { AuthService } from './auth.service';

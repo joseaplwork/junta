@@ -3,11 +3,25 @@ import { Component, Input } from '@angular/core';
 @Component({
   selector: 'app-button',
   templateUrl: './button.component.html',
+  styles: [
+    `
+      :host {
+        display: inline-block;
+      }
+    `,
+  ],
 })
 export class ButtonComponent {
-  @Input() type: HTMLButtonElement['type'] = 'button';
+  @Input() kind?: 'elevated' | 'filled' | 'tonal' | 'outlined' | 'text' =
+    'tonal';
 
-  @Input() disabled = false;
+  @Input() icon?: string = '';
+
+  @Input() expand? = false;
+
+  @Input() disabled? = false;
+
+  @Input() type: HTMLButtonElement['type'] = 'button';
 
   @Input() text = '';
 }

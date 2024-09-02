@@ -9,6 +9,11 @@ module.exports = {
   ],
   theme: {
     extend: {},
+    colors: {
+      primary: 'var(--md-sys-color-primary)',
+      secondary: 'var(--md-sys-color-secondary)',
+      error: 'var(--md-sys-color-error)',
+    },
   },
   plugins: [],
 };

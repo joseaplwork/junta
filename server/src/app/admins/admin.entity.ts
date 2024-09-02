@@ -6,7 +6,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-import { User } from '@server/users';
+import { User } from '@server/users/user.entity';
 
 @Entity('Administrators')
 export class Admin {

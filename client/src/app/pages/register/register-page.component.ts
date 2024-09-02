@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 
 import { RegisterDataService } from './services/register-data.service';
 
 @Component({
   templateUrl: './register-page.component.html',
-  styleUrl: './register-page.component.css',
 })
 export class RegisterPageComponent {
   form = this._fb.group({
@@ -21,16 +21,29 @@ export class RegisterPageComponent {
   constructor(
     private readonly _fb: FormBuilder,
     private readonly _registration: RegisterDataService,
+    private readonly _router: Router,
   ) {}
 
-  onSubmit() {
+  async onSubmit() {
     const { email, password, name, surname, phone } = this.form.value;
 
     try {
-      this._registration.signUp(email!, password!, name!, surname!, phone!);
+      await this._registration.signUp(
+        email!,
+        password!,
+        name!,
+        surname!,
+        phone!,
+      );
+
+      this._redirectToDashboard();
     } catch (error) {
       this._displayFormError();
     }
+  }
+
+  private _redirectToDashboard() {
+    this._router.navigate(['/dashboard']);
   }
 
   private _displayFormError = (): void => {

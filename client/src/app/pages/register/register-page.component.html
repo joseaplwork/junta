@@ -1,20 +1,18 @@
-<div class="register">
-  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="register__form">
-    <p class="mb-10 flex justify-center self-start text-indigo-50">
-      <a routerLink="/dashboard">
-        <app-back-button-icon class="mr-3" /> Go back to dashboard
-      </a>
-    </p>
-    <app-input-field
-      label="Email"
-      type="email"
-      formControlName="email"
-      placeholder="Ex. test@test.com" />
-    <app-input-field
-      label="Password"
-      type="password"
-      formControlName="password"
-      placeholder="******" />
+<div class="grid h-full place-content-center">
+  <h1 class="text-primary mb-5 text-center text-4xl">Registration</h1>
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="grid gap-5">
+    <div class="flex gap-2">
+      <app-input-field
+        label="Email"
+        type="email"
+        formControlName="email"
+        placeholder="Ex. test@test.com" />
+      <app-input-field
+        label="Password"
+        type="password"
+        formControlName="password"
+        placeholder="******" />
+    </div>
     <app-input-field label="Name" formControlName="name" placeholder="John" />
     <app-input-field
       label="Surname"
@@ -22,12 +20,21 @@
       placeholder="Doe" />
     <app-input-field
       label="Phone"
-      type="number"
+      type="tel"
       formControlName="phone"
       placeholder="+34 62346793" />
-    <app-button type="submit">Register</app-button>
-    <p *ngIf="showFormError" class="register__form-error-message">
-      register failed
-    </p>
+    <p *ngIf="showFormError" class="text-error">Registration failed</p>
+    <div class="flex gap-3">
+      <a routerLink="/dashboard">
+        <app-icon-button kind="outlined" name="arrow_back"></app-icon-button>
+      </a>
+      <app-button
+        [expand]="true"
+        class="w-full"
+        type="submit"
+        [disabled]="!form.valid">
+        Register
+      </app-button>
+    </div>
   </form>
 </div>

@@ -1,32 +1,12 @@
-<label class="mb-2 block">
-  <span class="block pb-2 text-left text-sm font-medium text-stone-100">
-    @if (required) {
-      {{ label }} *
-    } @else {
-      {{ label }}
-    }
-  </span>
-  <input
-    class="peer block w-full appearance-none rounded border-2 border-stone-300 bg-stone-100 px-4 py-3 leading-tight text-stone-500 focus:border-indigo-500 focus:bg-stone-100 focus:outline-none"
-    [type]="type"
-    [value]="value"
-    [placeholder]="placeholder"
-    [required]="required"
-    (input)="onChange && onChange($event)"
-    (blur)="onTouched()"
-    [ngClass]="{
-      '!border-red-500 !text-pink-600':
-        controlDir &&
-        controlDir.control?.touched &&
-        controlDir.control?.errors?.['required'],
-    }" />
-  <p class="mt-2 min-h-5 text-left text-sm text-pink-600">
-    @if (
-      controlDir &&
-      controlDir.control?.touched &&
-      controlDir.control?.errors?.['email']
-    ) {
-      incorrect email format
-    }
-  </p>
-</label>
+<md-outlined-text-field
+  class="w-full"
+  [type]="type"
+  [value]="value"
+  [placeholder]="placeholder"
+  [required]="required"
+  (input)="onChange && onChange($event)"
+  [label]="label"
+  [error]="hasError"
+  [errorText]="getErrorMessage()"
+  (blur)="onTouched()">
+</md-outlined-text-field>
