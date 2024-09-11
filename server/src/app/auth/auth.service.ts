@@ -34,7 +34,11 @@ export class AuthService {
   }
 
   login(admin: Admin) {
-    const payload = { username: admin.email, sub: admin.id };
+    const payload = {
+      username: admin.email,
+      sub: admin.id,
+      roles: admin.roles,
+    };
 
     return {
       accessToken: this.createAccessToken(payload),

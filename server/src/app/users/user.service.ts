@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { User } from './user.entity';
+import { UserPayload } from './user.interface';
 
 @Injectable()
 export class UserService {
@@ -15,11 +16,11 @@ export class UserService {
     return this.usersRepository.find();
   }
 
-  createOne(name: string, surname: string, phonNumber: string): Promise<User> {
+  createOne({ name, surname, phoneNumber }: UserPayload): Promise<User> {
     const user = this.usersRepository.create({
       name,
       surname,
-      phone_number: phonNumber,
+      phone_number: phoneNumber,
     });
 
     return this.usersRepository.save(user);

@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import { UserService } from '@server/users/user.service';
 
 import { Admin } from './admin.entity';
+import { AdminPayload } from './admin.interface';
 
 @Injectable()
 export class AdminService {
@@ -19,18 +20,24 @@ export class AdminService {
     return this.adminRepository.findOne({ where: { email } });
   }
 
-  async createOne(
-    email: string,
-    plainPassword: string,
-    name: string,
-    surname: string,
-    phone: string,
-  ): Promise<Admin> {
-    const user = await this.userService.createOne(name, surname, phone);
+  async createOne({
+    email,
+    plainPassword,
+    roles,
+    name,
+    surname,
+    phoneNumber,
+  }: AdminPayload): Promise<Admin> {
+    const user = await this.userService.createOne({
+      name,
+      surname,
+      phoneNumber,
+    });
     const password = await bcrypt.hash(plainPassword, 10);
     const admin = this.adminRepository.create({
       email,
       password,
+      roles,
       user,
     });
 

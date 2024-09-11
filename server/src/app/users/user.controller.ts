@@ -7,16 +7,16 @@ export class UserController {
   constructor(private readonly appService: UserService) {}
 
   @Get('/users')
-  getData() {
+  getAllUsers() {
     return this.appService.findAll();
   }
 
   @Post('/users')
-  setUser(
+  createUser(
     @Body('name') name: string,
     @Body('surname') surname: string,
-    @Body('phone') phone: string,
+    @Body('phone') phoneNumber: string,
   ) {
-    return this.appService.createOne(name, surname, phone);
+    return this.appService.createOne({ name, surname, phoneNumber });
   }
 }

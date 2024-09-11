@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
+import { Role } from '@server/enums';
+
 import { RegisterDataService } from './services/register-data.service';
 
 @Component({
@@ -11,10 +13,13 @@ export class RegisterPageComponent {
   form = this._fb.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required]],
+    roles: [[''], [Validators.required]],
     name: ['', [Validators.required]],
     surname: ['', [Validators.required]],
     phone: ['', [Validators.required]],
   });
+
+  roles = Role;
 
   showFormError = false;
 
@@ -25,7 +30,7 @@ export class RegisterPageComponent {
   ) {}
 
   async onSubmit() {
-    const { email, password, name, surname, phone } = this.form.value;
+    const { email, password, name, surname, phone, roles } = this.form.value;
 
     try {
       await this._registration.signUp(
@@ -34,6 +39,7 @@ export class RegisterPageComponent {
         name!,
         surname!,
         phone!,
+        roles!,
       );
 
       this._redirectToDashboard();

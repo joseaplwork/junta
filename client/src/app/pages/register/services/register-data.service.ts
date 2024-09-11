@@ -4,6 +4,8 @@ import { firstValueFrom } from 'rxjs';
 
 import { ConfigService } from '@client/shared/services';
 
+import { AdminPayload } from '../interfaces/admin-payload.interface';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -13,19 +15,21 @@ export class RegisterDataService {
     private _config: ConfigService,
   ) {}
 
-  signUp(
-    email: string,
-    password: string,
-    name: string,
-    surname: string,
-    phone: string,
-  ): Promise<void> {
+  signUp({
+    email,
+    password,
+    name,
+    surname,
+    phone,
+    roles,
+  }: AdminPayload): Promise<void> {
     const data = {
       email,
       password,
       name,
       surname,
       phone,
+      roles,
     };
 
     return firstValueFrom(

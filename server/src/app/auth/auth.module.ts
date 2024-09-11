@@ -3,10 +3,10 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
 
 import { AdminModule } from '@server/admins/admin.module';
+import { AuthGuard, RolesGuard } from '@server/guards';
 
 import { jwtConstants } from './auth.constants';
 import { AuthController } from './auth.controller';
-import { AuthGuard } from './auth.guard';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './jwt.strategy';
 import { LocalStrategy } from './local.strategy';
@@ -27,6 +27,10 @@ import { LocalStrategy } from './local.strategy';
     {
       provide: APP_GUARD,
       useClass: AuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
     },
   ],
   controllers: [AuthController],

@@ -6,6 +6,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
+import { Role } from '@server/enums';
 import { User } from '@server/users/user.entity';
 
 @Entity('Administrators')
@@ -18,6 +19,9 @@ export class Admin {
 
   @Column({ type: 'varchar' })
   password: string;
+
+  @Column({ type: 'varchar' })
+  roles: Role[];
 
   @OneToOne(() => User)
   @JoinColumn()

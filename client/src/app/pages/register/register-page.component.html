@@ -23,6 +23,10 @@
       type="tel"
       formControlName="phone"
       placeholder="+34 62346793" />
+    <select formControlName="roles" multiple>
+      <option [value]="roles.Admin">{{ roles.Admin }}</option>
+      <option [value]="roles.SuperAdmin">{{ roles.SuperAdmin }}</option>
+    </select>
     <p *ngIf="showFormError" class="text-error">Registration failed</p>
     <div class="flex gap-3">
       <a routerLink="/dashboard">
