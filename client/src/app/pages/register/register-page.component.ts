@@ -33,14 +33,14 @@ export class RegisterPageComponent {
     const { email, password, name, surname, phone, roles } = this.form.value;
 
     try {
-      await this._registration.signUp(
-        email!,
-        password!,
-        name!,
-        surname!,
-        phone!,
-        roles!,
-      );
+      await this._registration.signUp({
+        email: email!,
+        password: password!,
+        name: name!,
+        surname: surname!,
+        phone: phone!,
+        roles: roles as Role[],
+      });
 
       this._redirectToDashboard();
     } catch (error) {

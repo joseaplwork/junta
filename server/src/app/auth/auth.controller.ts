@@ -11,7 +11,8 @@ import {
 import { Request, Response } from 'express';
 
 import { Admin } from '@server/admins/admin.entity';
-import { Public } from '@server/decorators';
+import { Public, Roles } from '@server/decorators';
+import { Role } from '@server/enums';
 
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './local-auth.guard';
@@ -64,6 +65,7 @@ export class AuthController {
   }
 
   @Get('profile')
+  @Roles(Role.Admin)
   getProfile(@NestRequest() req: RequestWithUser) {
     return req.user;
   }
