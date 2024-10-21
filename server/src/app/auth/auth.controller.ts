@@ -7,7 +7,6 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { Request, Response } from 'express';
 
 import { Admin } from '@server/admins/admin.entity';
@@ -43,17 +42,10 @@ export class AuthController {
   @Public()
   @Post('refresh')
   async refresh(@Res() res: Response, @Req() req: Request) {
-    const oldRefreshToken = req.cookies.refreshToken;
-
-    const user = await this.authService.decodeRefreshToken(oldRefreshToken);
-    const newAccessToken = this.authService.createAccessToken({
-      username: user.id,
-      sub: user.id,
-    });
-    const newRefreshToken = this.authService.createRefreshToken({
-      username: user.id,
-      sub: user.id,
-    });
+    const actualRefreshToken = req.cookies.refreshToken;
+    const user = await this.authService.decodeRefreshToken(actualRefreshToken);
+    const newAccessToken = this.authService.createAccessToken(user);
+    const newRefreshToken = this.authService.createRefreshToken(user);
 
     res.cookie('refreshToken', newRefreshToken, {
       httpOnly: true,
@@ -71,7 +63,13 @@ export class AuthController {
   }
 
   @Get('logout')
-  logout(@Res({ passthrough: true }) res: Response) {
-    res.cookie('refreshToken', '', { expires: new Date() });
+  logout(@Res() res: Response) {
+    res.clearCookie('refreshToken', {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none',
+    });
+
+    res.send({ message: 'Cookie cleared successfully' });
   }
 }

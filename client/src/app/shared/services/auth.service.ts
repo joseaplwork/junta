@@ -5,20 +5,24 @@ import { Observable, map, tap } from 'rxjs';
 
 import { ConfigService } from './config.service';
 
-const ACCESS_TOKEN_KEY = 'accessToken';
-
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
+  private _ACCESS_TOKEN_KEY = 'accessToken';
+
   constructor(
     private _http: HttpClient,
     private _config: ConfigService,
   ) {}
 
   setAccessToken = (accessToken: string): void => {
-    sessionStorage.setItem(ACCESS_TOKEN_KEY, accessToken);
+    sessionStorage.setItem(this._ACCESS_TOKEN_KEY, accessToken);
   };
+
+  clearClientSession() {
+    sessionStorage.removeItem(this._ACCESS_TOKEN_KEY);
+  }
 
   isTokenExpired(token: string | null = this.getAccessToken()): boolean {
     if (!token) return true;
@@ -31,7 +35,7 @@ export class AuthService {
   }
 
   getAccessToken(): string | null {
-    return sessionStorage.getItem(ACCESS_TOKEN_KEY);
+    return sessionStorage.getItem(this._ACCESS_TOKEN_KEY);
   }
 
   refreshToken(): Observable<string> {

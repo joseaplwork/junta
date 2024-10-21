@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 
-import { ConfigService } from '@client/shared/services';
+import { AuthService, ConfigService } from '@client/shared/services';
 
 @Injectable({
   providedIn: 'any',
@@ -11,11 +11,16 @@ export class LogoutService {
   constructor(
     private _http: HttpClient,
     private _config: ConfigService,
+    private _auth: AuthService,
   ) {}
 
-  request(): Promise<unknown> {
-    return firstValueFrom<unknown>(
-      this._http.get(`${this._config.apiUrl}/auth/logout`),
+  async request(): Promise<void> {
+    await firstValueFrom<unknown>(
+      this._http.get(`${this._config.apiUrl}/auth/logout`, {
+        withCredentials: true,
+      }),
     );
+
+    this._auth.clearClientSession();
   }
 }

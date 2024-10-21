@@ -10,6 +10,8 @@ import { randomUUID } from 'crypto';
 import { Admin } from '@server/admins/admin.entity';
 import { AdminService } from '@server/admins/admin.service';
 
+import { AuthTokenPayload } from './auth.interface';
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -33,6 +35,20 @@ export class AuthService {
     return null;
   }
 
+  async decodeRefreshToken(token: string): Promise<AuthTokenPayload> {
+    try {
+      const { username, sub, roles } = await this.jwtService.verify(token);
+
+      return {
+        username,
+        sub,
+        roles,
+      };
+    } catch (error) {
+      throw new UnauthorizedException('Invalid refresh token');
+    }
+  }
+
   login(admin: Admin) {
     const payload = {
       username: admin.email,
@@ -46,21 +62,25 @@ export class AuthService {
     };
   }
 
-  async decodeRefreshToken(token: string): Promise<{ id: string }> {
-    try {
-      return await this.jwtService.verify(token);
-    } catch (error) {
-      throw new UnauthorizedException('Invalid refresh token');
-    }
+  createAccessToken(payload: AuthTokenPayload) {
+    const { tokenId, iat } = this.getRandomTokenAndIat();
+
+    return this.jwtService.sign({ ...payload, tokenId, iat });
   }
 
-  createAccessToken(payload: { username: string; sub: string }) {
-    return this.jwtService.sign(payload);
+  createRefreshToken(payload: AuthTokenPayload) {
+    const { tokenId, iat } = this.getRandomTokenAndIat();
+
+    return this.jwtService.sign(
+      { ...payload, tokenId, iat },
+      { expiresIn: '7d' },
+    );
   }
 
-  createRefreshToken(payload: { username: string; sub: string }) {
+  private getRandomTokenAndIat() {
     const tokenId = randomUUID();
+    const iat = Math.floor(Date.now() / 1000);
 
-    return this.jwtService.sign({ ...payload, tokenId }, { expiresIn: '7d' });
+    return { tokenId, iat };
   }
 }
