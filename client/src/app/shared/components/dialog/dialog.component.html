@@ -1,0 +1,18 @@
+<md-dialog #dialog [open]="open()" no-focus-trap>
+  <div slot="headline">{{ title }}</div>
+  <form slot="content" id="form-id" method="dialog">
+    {{ content }}
+  </form>
+  <div slot="actions">
+    @if (primaryText) {
+      <app-button #primary (click)="onPrimaryClick()">{{
+        primaryText
+      }}</app-button>
+    }
+    @if (secondaryText) {
+      <app-button #secondary kind="outlined" (click)="onSecondaryClick()">
+        {{ secondaryText }}
+      </app-button>
+    }
+  </div>
+</md-dialog>

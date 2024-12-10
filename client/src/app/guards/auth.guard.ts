@@ -3,12 +3,16 @@ import { CanActivateFn, Router } from '@angular/router';
 
 import { AuthService } from '@client/shared/services';
 
-export const AuthGuard: CanActivateFn = () => {
+export const AuthGuard: CanActivateFn = async () => {
   const auth = inject(AuthService);
   const router = inject(Router);
 
-  if (auth.isTokenExpired()) {
-    router.navigate(['/login']);
+  if (auth.isAccessTokenExpired()) {
+    if (auth.isRefreshTokenStillValid()) {
+      auth.notifySessionExpiration();
+    } else {
+      await router.navigate(['/login']);
+    }
 
     return false;
   }

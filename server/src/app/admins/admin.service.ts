@@ -13,7 +13,7 @@ export class AdminService {
   constructor(
     @InjectRepository(Admin)
     private adminRepository: Repository<Admin>,
-    private userService: UserService,
+    private user: UserService,
   ) {}
 
   findOne(email: string): Promise<Admin> {
@@ -28,7 +28,7 @@ export class AdminService {
     surname,
     phoneNumber,
   }: AdminPayload): Promise<Admin> {
-    const user = await this.userService.createOne({
+    const user = await this.user.createOne({
       name,
       surname,
       phoneNumber,

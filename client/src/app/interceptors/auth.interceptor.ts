@@ -12,7 +12,7 @@ import { AuthService } from '@client/shared/services';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  constructor(private authService: AuthService) {}
+  constructor(private auth: AuthService) {}
 
   intercept(
     req: HttpRequest<unknown>,
@@ -22,7 +22,7 @@ export class AuthInterceptor implements HttpInterceptor {
     const authorizedReq = req.clone({
       headers: req.headers.set(
         'Authorization',
-        `Bearer ${this.authService.getAccessToken()}`,
+        `Bearer ${this.auth.getAccessToken()}`,
       ),
     });
 
@@ -30,10 +30,10 @@ export class AuthInterceptor implements HttpInterceptor {
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           // Access token is expired, try refreshing
-          return this.authService.refreshToken().pipe(
+          return this.auth.refreshAccessToken().pipe(
             switchMap((newToken: string) => {
-              // Set the new token in authService for in-memory storage
-              this.authService.setAccessToken(newToken);
+              // Set the new token in auth for in-memory storage
+              this.auth.setAccessToken(newToken);
 
               // Use the new token for the retry
               const retriedReq = req.clone({

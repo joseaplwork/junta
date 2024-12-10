@@ -4,6 +4,7 @@ import { jwtDecode } from 'jwt-decode';
 import { Observable, map, tap } from 'rxjs';
 
 import { ConfigService } from './config.service';
+import { MessagingSystemService } from './messaging-system.service';
 
 @Injectable({
   providedIn: 'root',
@@ -14,6 +15,7 @@ export class AuthService {
   constructor(
     private _http: HttpClient,
     private _config: ConfigService,
+    private _messagingSystem: MessagingSystemService,
   ) {}
 
   setAccessToken = (accessToken: string): void => {
@@ -24,7 +26,17 @@ export class AuthService {
     sessionStorage.removeItem(this._ACCESS_TOKEN_KEY);
   }
 
-  isTokenExpired(token: string | null = this.getAccessToken()): boolean {
+  isAccessTokenExpired(token = this.getAccessToken()): boolean {
+    if (!token) return true;
+
+    const date = this._getAccessTokenExpirationDate(token);
+
+    if (date === undefined || date === null) return false;
+
+    return !(date.valueOf() > new Date().valueOf());
+  }
+
+  isRefreshTokenStillValid(token = this.getAccessToken()): boolean {
     if (!token) return true;
 
     const date = this._getAccessTokenExpirationDate(token);
@@ -38,7 +50,7 @@ export class AuthService {
     return sessionStorage.getItem(this._ACCESS_TOKEN_KEY);
   }
 
-  refreshToken(): Observable<string> {
+  refreshAccessToken(): Observable<string> {
     return this._http
       .post<{
         accessToken: string;
@@ -46,6 +58,10 @@ export class AuthService {
         withCredentials: true,
       })
       .pipe(map(this._mapToAccessToken), tap(this.setAccessToken));
+  }
+
+  notifySessionExpiration() {
+    this._messagingSystem.displaySessionExpirationAlert();
   }
 
   private _getAccessTokenExpirationDate(token: string): Date | null {

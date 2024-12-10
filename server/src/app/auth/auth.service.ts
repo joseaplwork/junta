@@ -15,12 +15,12 @@ import { AuthTokenPayload } from './auth.interface';
 @Injectable()
 export class AuthService {
   constructor(
-    private adminService: AdminService,
-    private jwtService: JwtService,
+    private admin: AdminService,
+    private jwt: JwtService,
   ) {}
 
   async validateUser(username: string, password: string) {
-    const user = await this.adminService.findOne(username);
+    const user = await this.admin.findOne(username);
 
     if (!user) {
       throw new NotAcceptableException('could not find the user');
@@ -37,7 +37,7 @@ export class AuthService {
 
   async decodeRefreshToken(token: string): Promise<AuthTokenPayload> {
     try {
-      const { username, sub, roles } = await this.jwtService.verify(token);
+      const { username, sub, roles } = await this.jwt.verify(token);
 
       return {
         username,
@@ -65,16 +65,13 @@ export class AuthService {
   createAccessToken(payload: AuthTokenPayload) {
     const { tokenId, iat } = this.getRandomTokenAndIat();
 
-    return this.jwtService.sign({ ...payload, tokenId, iat });
+    return this.jwt.sign({ ...payload, tokenId, iat });
   }
 
   createRefreshToken(payload: AuthTokenPayload) {
     const { tokenId, iat } = this.getRandomTokenAndIat();
 
-    return this.jwtService.sign(
-      { ...payload, tokenId, iat },
-      { expiresIn: '7d' },
-    );
+    return this.jwt.sign({ ...payload, tokenId, iat }, { expiresIn: '7d' });
   }
 
   private getRandomTokenAndIat() {

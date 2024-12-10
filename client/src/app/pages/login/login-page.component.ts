@@ -20,8 +20,8 @@ export class LoginPageComponent {
 
   constructor(
     private readonly _fb: FormBuilder,
-    private readonly _login: LoginDataService,
     private readonly _router: Router,
+    private readonly _login: LoginDataService,
     private readonly _auth: AuthService,
   ) {}
 

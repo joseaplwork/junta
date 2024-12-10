@@ -7,12 +7,12 @@ import { UserService } from './user.service';
 
 @Controller()
 export class UserController {
-  constructor(private readonly appService: UserService) {}
+  constructor(private readonly app: UserService) {}
 
   @Get('/users')
   @Roles(Role.Admin)
   getAllUsers() {
-    return this.appService.findAll();
+    return this.app.findAll();
   }
 
   @Post('/users')
@@ -22,6 +22,6 @@ export class UserController {
     @Body('surname') surname: string,
     @Body('phone') phoneNumber: string,
   ) {
-    return this.appService.createOne({ name, surname, phoneNumber });
+    return this.app.createOne({ name, surname, phoneNumber });
   }
 }

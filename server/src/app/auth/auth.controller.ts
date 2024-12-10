@@ -22,13 +22,13 @@ interface RequestWithUser extends Request {
 
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private auth: AuthService) {}
 
   @Public()
   @UseGuards(LocalAuthGuard)
   @Post('login')
   login(@Res() res: Response, @NestRequest() req: RequestWithUser) {
-    const { accessToken, refreshToken } = this.authService.login(req.user);
+    const { accessToken, refreshToken } = this.auth.login(req.user);
 
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
@@ -43,9 +43,9 @@ export class AuthController {
   @Post('refresh')
   async refresh(@Res() res: Response, @Req() req: Request) {
     const actualRefreshToken = req.cookies.refreshToken;
-    const user = await this.authService.decodeRefreshToken(actualRefreshToken);
-    const newAccessToken = this.authService.createAccessToken(user);
-    const newRefreshToken = this.authService.createRefreshToken(user);
+    const user = await this.auth.decodeRefreshToken(actualRefreshToken);
+    const newAccessToken = this.auth.createAccessToken(user);
+    const newRefreshToken = this.auth.createRefreshToken(user);
 
     res.cookie('refreshToken', newRefreshToken, {
       httpOnly: true,

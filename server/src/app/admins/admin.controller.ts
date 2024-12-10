@@ -8,7 +8,7 @@ import { AdminService } from './admin.service';
 
 @Controller()
 export class AdminController {
-  constructor(private readonly adminService: AdminService) {}
+  constructor(private readonly admin: AdminService) {}
 
   @Post('/signup')
   @Roles(Role.SuperAdmin)
@@ -20,7 +20,7 @@ export class AdminController {
     @Body('surname') surname: string,
     @Body('phone') phoneNumber: string,
   ): Promise<Admin> {
-    const result = await this.adminService.createOne({
+    const result = await this.admin.createOne({
       email,
       plainPassword,
       roles,
