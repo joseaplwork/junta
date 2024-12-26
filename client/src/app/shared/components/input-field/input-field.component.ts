@@ -66,6 +66,7 @@ export class InputFieldComponent
     this.cdr.detectChanges();
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   onTouched() {}
 
   writeValue(value: string | number): void {

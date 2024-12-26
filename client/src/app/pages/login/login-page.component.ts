@@ -26,7 +26,10 @@ export class LoginPageComponent {
     const { email, password } = this.form.value;
 
     try {
-      const { accessToken } = await this._login.signIn(email!, password!);
+      const { accessToken } = await this._login.signIn(
+        email ?? '',
+        password ?? '',
+      );
 
       this._session.startSessionAndRedirect(accessToken);
     } catch (_) {

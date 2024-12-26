@@ -40,5 +40,4 @@ Thumbs.db
 .nx/cache
 
 .angular
-.nx/workspace-data/d/daemon.log
-.nx/workspace-data/nx_files.nxt
+.nx/workspace-data

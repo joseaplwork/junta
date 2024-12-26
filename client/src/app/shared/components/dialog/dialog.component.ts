@@ -26,7 +26,7 @@ export class DialogComponent implements AfterViewInit, OnDestroy {
 
   @Input() content = '';
 
-  @Input() open: boolean = false;
+  @Input() open = false;
 
   @Output() onclose = new EventEmitter();
 

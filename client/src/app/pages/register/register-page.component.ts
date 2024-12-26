@@ -34,16 +34,16 @@ export class RegisterPageComponent {
 
     try {
       await this._registration.signUp({
-        email: email!,
-        password: password!,
-        name: name!,
-        surname: surname!,
-        phone: phone!,
-        roles: roles as Role[],
+        email: email ?? '',
+        password: password ?? '',
+        name: name ?? '',
+        surname: surname ?? '',
+        phone: phone ?? '',
+        roles: (roles as Role[]) ?? [],
       });
 
       this._redirectToDashboard();
-    } catch (error) {
+    } catch (_) {
       this._displayFormError();
     }
   }
