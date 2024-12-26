@@ -1,6 +1,8 @@
 import { Route } from '@angular/router';
 
-import { AuthGuard, LoggedOutGuard } from './guards';
+import { SessionLayoutComponent } from '@client/shared/components/layout/session-layout.component';
+
+import { AuthGuard, AuthRedirectGuard } from './guards';
 import {
   DashboardPageComponent,
   LoginPageComponent,
@@ -11,11 +13,12 @@ export const appRoutes: Route[] = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   {
     path: 'login',
-    canActivate: [LoggedOutGuard],
+    canActivate: [AuthRedirectGuard],
     component: LoginPageComponent,
   },
   {
     path: 'dashboard',
+    component: SessionLayoutComponent,
     canActivate: [AuthGuard],
     children: [
       { path: '', component: DashboardPageComponent },

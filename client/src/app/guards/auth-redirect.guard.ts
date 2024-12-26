@@ -3,8 +3,8 @@ import { CanActivateFn } from '@angular/router';
 
 import { AdminSessionService } from '@client/shared/services/admin-session.service';
 
-export const AuthGuard: CanActivateFn = async () => {
+export const AuthRedirectGuard: CanActivateFn = async () => {
   const session = inject(AdminSessionService);
 
-  return session.redirectIfNotAuthenticated();
+  return session.redirectIfAuthenticated();
 };

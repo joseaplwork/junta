@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 
 import { AdminProfile } from './interfaces/admin-profile.interface';
 import { LogoutService } from './services/logout.service';
@@ -14,7 +13,6 @@ export class DashboardPageComponent implements OnInit {
   constructor(
     private _profile: ProfileDataService,
     private _logout: LogoutService,
-    private readonly _router: Router,
   ) {}
 
   ngOnInit() {
@@ -25,10 +23,8 @@ export class DashboardPageComponent implements OnInit {
     this._requestAdminProfile();
   }
 
-  async logout() {
-    await this._logout.request();
-
-    this._router.navigate(['/login']);
+  logout() {
+    this._logout.endSession();
   }
 
   private async _requestAdminProfile() {

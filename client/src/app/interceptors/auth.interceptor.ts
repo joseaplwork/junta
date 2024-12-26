@@ -32,9 +32,6 @@ export class AuthInterceptor implements HttpInterceptor {
           // Access token is expired, try refreshing
           return this.auth.refreshAccessToken().pipe(
             switchMap((newToken: string) => {
-              // Set the new token in auth for in-memory storage
-              this.auth.setAccessToken(newToken);
-
               // Use the new token for the retry
               const retriedReq = req.clone({
                 headers: req.headers.set('Authorization', `Bearer ${newToken}`),

@@ -1,11 +1,9 @@
 import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 
-import { AuthService } from '@client/shared/services';
+import { AdminSessionService } from '@client/shared/services/admin-session.service';
 
-import { LoginResponse } from './interfaces/login-response.interface';
-import { LoginDataService } from './services/login-data.service';
+import { LoginService } from './services/login-data.service';
 
 @Component({
   templateUrl: './login-page.component.html',
@@ -20,33 +18,19 @@ export class LoginPageComponent {
 
   constructor(
     private readonly _fb: FormBuilder,
-    private readonly _router: Router,
-    private readonly _login: LoginDataService,
-    private readonly _auth: AuthService,
+    private readonly _login: LoginService,
+    private readonly _session: AdminSessionService,
   ) {}
 
   async onSubmit(): Promise<void> {
     const { email, password } = this.form.value;
 
     try {
-      const response = await this._login.signIn(email!, password!);
+      const { accessToken } = await this._login.signIn(email!, password!);
 
-      this._handleLoginSuccess(response);
-      this._redirectToDashboard();
+      this._session.startSessionAndRedirect(accessToken);
     } catch (_) {
-      this._displayFormError();
+      this.showFormError = true;
     }
   }
-
-  private _handleLoginSuccess = ({ accessToken }: LoginResponse): void => {
-    this._auth.setAccessToken(accessToken);
-  };
-
-  private _redirectToDashboard = () => {
-    this._router.navigate(['dashboard']);
-  };
-
-  private _displayFormError = (): void => {
-    this.showFormError = true;
-  };
 }

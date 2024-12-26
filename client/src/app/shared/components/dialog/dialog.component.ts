@@ -4,16 +4,16 @@ import {
   ElementRef,
   EventEmitter,
   Input,
+  OnDestroy,
   Output,
   ViewChild,
-  signal,
 } from '@angular/core';
 
 @Component({
   selector: 'app-dialog',
   templateUrl: './dialog.component.html',
 })
-export class DialogComponent implements AfterViewInit {
+export class DialogComponent implements AfterViewInit, OnDestroy {
   @ViewChild('dialog') dialogRef!: ElementRef<
     HTMLElement & { close: () => void }
   >;
@@ -26,18 +26,28 @@ export class DialogComponent implements AfterViewInit {
 
   @Input() content = '';
 
-  @Input() open = signal(false);
+  @Input() open: boolean = false;
 
   @Output() onclose = new EventEmitter();
+
+  @Output() oncancel = new EventEmitter();
 
   @Output() primaryClick = new EventEmitter();
 
   @Output() secondaryClick = new EventEmitter();
 
-  ngAfterViewInit(): void {
-    this.dialogRef.nativeElement.addEventListener('close', () => {
-      this.onclose.emit();
-    });
+  ngAfterViewInit() {
+    const dialog = this.dialogRef.nativeElement;
+
+    dialog.addEventListener('close', this.onClose);
+    dialog.addEventListener('cancel', this.onCancel);
+  }
+
+  ngOnDestroy() {
+    const dialog = this.dialogRef.nativeElement;
+
+    dialog.removeEventListener('close', this.onClose);
+    dialog.removeEventListener('cancel', this.onCancel);
   }
 
   onPrimaryClick() {
@@ -51,4 +61,12 @@ export class DialogComponent implements AfterViewInit {
 
     this.dialogRef.nativeElement.close();
   }
+
+  onClose = () => {
+    this.onclose.emit();
+  };
+
+  onCancel = () => {
+    this.oncancel.emit();
+  };
 }

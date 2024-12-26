@@ -7,7 +7,7 @@ import { ConfigService } from '@client/shared/services';
 @Injectable({
   providedIn: 'any',
 })
-export class LoginDataService {
+export class LoginService {
   constructor(
     private _http: HttpClient,
     private _config: ConfigService,
