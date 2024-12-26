@@ -5,7 +5,8 @@ import { LogoutService } from './services/logout.service';
 import { ProfileDataService } from './services/profile-data.service';
 
 @Component({
-  templateUrl: './dashboard-page.component.html',
+    templateUrl: './dashboard-page.component.html',
+    standalone: false
 })
 export class DashboardPageComponent implements OnInit {
   admin: AdminProfile | null = null;

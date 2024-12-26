@@ -7,7 +7,8 @@ import { Role } from '@server/enums';
 import { RegisterDataService } from './services/register-data.service';
 
 @Component({
-  templateUrl: './register-page.component.html',
+    templateUrl: './register-page.component.html',
+    standalone: false
 })
 export class RegisterPageComponent {
   form = this._fb.group({

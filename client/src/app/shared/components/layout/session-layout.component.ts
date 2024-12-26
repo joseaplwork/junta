@@ -3,12 +3,13 @@ import { Component, OnInit } from '@angular/core';
 import { AppStateService, AuthService } from '@client/shared/services';
 
 @Component({
-  template: `
+    template: `
     <main>
       <router-outlet></router-outlet>
     </main>
     <app-session-expired-dialog></app-session-expired-dialog>
   `,
+    standalone: false
 })
 export class SessionLayoutComponent implements OnInit {
   constructor(

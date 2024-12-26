@@ -6,7 +6,8 @@ import { AdminSessionService } from '@client/shared/services/admin-session.servi
 import { LoginService } from './services/login-data.service';
 
 @Component({
-  templateUrl: './login-page.component.html',
+    templateUrl: './login-page.component.html',
+    standalone: false
 })
 export class LoginPageComponent {
   form = this._fb.group({

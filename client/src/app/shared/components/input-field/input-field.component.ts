@@ -14,15 +14,16 @@ import {
 } from '@angular/forms';
 
 @Component({
-  selector: 'app-input-field',
-  templateUrl: './input-field.component.html',
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => InputFieldComponent),
-      multi: true,
-    },
-  ],
+    selector: 'app-input-field',
+    templateUrl: './input-field.component.html',
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => InputFieldComponent),
+            multi: true,
+        },
+    ],
+    standalone: false
 })
 export class InputFieldComponent
   implements ControlValueAccessor, AfterViewInit

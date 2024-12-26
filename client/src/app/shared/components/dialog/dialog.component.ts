@@ -10,8 +10,9 @@ import {
 } from '@angular/core';
 
 @Component({
-  selector: 'app-dialog',
-  templateUrl: './dialog.component.html',
+    selector: 'app-dialog',
+    templateUrl: './dialog.component.html',
+    standalone: false
 })
 export class DialogComponent implements AfterViewInit, OnDestroy {
   @ViewChild('dialog') dialogRef!: ElementRef<
