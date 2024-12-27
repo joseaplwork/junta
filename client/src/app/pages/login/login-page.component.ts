@@ -2,9 +2,11 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { ButtonComponent } from '@client/shared/components/button/button.component';
-import { InputFieldComponent } from '@client/shared/components/input-field/input-field.component';
-import { AdminSessionService } from '@client/shared/services/admin-session.service';
+import {
+  ButtonComponent,
+  InputFieldComponent,
+} from '@client/shared/components';
+import { AdminSessionService } from '@client/shared/services';
 
 import { LoginService } from './services/login-data.service';
 

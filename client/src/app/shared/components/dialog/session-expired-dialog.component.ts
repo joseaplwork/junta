@@ -1,8 +1,11 @@
 import { Component, OnDestroy, OnInit, signal } from '@angular/core';
 import { take } from 'rxjs';
 
-import { AuthService, NavigationService } from '@client/shared/services';
-import { AdminSessionService } from '@client/shared/services/admin-session.service';
+import {
+  AdminSessionService,
+  AuthService,
+  NavigationService,
+} from '@client/shared/services';
 
 import { DialogComponent } from './dialog.component';
 

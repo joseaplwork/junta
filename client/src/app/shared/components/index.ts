@@ -13,3 +13,10 @@ export const components = [
   SessionExpiredDialogComponent,
   AdminSessionLayoutComponent,
 ];
+
+export * from './button/button.component';
+export * from './dialog/dialog.component';
+export * from './dialog/session-expired-dialog.component';
+export * from './icon-button/icon-button.component';
+export * from './input-field/input-field.component';
+export * from './layout/admin-session-layout.component';

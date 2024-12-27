@@ -3,9 +3,11 @@ import { Component } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 
-import { ButtonComponent } from '@client/shared/components/button/button.component';
-import { IconButtonComponent } from '@client/shared/components/icon-button/icon-button.component';
-import { InputFieldComponent } from '@client/shared/components/input-field/input-field.component';
+import {
+  ButtonComponent,
+  IconButtonComponent,
+  InputFieldComponent,
+} from '@client/shared/components';
 import { Role } from '@server/enums';
 
 import { RegisterDataService } from './services/register-data.service';

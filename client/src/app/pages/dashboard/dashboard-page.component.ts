@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
-import { ButtonComponent } from '@client/shared/components/button/button.component';
+import { ButtonComponent } from '@client/shared/components';
 
 import { AdminProfile } from './interfaces/admin-profile.interface';
 import { LogoutService } from './services/logout.service';

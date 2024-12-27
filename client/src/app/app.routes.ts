@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 
-import { AdminSessionLayoutComponent } from '@client/shared/components/layout/admin-session-layout.component';
+import { AdminSessionLayoutComponent } from '@client/shared/components';
 
 import { AuthGuard, AuthRedirectGuard } from './guards';
 import {

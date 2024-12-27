@@ -1,7 +1,7 @@
 import { inject } from '@angular/core';
 import { CanActivateFn } from '@angular/router';
 
-import { AdminSessionService } from '@client/shared/services/admin-session.service';
+import { AdminSessionService } from '@client/shared/services';
 
 export const AuthGuard: CanActivateFn = async () => {
   const session = inject(AdminSessionService);
