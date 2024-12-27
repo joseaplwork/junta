@@ -1,8 +1,6 @@
-import { platformBrowser } from '@angular/platform-browser';
+import { bootstrapApplication } from '@angular/platform-browser';
 
-import { AppModule } from './app/app.module';
+import { AppComponent } from '@client/app.component';
+import { appConfig } from '@client/app.config';
 
-platformBrowser()
-  .bootstrapModule(AppModule)
-  // eslint-disable-next-line no-console
-  .catch(err => console.error(err));
+bootstrapApplication(AppComponent, appConfig).catch(err => console.error(err));

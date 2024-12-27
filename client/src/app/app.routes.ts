@@ -1,6 +1,6 @@
-import { Route } from '@angular/router';
+import { Routes } from '@angular/router';
 
-import { SessionLayoutComponent } from '@client/shared/components/layout/session-layout.component';
+import { AdminSessionLayoutComponent } from '@client/shared/components/layout/admin-session-layout.component';
 
 import { AuthGuard, AuthRedirectGuard } from './guards';
 import {
@@ -9,7 +9,7 @@ import {
   RegisterPageComponent,
 } from './pages';
 
-export const appRoutes: Route[] = [
+export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   {
     path: 'login',
@@ -18,7 +18,7 @@ export const appRoutes: Route[] = [
   },
   {
     path: 'dashboard',
-    component: SessionLayoutComponent,
+    component: AdminSessionLayoutComponent,
     canActivate: [AuthGuard],
     children: [
       { path: '', component: DashboardPageComponent },

@@ -18,7 +18,23 @@ export class AuthInterceptor implements HttpInterceptor {
     req: HttpRequest<unknown>,
     next: HttpHandler,
   ): Observable<HttpEvent<unknown>> {
-    // Attach access token to request headers
+    return this._requestWithAuthorization(req, next).pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          return this.auth
+            .refreshAccessToken()
+            .pipe(switchMap(() => this._requestWithAuthorization(req, next)));
+        }
+
+        return throwError(() => new Error(error.error));
+      }),
+    );
+  }
+
+  private _requestWithAuthorization(
+    req: HttpRequest<unknown>,
+    next: HttpHandler,
+  ): Observable<HttpEvent<any>> {
     const authorizedReq = req.clone({
       headers: req.headers.set(
         'Authorization',
@@ -26,24 +42,6 @@ export class AuthInterceptor implements HttpInterceptor {
       ),
     });
 
-    return next.handle(authorizedReq).pipe(
-      catchError((error: HttpErrorResponse) => {
-        if (error.status === 401) {
-          // Access token is expired, try refreshing
-          return this.auth.refreshAccessToken().pipe(
-            switchMap((newToken: string) => {
-              // Use the new token for the retry
-              const retriedReq = req.clone({
-                headers: req.headers.set('Authorization', `Bearer ${newToken}`),
-              });
-
-              return next.handle(retriedReq);
-            }),
-          );
-        }
-
-        return throwError(() => new Error(error.error));
-      }),
-    );
+    return next.handle(authorizedReq);
   }
 }

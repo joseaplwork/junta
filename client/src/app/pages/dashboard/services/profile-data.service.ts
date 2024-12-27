@@ -7,7 +7,7 @@ import { ConfigService } from '@client/shared/services';
 import { AdminProfile } from '../interfaces/admin-profile.interface';
 
 @Injectable({
-  providedIn: 'any',
+  providedIn: 'root',
 })
 export class ProfileDataService {
   constructor(

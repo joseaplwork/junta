@@ -5,7 +5,7 @@ import { firstValueFrom } from 'rxjs';
 import { ConfigService } from '@client/shared/services';
 
 @Injectable({
-  providedIn: 'any',
+  providedIn: 'root',
 })
 export class LoginService {
   constructor(

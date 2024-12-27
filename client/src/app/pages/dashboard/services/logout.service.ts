@@ -6,7 +6,7 @@ import { ConfigService } from '@client/shared/services';
 import { AdminSessionService } from '@client/shared/services/admin-session.service';
 
 @Injectable({
-  providedIn: 'any',
+  providedIn: 'root',
 })
 export class LogoutService {
   constructor(

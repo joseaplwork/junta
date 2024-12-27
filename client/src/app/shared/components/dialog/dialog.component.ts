@@ -1,5 +1,7 @@
+import { CommonModule } from '@angular/common';
 import {
   AfterViewInit,
+  CUSTOM_ELEMENTS_SCHEMA,
   Component,
   ElementRef,
   EventEmitter,
@@ -9,15 +11,16 @@ import {
   ViewChild,
 } from '@angular/core';
 
+import { ButtonComponent } from '../button/button.component';
+
 @Component({
-    selector: 'app-dialog',
-    templateUrl: './dialog.component.html',
-    standalone: false
+  selector: 'app-dialog',
+  imports: [CommonModule, ButtonComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  templateUrl: './dialog.component.html',
 })
 export class DialogComponent implements AfterViewInit, OnDestroy {
-  @ViewChild('dialog') dialogRef!: ElementRef<
-    HTMLElement & { close: () => void }
-  >;
+  @ViewChild('dialog') dialog!: ElementRef<HTMLElement & { close: () => void }>;
 
   @Input() primaryText = '';
 
@@ -38,14 +41,14 @@ export class DialogComponent implements AfterViewInit, OnDestroy {
   @Output() secondaryClick = new EventEmitter();
 
   ngAfterViewInit() {
-    const dialog = this.dialogRef.nativeElement;
+    const dialog = this.dialog.nativeElement;
 
     dialog.addEventListener('close', this.onClose);
     dialog.addEventListener('cancel', this.onCancel);
   }
 
   ngOnDestroy() {
-    const dialog = this.dialogRef.nativeElement;
+    const dialog = this.dialog.nativeElement;
 
     dialog.removeEventListener('close', this.onClose);
     dialog.removeEventListener('cancel', this.onCancel);
@@ -54,13 +57,13 @@ export class DialogComponent implements AfterViewInit, OnDestroy {
   onPrimaryClick() {
     this.primaryClick.emit();
 
-    this.dialogRef.nativeElement.close();
+    this.dialog.nativeElement.close();
   }
 
   onSecondaryClick() {
     this.secondaryClick.emit();
 
-    this.dialogRef.nativeElement.close();
+    this.dialog.nativeElement.close();
   }
 
   onClose = () => {

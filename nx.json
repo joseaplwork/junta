@@ -44,6 +44,5 @@
       "style": "css"
     }
   },
-  "useInferencePlugins": false,
-  "useLegacyCache": true
+  "useInferencePlugins": false
 }

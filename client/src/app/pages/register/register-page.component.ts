@@ -1,14 +1,25 @@
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
 
+import { ButtonComponent } from '@client/shared/components/button/button.component';
+import { IconButtonComponent } from '@client/shared/components/icon-button/icon-button.component';
+import { InputFieldComponent } from '@client/shared/components/input-field/input-field.component';
 import { Role } from '@server/enums';
 
 import { RegisterDataService } from './services/register-data.service';
 
 @Component({
-    templateUrl: './register-page.component.html',
-    standalone: false
+  templateUrl: './register-page.component.html',
+  imports: [
+    CommonModule,
+    ButtonComponent,
+    IconButtonComponent,
+    InputFieldComponent,
+    ReactiveFormsModule,
+    RouterModule,
+  ],
 })
 export class RegisterPageComponent {
   form = this._fb.group({

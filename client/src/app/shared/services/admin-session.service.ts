@@ -14,7 +14,7 @@ export class AdminSessionService {
     private _app: AppStateService,
   ) {}
 
-  startSessionAndRedirect = (accessToken: string): void => {
+  startSessionAndRedirect = (accessToken: string) => {
     this._auth.setAccessToken(accessToken);
     this._app.startSession();
     this._nav.goToDashboardPage();
@@ -31,7 +31,7 @@ export class AdminSessionService {
       return this._nav.goToDashboardPage();
     }
 
-    return Promise.resolve(false);
+    return Promise.resolve(true);
   }
 
   redirectIfNotAuthenticated() {

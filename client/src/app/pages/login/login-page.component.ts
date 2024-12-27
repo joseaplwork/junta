@@ -1,13 +1,21 @@
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
+import { ButtonComponent } from '@client/shared/components/button/button.component';
+import { InputFieldComponent } from '@client/shared/components/input-field/input-field.component';
 import { AdminSessionService } from '@client/shared/services/admin-session.service';
 
 import { LoginService } from './services/login-data.service';
 
 @Component({
-    templateUrl: './login-page.component.html',
-    standalone: false
+  templateUrl: './login-page.component.html',
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    InputFieldComponent,
+    ButtonComponent,
+  ],
 })
 export class LoginPageComponent {
   form = this._fb.group({

@@ -1,12 +1,16 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { RouterModule } from '@angular/router';
+
+import { ButtonComponent } from '@client/shared/components/button/button.component';
 
 import { AdminProfile } from './interfaces/admin-profile.interface';
 import { LogoutService } from './services/logout.service';
 import { ProfileDataService } from './services/profile-data.service';
 
 @Component({
-    templateUrl: './dashboard-page.component.html',
-    standalone: false
+  imports: [CommonModule, ButtonComponent, RouterModule],
+  templateUrl: './dashboard-page.component.html',
 })
 export class DashboardPageComponent implements OnInit {
   admin: AdminProfile | null = null;

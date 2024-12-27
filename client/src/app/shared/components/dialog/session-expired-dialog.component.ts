@@ -4,9 +4,12 @@ import { take } from 'rxjs';
 import { AuthService, NavigationService } from '@client/shared/services';
 import { AdminSessionService } from '@client/shared/services/admin-session.service';
 
+import { DialogComponent } from './dialog.component';
+
 @Component({
-    selector: 'app-session-expired-dialog',
-    template: `<app-dialog
+  selector: 'app-session-expired-dialog',
+  imports: [DialogComponent],
+  template: `<app-dialog
     [open]="open()"
     title="Session expired"
     content="Do you want to continue with the session?"
@@ -16,13 +19,11 @@ import { AdminSessionService } from '@client/shared/services/admin-session.servi
     (secondaryClick)="handleCancelClick()"
     (oncancel)="handleCancelClick()">
   </app-dialog>`,
-    standalone: false
 })
 export class SessionExpiredDialogComponent implements OnInit, OnDestroy {
   private _interval!: ReturnType<typeof setInterval>;
 
-  // private INTERVAL_TIME = 1000 * 60 * 5;
-  private INTERVAL_TIME = 20000;
+  private INTERVAL_TIME = 1000 * 60 * 5;
 
   open = signal(false);
 

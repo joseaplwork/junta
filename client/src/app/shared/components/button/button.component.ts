@@ -1,16 +1,18 @@
-import { Component, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { CUSTOM_ELEMENTS_SCHEMA, Component, Input } from '@angular/core';
 
 @Component({
-    selector: 'app-button',
-    templateUrl: './button.component.html',
-    styles: [
-        `
+  selector: 'app-button',
+  imports: [CommonModule],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  templateUrl: './button.component.html',
+  styles: [
+    `
       :host {
         display: inline-block;
       }
     `,
-    ],
-    standalone: false
+  ],
 })
 export class ButtonComponent {
   @Input() kind?: 'elevated' | 'filled' | 'tonal' | 'outlined' | 'text' =

@@ -1,5 +1,6 @@
 import {
   AfterViewInit,
+  CUSTOM_ELEMENTS_SCHEMA,
   ChangeDetectorRef,
   Component,
   Injector,
@@ -14,16 +15,16 @@ import {
 } from '@angular/forms';
 
 @Component({
-    selector: 'app-input-field',
-    templateUrl: './input-field.component.html',
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            useExisting: forwardRef(() => InputFieldComponent),
-            multi: true,
-        },
-    ],
-    standalone: false
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => InputFieldComponent),
+      multi: true,
+    },
+  ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  selector: 'app-input-field',
+  templateUrl: './input-field.component.html',
 })
 export class InputFieldComponent
   implements ControlValueAccessor, AfterViewInit
