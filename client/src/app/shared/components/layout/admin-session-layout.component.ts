@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
+import { SessionExpiredDialogComponent } from '@client/shared/components';
 import { AppStateService } from '@client/shared/services';
-
-import { SessionExpiredDialogComponent } from '../dialog/session-expired-dialog.component';
 
 @Component({
   imports: [RouterOutlet, SessionExpiredDialogComponent],

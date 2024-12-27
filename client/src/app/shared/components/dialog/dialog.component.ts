@@ -11,7 +11,7 @@ import {
   ViewChild,
 } from '@angular/core';
 
-import { ButtonComponent } from '../button/button.component';
+import { ButtonComponent } from '@client/shared/components';
 
 @Component({
   selector: 'ja-dialog',

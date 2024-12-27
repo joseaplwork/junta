@@ -5,9 +5,9 @@
   </form>
   <div slot="actions">
     @if (primaryText) {
-      <ja-button #primary (click)="onPrimaryClick()">{{
-        primaryText
-      }}</ja-button>
+      <ja-button #primary (click)="onPrimaryClick()">
+        {{ primaryText }}
+      </ja-button>
     }
     @if (secondaryText) {
       <ja-button #secondary kind="outlined" (click)="onSecondaryClick()">
