@@ -5,14 +5,14 @@
   </form>
   <div slot="actions">
     @if (primaryText) {
-      <app-button #primary (click)="onPrimaryClick()">{{
+      <ja-button #primary (click)="onPrimaryClick()">{{
         primaryText
-      }}</app-button>
+      }}</ja-button>
     }
     @if (secondaryText) {
-      <app-button #secondary kind="outlined" (click)="onSecondaryClick()">
+      <ja-button #secondary kind="outlined" (click)="onSecondaryClick()">
         {{ secondaryText }}
-      </app-button>
+      </ja-button>
     }
   </div>
 </md-dialog>

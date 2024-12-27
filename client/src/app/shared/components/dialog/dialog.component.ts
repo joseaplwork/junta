@@ -14,7 +14,7 @@ import {
 import { ButtonComponent } from '../button/button.component';
 
 @Component({
-  selector: 'app-dialog',
+  selector: 'ja-dialog',
   imports: [CommonModule, ButtonComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './dialog.component.html',

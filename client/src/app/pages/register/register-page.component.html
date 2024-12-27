@@ -1,23 +1,20 @@
 <h1 class="text-primary mb-5 text-center text-4xl">Registration</h1>
 <form [formGroup]="form" (ngSubmit)="onSubmit()" class="grid gap-5">
   <div class="flex gap-2">
-    <app-input-field
+    <ja-input-field
       label="Email"
       type="email"
       formControlName="email"
       placeholder="Ex. test@test.com" />
-    <app-input-field
+    <ja-input-field
       label="Password"
       type="password"
       formControlName="password"
       placeholder="******" />
   </div>
-  <app-input-field label="Name" formControlName="name" placeholder="John" />
-  <app-input-field
-    label="Surname"
-    formControlName="surname"
-    placeholder="Doe" />
-  <app-input-field
+  <ja-input-field label="Name" formControlName="name" placeholder="John" />
+  <ja-input-field label="Surname" formControlName="surname" placeholder="Doe" />
+  <ja-input-field
     label="Phone"
     type="tel"
     formControlName="phone"
@@ -29,14 +26,14 @@
   <p *ngIf="showFormError" class="text-error">Registration failed</p>
   <div class="flex gap-3">
     <a routerLink="/dashboard">
-      <app-icon-button kind="outlined" name="arrow_back"></app-icon-button>
+      <ja-icon-button kind="outlined" name="arrow_back"></ja-icon-button>
     </a>
-    <app-button
+    <ja-button
       [expand]="true"
       class="w-full"
       type="submit"
       [disabled]="!form.valid">
       Register
-    </app-button>
+    </ja-button>
   </div>
 </form>

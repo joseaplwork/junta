@@ -10,9 +10,9 @@ import {
 import { DialogComponent } from './dialog.component';
 
 @Component({
-  selector: 'app-session-expired-dialog',
+  selector: 'ja-session-expired-dialog',
   imports: [DialogComponent],
-  template: `<app-dialog
+  template: `<ja-dialog
     [open]="open()"
     title="Session expired"
     content="Do you want to continue with the session?"
@@ -21,7 +21,7 @@ import { DialogComponent } from './dialog.component';
     (primaryClick)="handleContinueClick()"
     (secondaryClick)="handleCancelClick()"
     (oncancel)="handleCancelClick()">
-  </app-dialog>`,
+  </ja-dialog>`,
 })
 export class SessionExpiredDialogComponent implements OnInit, OnDestroy {
   private _interval!: ReturnType<typeof setInterval>;

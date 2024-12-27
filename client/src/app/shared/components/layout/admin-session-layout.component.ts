@@ -11,7 +11,7 @@ import { SessionExpiredDialogComponent } from '../dialog/session-expired-dialog.
     <main>
       <router-outlet></router-outlet>
     </main>
-    <app-session-expired-dialog></app-session-expired-dialog>
+    <ja-session-expired-dialog></ja-session-expired-dialog>
   `,
 })
 export class AdminSessionLayoutComponent implements OnInit {

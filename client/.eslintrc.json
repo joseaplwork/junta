@@ -16,6 +16,10 @@
       "rules": {
         "require-jsdoc": "off",
         "new-cap": "off",
+        "import/prefer-default-export": "off",
+        "no-underscore-dangle": "off",
+        "class-methods-use-this": "off",
+        "import/no-extraneous-dependencies": "off",
         "@typescript-eslint/no-unused-vars": [
           "warn",
           {
@@ -24,23 +28,11 @@
             "caughtErrorsIgnorePattern": "^_"
           }
         ],
-        "import/prefer-default-export": "off",
-        "no-underscore-dangle": "off",
-        "class-methods-use-this": "off",
-        "import/no-extraneous-dependencies": "off",
-        "@angular-eslint/directive-selector": [
-          "error",
-          {
-            "type": "attribute",
-            "prefix": "app",
-            "style": "camelCase"
-          }
-        ],
         "@angular-eslint/component-selector": [
           "error",
           {
             "type": "element",
-            "prefix": "app",
+            "prefix": ["app", "ja"],
             "style": "kebab-case"
           }
         ]

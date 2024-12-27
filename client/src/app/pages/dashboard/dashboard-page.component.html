@@ -2,9 +2,9 @@
   <h1 class="mb-5 text-2xl">Welcome {{ admin.username }}</h1>
   <div class="flex gap-5">
     <a routerLink="/dashboard/register">
-      <app-button kind="outlined">Register new user</app-button>
+      <ja-button kind="outlined">Register new user</ja-button>
     </a>
-    <app-button (click)="handleButtonClick()">Fetch profile again</app-button>
-    <app-button kind="elevated" (click)="logout()">Logout</app-button>
+    <ja-button (click)="handleButtonClick()">Fetch profile again</ja-button>
+    <ja-button kind="elevated" (click)="logout()">Logout</ja-button>
   </div>
 </ng-container>

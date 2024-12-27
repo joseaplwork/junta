@@ -23,7 +23,7 @@ import {
     },
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  selector: 'app-input-field',
+  selector: 'ja-input-field',
   templateUrl: './input-field.component.html',
 })
 export class InputFieldComponent
@@ -67,7 +67,6 @@ export class InputFieldComponent
 
     this.cdr.detectChanges();
   }
-
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   onTouched() {}
 

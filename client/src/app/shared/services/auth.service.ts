@@ -16,6 +16,10 @@ export class AuthService {
     private _config: ConfigService,
   ) {}
 
+  getAccessToken(): string | null {
+    return sessionStorage.getItem(this._ACCESS_TOKEN_KEY);
+  }
+
   setAccessToken = (accessToken: string): void => {
     sessionStorage.setItem(this._ACCESS_TOKEN_KEY, accessToken);
   };
@@ -32,10 +36,6 @@ export class AuthService {
     if (date === undefined || date === null) return false;
 
     return !(date.valueOf() > new Date().valueOf());
-  }
-
-  getAccessToken(): string | null {
-    return sessionStorage.getItem(this._ACCESS_TOKEN_KEY);
   }
 
   refreshAccessToken(): Observable<string> {
