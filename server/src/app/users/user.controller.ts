@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 
-import { Roles } from '@server/decorators';
-import { Role } from '@server/enums';
+import { Permissions } from '@server/decorators/permissions.decorator';
+import { Permission } from '@server/enums/permission.enum';
 
 import { UserService } from './user.service';
 
@@ -9,14 +9,14 @@ import { UserService } from './user.service';
 export class UserController {
   constructor(private readonly app: UserService) {}
 
-  @Get('/users')
-  @Roles(Role.Admin)
+  @Get('/user')
+  @Permissions(Permission.UserRead)
   getAllUsers() {
     return this.app.findAll();
   }
 
-  @Post('/users')
-  @Roles(Role.Admin)
+  @Post('/user')
+  @Permissions(Permission.UserCreate)
   createUser(
     @Body('name') name: string,
     @Body('surname') surname: string,

@@ -10,10 +10,10 @@ import {
 } from '@client/shared/components';
 import { Role } from '@server/enums';
 
-import { RegisterDataService } from './services/register-data.service';
+import { RegisterAdminDataService } from './services/register-admin-data.service';
 
 @Component({
-  templateUrl: './register-page.component.html',
+  templateUrl: './create-admin-page.component.html',
   imports: [
     CommonModule,
     ButtonComponent,
@@ -23,7 +23,7 @@ import { RegisterDataService } from './services/register-data.service';
     RouterModule,
   ],
 })
-export class RegisterPageComponent {
+export class CreateAdminPageComponent {
   form = this._fb.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required]],
@@ -39,7 +39,7 @@ export class RegisterPageComponent {
 
   constructor(
     private readonly _fb: FormBuilder,
-    private readonly _registration: RegisterDataService,
+    private readonly _admin: RegisterAdminDataService,
     private readonly _router: Router,
   ) {}
 
@@ -47,7 +47,7 @@ export class RegisterPageComponent {
     const { email, password, name, surname, phone, roles } = this.form.value;
 
     try {
-      await this._registration.signUp({
+      await this._admin.create({
         email: email ?? '',
         password: password ?? '',
         name: name ?? '',

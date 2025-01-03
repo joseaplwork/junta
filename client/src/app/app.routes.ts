@@ -2,9 +2,9 @@ import { Routes } from '@angular/router';
 
 import { AuthGuard, AuthRedirectGuard } from './guards';
 import {
+  CreateAdminPageComponent,
   DashboardPageComponent,
   LoginPageComponent,
-  RegisterPageComponent,
 } from './pages';
 import { AdminSessionLayoutComponent } from './shared/components';
 
@@ -22,8 +22,8 @@ export const routes: Routes = [
     children: [
       { path: '', component: DashboardPageComponent },
       {
-        path: 'register',
-        component: RegisterPageComponent,
+        path: 'create-admin',
+        component: CreateAdminPageComponent,
       },
     ],
   },

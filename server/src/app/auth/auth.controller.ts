@@ -63,6 +63,7 @@ export class AuthController {
   }
 
   @Get('logout')
+  @Roles(Role.Admin)
   logout(@Res() res: Response) {
     res.clearCookie('refreshToken', {
       httpOnly: true,

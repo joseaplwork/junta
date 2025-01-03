@@ -1,7 +1,8 @@
 import { Body, Controller, Post } from '@nestjs/common';
 
-import { Roles } from '@server/decorators';
+import { Permissions } from '@server/decorators/permissions.decorator';
 import { Role } from '@server/enums';
+import { Permission } from '@server/enums/permission.enum';
 
 import { Admin } from './admin.entity';
 import { AdminService } from './admin.service';
@@ -10,8 +11,8 @@ import { AdminService } from './admin.service';
 export class AdminController {
   constructor(private readonly admin: AdminService) {}
 
-  @Post('/signup')
-  @Roles(Role.SuperAdmin)
+  @Post('/admin')
+  @Permissions(Permission.AdminCreate)
   async createAdmin(
     @Body('password') plainPassword: string,
     @Body('email') email: string,

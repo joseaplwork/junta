@@ -4,6 +4,7 @@ import { JwtModule } from '@nestjs/jwt';
 
 import { AdminModule } from '@server/admins/admin.module';
 import { AuthGuard, RolesGuard } from '@server/guards';
+import { PermissionsGuard } from '@server/guards/permissions.guard';
 
 import { jwtConstants } from './auth.constants';
 import { AuthController } from './auth.controller';
@@ -31,6 +32,10 @@ import { LocalStrategy } from './local.strategy';
     {
       provide: APP_GUARD,
       useClass: RolesGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: PermissionsGuard,
     },
   ],
   controllers: [AuthController],

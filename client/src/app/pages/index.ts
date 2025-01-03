@@ -1,13 +1,13 @@
+import { CreateAdminPageComponent } from './create-admin/create-admin-page.component';
 import { DashboardPageComponent } from './dashboard/dashboard-page.component';
 import { LoginPageComponent } from './login/login-page.component';
-import { RegisterPageComponent } from './register/register-page.component';
 
 export const pages = [
   DashboardPageComponent,
   LoginPageComponent,
-  RegisterPageComponent,
+  CreateAdminPageComponent,
 ];
 
+export * from './create-admin/create-admin-page.component';
 export * from './dashboard/dashboard-page.component';
 export * from './login/login-page.component';
-export * from './register/register-page.component';

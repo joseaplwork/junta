@@ -1,7 +1,7 @@
 <ng-container *ngIf="admin">
   <h1 class="mb-5 text-2xl">Welcome {{ admin.username }}</h1>
   <div class="flex gap-5">
-    <a routerLink="/dashboard/register">
+    <a routerLink="/dashboard/create-admin">
       <ja-button kind="outlined">Register new user</ja-button>
     </a>
     <ja-button (click)="handleButtonClick()">Fetch profile again</ja-button>

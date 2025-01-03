@@ -9,13 +9,13 @@ import { AdminPayload } from '../interfaces/admin-payload.interface';
 @Injectable({
   providedIn: 'root',
 })
-export class RegisterDataService {
+export class RegisterAdminDataService {
   constructor(
     private _http: HttpClient,
     private _config: ConfigService,
   ) {}
 
-  signUp({
+  create({
     email,
     password,
     name,
@@ -33,7 +33,7 @@ export class RegisterDataService {
     };
 
     return firstValueFrom(
-      this._http.post<void>(`${this._config.apiUrl}/signup`, data),
+      this._http.post<void>(`${this._config.apiUrl}/admin`, data),
     );
   }
 }
