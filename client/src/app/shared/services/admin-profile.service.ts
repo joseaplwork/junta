@@ -1,7 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 import { JwtPayload, jwtDecode } from 'jwt-decode';
 
-import { Profile } from '../interfaces/profile.interface';
+import { Profile } from '../interfaces';
 
 import { AuthService } from './auth.service';
 

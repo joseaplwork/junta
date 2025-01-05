@@ -3,6 +3,7 @@ import { Routes } from '@angular/router';
 import { AuthGuard, AuthRedirectGuard } from './guards';
 import {
   CreateAdminPageComponent,
+  CreateUserPageComponent,
   DashboardPageComponent,
   LoginPageComponent,
 } from './pages';
@@ -24,6 +25,10 @@ export const routes: Routes = [
       {
         path: 'create-admin',
         component: CreateAdminPageComponent,
+      },
+      {
+        path: 'create-user',
+        component: CreateUserPageComponent,
       },
     ],
   },
