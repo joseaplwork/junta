@@ -3,8 +3,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
 
 import { AdminModule } from '@server/admins/admin.module';
-import { AuthGuard, RolesGuard } from '@server/guards';
-import { PermissionsGuard } from '@server/guards/permissions.guard';
+import { AuthGuard, PermissionsGuard, RolesGuard } from '@server/guards';
 
 import { jwtConstants } from './auth.constants';
 import { AuthController } from './auth.controller';
