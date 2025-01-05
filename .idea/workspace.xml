@@ -6,15 +6,37 @@
   <component name="ChangeListManager">
     <list default="true" id="61e839cf-5ccb-43e5-b134-c54223e34afc" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/test-setup.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/test-setup.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/app.routes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/app.routes.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/interceptors/auth.interceptor.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/interceptors/auth.interceptor.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/pages/create-admin/services/register-admin-data.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/pages/create-admin/services/register-admin-data.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/pages/dashboard/dashboard-page.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/pages/dashboard/dashboard-page.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/pages/dashboard/dashboard-page.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/pages/dashboard/dashboard-page.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/pages/dashboard/services/logout.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/pages/dashboard/services/logout.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/pages/dashboard/services/profile-data.service.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/pages/login/services/login-data.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/pages/login/services/login-data.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/shared/components/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/shared/components/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/shared/components/layout/admin-session-layout.component.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/shared/services/auth.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/shared/services/auth.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/shared/services/config.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/shared/services/config.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/environments/environment.development.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/environments/environment.development.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/environments/environment.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/environments/environment.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/app/admins/admin.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/app/admins/admin.controller.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/app/auth/auth.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/app/auth/auth.controller.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/app/auth/auth.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/app/auth/auth.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/app/enums/permission.enum.ts" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/app/enums/permission.enum.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/app/enums/role-permission.enum.ts" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/app/enums/role-permission.enum.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/src/app/enums/role.enum.ts" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/app/enums/role.enum.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/app/users/user.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/app/users/user.controller.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FormatOnSaveOptions">
+    <option name="myRunOnSave" value="true" />
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -23,6 +45,9 @@
   <component name="KubernetesApiProvider">{
   &quot;isMigrated&quot;: true
 }</component>
+  <component name="OptimizeOnSaveOptions">
+    <option name="myRunOnSave" value="true" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
   &quot;associatedIndex&quot;: 6
@@ -32,33 +57,36 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Nx.client:serve.executor": "Run",
-    "Nx.server:serve.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "dart.analysis.tool.window.visible": "false",
-    "git-widget-placeholder": "main",
-    "last_opened_file_path": "/Users/joseparedes/Career/projects/junta",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
-    "ts.external.directory.path": "/Users/joseparedes/Career/projects/junta/node_modules/typescript/lib",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Nx.client:serve.executor&quot;: &quot;Run&quot;,
+    &quot;Nx.server:serve.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/joseparedes/Career/projects/junta&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.standard&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.standard&quot;: &quot;&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;prettierjs.PrettierConfiguration.Package&quot;: &quot;/Users/joseparedes/Career/projects/junta/node_modules/prettier&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;settings.javascript.prettier&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/Users/joseparedes/Career/projects/junta/node_modules/typescript/lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "dev.nx.console.project_details_files": [
-      "/Users/joseparedes/Career/projects/junta/client/project.json",
-      "/Users/joseparedes/Career/projects/junta/client/package.json",
-      "/Users/joseparedes/Career/projects/junta/server/project.json",
-      "/Users/joseparedes/Career/projects/junta/server/package.json"
+  &quot;keyToStringList&quot;: {
+    &quot;dev.nx.console.project_details_files&quot;: [
+      &quot;/Users/joseparedes/Career/projects/junta/client/project.json&quot;,
+      &quot;/Users/joseparedes/Career/projects/junta/client/package.json&quot;,
+      &quot;/Users/joseparedes/Career/projects/junta/server/project.json&quot;,
+      &quot;/Users/joseparedes/Career/projects/junta/server/package.json&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected="Nx.server:serve">
     <configuration name="client:serve" type="NxRunConfigurationType">
       <option name="nx-projects" value="client" />
@@ -102,11 +130,27 @@
       <workItem from="1734848357441" duration="11000" />
       <workItem from="1734848408948" duration="396000" />
       <workItem from="1735817094709" duration="1865000" />
+      <workItem from="1735944219827" duration="113000" />
+      <workItem from="1735944338265" duration="70000" />
+      <workItem from="1735944413385" duration="2388000" />
+      <workItem from="1736024320708" duration="14000" />
+      <workItem from="1736024392545" duration="4609000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

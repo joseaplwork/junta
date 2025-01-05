@@ -1,38 +1,29 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
+import { HasPermissionDirective } from '@client/directives/has-permission.directive';
 import { ButtonComponent } from '@client/shared/components';
+import { AdminProfileService } from '@client/shared/services/admin-profile.service';
 
-import { AdminProfile } from './interfaces/admin-profile.interface';
 import { LogoutService } from './services/logout.service';
-import { ProfileDataService } from './services/profile-data.service';
 
 @Component({
-  imports: [CommonModule, ButtonComponent, RouterModule],
+  imports: [
+    CommonModule,
+    ButtonComponent,
+    HasPermissionDirective,
+    RouterModule,
+  ],
   templateUrl: './dashboard-page.component.html',
 })
-export class DashboardPageComponent implements OnInit {
-  admin: AdminProfile | null = null;
-
+export class DashboardPageComponent {
   constructor(
-    private _profile: ProfileDataService,
     private _logout: LogoutService,
+    public profile: AdminProfileService,
   ) {}
-
-  ngOnInit() {
-    this._requestAdminProfile();
-  }
-
-  handleButtonClick() {
-    this._requestAdminProfile();
-  }
 
   logout() {
     this._logout.endSession();
-  }
-
-  private async _requestAdminProfile() {
-    this.admin = await this._profile.fetch();
   }
 }

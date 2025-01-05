@@ -1,3 +1,4 @@
+export * from './admin-profile.service';
 export * from './admin-session.service';
 export * from './app-state.service';
 export * from './auth.service';

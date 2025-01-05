@@ -6,5 +6,10 @@ import { environment } from '../../../environments/environment';
   providedIn: 'root',
 })
 export class ConfigService {
-  apiUrl = `${environment.apiUrl}/api`;
+  permissions = environment.permissions;
+
+  api = {
+    url: `${environment.apiUrl}/api`,
+    auth: `${environment.apiUrl}/api/auth`,
+  };
 }

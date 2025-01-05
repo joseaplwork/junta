@@ -6,7 +6,7 @@ import {
   DashboardPageComponent,
   LoginPageComponent,
 } from './pages';
-import { AdminSessionLayoutComponent } from './shared/components';
+import { AdminSessionLayoutComponent } from './pages/layout';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },

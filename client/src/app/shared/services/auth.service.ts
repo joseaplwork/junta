@@ -42,7 +42,7 @@ export class AuthService {
     return this._http
       .post<{
         accessToken: string;
-      }>(`${this._config.apiUrl}/auth/refresh`, null, {
+      }>(`${this._config.api.auth}/refresh`, null, {
         withCredentials: true,
       })
       .pipe(map(this._mapToAccessToken), tap(this.setAccessToken));

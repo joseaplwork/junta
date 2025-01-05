@@ -24,7 +24,7 @@ export class LoginService {
 
     return firstValueFrom(
       this._http.post<{ accessToken: string }>(
-        `${this._config.apiUrl}/auth/login`,
+        `${this._config.api.auth}/login`,
         data,
         options,
       ),

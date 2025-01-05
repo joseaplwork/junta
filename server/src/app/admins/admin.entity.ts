@@ -20,7 +20,7 @@ export class Admin {
   @Column({ type: 'varchar' })
   password: string;
 
-  @Column({ type: 'varchar' })
+  @Column({ type: 'simple-array', default: Role.USER })
   roles: Role[];
 
   @OneToOne(() => User)

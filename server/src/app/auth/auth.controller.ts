@@ -57,13 +57,13 @@ export class AuthController {
   }
 
   @Get('profile')
-  @Roles(Role.Admin)
+  @Roles(Role.ADMIN)
   getProfile(@NestRequest() req: RequestWithUser) {
     return req.user;
   }
 
   @Get('logout')
-  @Roles(Role.Admin)
+  @Roles(Role.ADMIN)
   logout(@Res() res: Response) {
     res.clearCookie('refreshToken', {
       httpOnly: true,

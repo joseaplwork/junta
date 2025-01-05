@@ -33,7 +33,7 @@ export class RegisterAdminDataService {
     };
 
     return firstValueFrom(
-      this._http.post<void>(`${this._config.apiUrl}/admin`, data),
+      this._http.post<void>(`${this._config.api.url}/admin`, data),
     );
   }
 }

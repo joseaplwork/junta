@@ -26,7 +26,7 @@ export class LogoutService {
 
   private async _requestLogout(): Promise<void> {
     await firstValueFrom<unknown>(
-      this._http.get(`${this._config.apiUrl}/auth/logout`, {
+      this._http.get(`${this._config.api.auth}/logout`, {
         withCredentials: true,
       }),
     );

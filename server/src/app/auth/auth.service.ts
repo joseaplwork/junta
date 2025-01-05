@@ -9,6 +9,7 @@ import { randomUUID } from 'crypto';
 
 import { Admin } from '@server/admins/admin.entity';
 import { AdminService } from '@server/admins/admin.service';
+import { RolePermissionMapping } from '@server/enums';
 
 import { AuthTokenPayload } from './auth.interface';
 
@@ -37,12 +38,14 @@ export class AuthService {
 
   async decodeRefreshToken(token: string): Promise<AuthTokenPayload> {
     try {
-      const { username, sub, roles } = await this.jwt.verify(token);
+      const { username, sub, roles, permissions } =
+        await this.jwt.verify(token);
 
       return {
         username,
         sub,
         roles,
+        permissions,
       };
     } catch (_) {
       throw new UnauthorizedException('Invalid refresh token');
@@ -50,10 +53,15 @@ export class AuthService {
   }
 
   login(admin: Admin) {
+    const permissions = new Set(
+      admin.roles.map(role => RolePermissionMapping[role]).flat(),
+    );
+
     const payload = {
       username: admin.email,
       sub: admin.id,
       roles: admin.roles,
+      permissions: [...permissions],
     };
 
     return {
