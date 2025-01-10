@@ -1,38 +1,29 @@
 <ng-template #content>
   @if (icon) {
-    <md-icon slot="icon" aria-hidden="true">{{ icon }}</md-icon>
+    <ja-icon [name]="icon" [label]="icon"></ja-icon>
   }
   <ng-content></ng-content>
 </ng-template>
 
 @switch (kind) {
   @case ('elevated') {
-    <md-elevated-button
-      class="w-full"
-      [type]="type"
-      [disabled]="disabled"
-      [hasIcon]="icon">
+    <button mat-raised-button [type]="type" [disabled]="disabled">
       <ng-container *ngTemplateOutlet="content"></ng-container>
-    </md-elevated-button>
+    </button>
   }
   @case ('filled') {
-    <md-filled-button class="w-full" [type]="type" [disabled]="disabled">
+    <button mat-flat-button [type]="type" [disabled]="disabled">
       <ng-container *ngTemplateOutlet="content"></ng-container>
-    </md-filled-button>
-  }
-  @case ('tonal') {
-    <md-filled-tonal-button class="w-full" [type]="type" [disabled]="disabled">
-      <ng-container *ngTemplateOutlet="content"></ng-container>
-    </md-filled-tonal-button>
+    </button>
   }
   @case ('outlined') {
-    <md-outlined-button class="w-full" [type]="type" [disabled]="disabled">
+    <button mat-stroked-button [type]="type" [disabled]="disabled">
       <ng-container *ngTemplateOutlet="content"></ng-container>
-    </md-outlined-button>
+    </button>
   }
   @case ('text') {
-    <md-text-button class="w-full" [type]="type" [disabled]="disabled">
+    <button mat-button [type]="type" [disabled]="disabled">
       <ng-container *ngTemplateOutlet="content"></ng-container>
-    </md-text-button>
+    </button>
   }
 }

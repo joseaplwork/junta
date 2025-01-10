@@ -1,6 +1,5 @@
 import {
   AfterViewInit,
-  CUSTOM_ELEMENTS_SCHEMA,
   ChangeDetectorRef,
   Component,
   Injector,
@@ -13,6 +12,8 @@ import {
   NG_VALUE_ACCESSOR,
   NgControl,
 } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
   providers: [
@@ -22,14 +23,14 @@ import {
       multi: true,
     },
   ],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  imports: [MatFormFieldModule, MatInputModule],
   selector: 'ja-input-field',
   templateUrl: './input-field.component.html',
 })
 export class InputFieldComponent
   implements ControlValueAccessor, AfterViewInit
 {
-  @Input() placeholder? = '';
+  @Input() placeholder = '';
 
   @Input() error = '';
 

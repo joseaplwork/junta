@@ -1,22 +1,26 @@
-<ng-template #content>
-  <md-icon>{{ name }}</md-icon>
-  <ng-content></ng-content>
-</ng-template>
-
 @switch (kind) {
+  @case ('text') {
+    <button mat-icon-button type="button" [disabled]="disabled">
+      <ja-icon [name]="name"></ja-icon>
+    </button>
+  }
+
   @case ('filled') {
-    <md-filled-icon-button type="button" [disabled]="disabled">
-      <ng-container *ngTemplateOutlet="content"></ng-container>
-    </md-filled-icon-button>
+    <button mat-mini-fab type="button" [disabled]="disabled">
+      <ja-icon [name]="name"></ja-icon>
+    </button>
   }
-  @case ('tonal') {
-    <md-filled-tonal-icon-button type="button" [disabled]="disabled">
-      <ng-container *ngTemplateOutlet="content"></ng-container>
-    </md-filled-tonal-icon-button>
+
+  @case ('fab') {
+    <button mat-fab type="button" [disabled]="disabled">
+      <ja-icon [name]="name"></ja-icon>
+    </button>
   }
-  @case ('outlined') {
-    <md-outlined-icon-button type="button" [disabled]="disabled">
-      <ng-container *ngTemplateOutlet="content"></ng-container>
-    </md-outlined-icon-button>
+
+  @case ('extended-fab') {
+    <button mat-fab extended type="button" [disabled]="disabled">
+      <ja-icon [name]="name"></ja-icon>
+      <ng-content></ng-content>
+    </button>
   }
 }

@@ -1,15 +1,16 @@
 import { CommonModule } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA, Component, Input } from '@angular/core';
 
+import { IconComponent } from '../icon/icon.component';
+
 @Component({
   selector: 'ja-icon-button',
-  imports: [CommonModule],
+  imports: [CommonModule, IconComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './icon-button.component.html',
 })
 export class IconButtonComponent {
-  @Input() kind?: 'elevated' | 'filled' | 'tonal' | 'outlined' | 'text' =
-    'tonal';
+  @Input() kind?: 'filled' | 'fab' | 'extended-fab' | 'text' = 'text';
 
   @Input() name = '';
 

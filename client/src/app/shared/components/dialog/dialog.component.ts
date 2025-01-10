@@ -1,76 +1,30 @@
 import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import {
-  AfterViewInit,
-  CUSTOM_ELEMENTS_SCHEMA,
-  Component,
-  ElementRef,
-  EventEmitter,
-  Input,
-  OnDestroy,
-  Output,
-  ViewChild,
-} from '@angular/core';
+  MAT_DIALOG_DATA,
+  MatDialogActions,
+  MatDialogClose,
+  MatDialogContent,
+  MatDialogTitle,
+} from '@angular/material/dialog';
 
 import { ButtonComponent } from '@client/shared/components';
 
 @Component({
   selector: 'ja-dialog',
-  imports: [CommonModule, ButtonComponent],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  imports: [
+    CommonModule,
+    ButtonComponent,
+    MatButtonModule,
+    MatDialogTitle,
+    MatDialogContent,
+    MatDialogActions,
+    MatDialogClose,
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './dialog.component.html',
 })
-export class DialogComponent implements AfterViewInit, OnDestroy {
-  @ViewChild('dialog') dialog!: ElementRef<HTMLElement & { close: () => void }>;
-
-  @Input() primaryText = '';
-
-  @Input() secondaryText = '';
-
-  @Input() title = '';
-
-  @Input() content = '';
-
-  @Input() open = false;
-
-  @Output() onclose = new EventEmitter();
-
-  @Output() oncancel = new EventEmitter();
-
-  @Output() primaryClick = new EventEmitter();
-
-  @Output() secondaryClick = new EventEmitter();
-
-  ngAfterViewInit() {
-    const dialog = this.dialog.nativeElement;
-
-    dialog.addEventListener('close', this.onClose);
-    dialog.addEventListener('cancel', this.onCancel);
-  }
-
-  ngOnDestroy() {
-    const dialog = this.dialog.nativeElement;
-
-    dialog.removeEventListener('close', this.onClose);
-    dialog.removeEventListener('cancel', this.onCancel);
-  }
-
-  onPrimaryClick() {
-    this.primaryClick.emit();
-
-    this.dialog.nativeElement.close();
-  }
-
-  onSecondaryClick() {
-    this.secondaryClick.emit();
-
-    this.dialog.nativeElement.close();
-  }
-
-  onClose = () => {
-    this.onclose.emit();
-  };
-
-  onCancel = () => {
-    this.oncancel.emit();
-  };
+export class DialogComponent {
+  data = inject(MAT_DIALOG_DATA);
 }

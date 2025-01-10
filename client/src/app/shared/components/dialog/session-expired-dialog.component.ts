@@ -1,4 +1,12 @@
-import { Component, OnDestroy, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnDestroy,
+  OnInit,
+  inject,
+  signal,
+} from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { take } from 'rxjs';
 
 import {
@@ -11,20 +19,12 @@ import { DialogComponent } from './dialog.component';
 
 @Component({
   selector: 'ja-session-expired-dialog',
-  imports: [DialogComponent],
-  template: `<ja-dialog
-    [open]="open()"
-    title="Session expired"
-    content="Do you want to continue with the session?"
-    primaryText="continue"
-    secondaryText="cancel"
-    (primaryClick)="handleContinueClick()"
-    (secondaryClick)="handleCancelClick()"
-    (oncancel)="handleCancelClick()">
-  </ja-dialog>`,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: '',
 })
 export class SessionExpiredDialogComponent implements OnInit, OnDestroy {
   private _interval!: ReturnType<typeof setInterval>;
+  readonly _dialog = inject(MatDialog);
 
   private INTERVAL_TIME = 1000 * 60 * 5;
 
@@ -39,7 +39,14 @@ export class SessionExpiredDialogComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this._interval = setInterval(() => {
       if (this._auth.isAccessTokenExpired()) {
-        this.open.set(true);
+        this._dialog.open(DialogComponent, {
+          data: {
+            title: 'Session expired',
+            content: 'Do you want to continue with the session?',
+            primaryText: 'continue',
+            secondaryText: 'cancel',
+          },
+        });
       }
     }, this.INTERVAL_TIME);
   }

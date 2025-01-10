@@ -1,12 +1,14 @@
-<md-outlined-text-field
-  class="w-full"
-  [type]="type"
-  [value]="value"
-  [placeholder]="placeholder"
-  [required]="required"
-  (input)="onChange && onChange($event)"
-  [label]="label"
-  [error]="hasError"
-  [errorText]="getErrorMessage()"
-  (blur)="onTouched()">
-</md-outlined-text-field>
+<mat-form-field appearance="outline">
+  <mat-label>{{ label }}</mat-label>
+  <input
+    matInput
+    [type]="type"
+    [value]="value"
+    [placeholder]="placeholder"
+    [required]="required"
+    (input)="onChange && onChange($event)"
+    (blur)="onTouched()" />
+  @if (hasError) {
+    <mat-error>{{ getErrorMessage() }}</mat-error>
+  }
+</mat-form-field>
