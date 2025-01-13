@@ -2,8 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 import { SessionExpiredDialogComponent } from '@client/shared/components';
-import { AppStateService } from '@client/shared/services';
-import { AdminProfileService } from '@client/shared/services/admin-profile.service';
+import { AdminProfileService, AppStateService } from '@client/shared/services';
 
 @Component({
   imports: [RouterOutlet, SessionExpiredDialogComponent],
@@ -14,7 +13,7 @@ import { AdminProfileService } from '@client/shared/services/admin-profile.servi
     <ja-session-expired-dialog></ja-session-expired-dialog>
   `,
 })
-export class AdminSessionLayoutComponent implements OnInit {
+export class AdminDashboardLayoutComponent implements OnInit {
   constructor(
     private _app: AppStateService,
     private _profile: AdminProfileService,

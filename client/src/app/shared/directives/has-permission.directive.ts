@@ -1,6 +1,6 @@
 import { Directive, Input, TemplateRef, ViewContainerRef } from '@angular/core';
 
-import { AdminProfileService } from '@client/shared/services/admin-profile.service';
+import { AdminProfileService } from '@client/shared/services';
 import { Permission } from '@server/enums';
 
 @Directive({
@@ -10,7 +10,7 @@ export class HasPermissionDirective {
   constructor(
     private templateRef: TemplateRef<unknown>,
     private viewContainer: ViewContainerRef,
-    private _adminProfile: AdminProfileService,
+    private _profile: AdminProfileService,
   ) {}
 
   @Input() set hasPermission(permission: keyof typeof Permission) {
@@ -22,8 +22,6 @@ export class HasPermissionDirective {
   }
 
   private _hasPermission(requiredPermission: keyof typeof Permission): boolean {
-    return this._adminProfile
-      .permissions()
-      .includes(Permission[requiredPermission]);
+    return this._profile.permissions().includes(Permission[requiredPermission]);
   }
 }
