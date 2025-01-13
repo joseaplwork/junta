@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 
+import { AuthGuard, AuthRedirectGuard } from './guards';
 import { AdminDashboardLayoutComponent } from './layout';
 import {
   CreateAdminPageComponent,
@@ -7,7 +8,6 @@ import {
   DashboardPageComponent,
   LoginPageComponent,
 } from './pages';
-import { AuthGuard, AuthRedirectGuard } from './shared/guards';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },

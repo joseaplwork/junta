@@ -2,8 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
+import { HasPermissionDirective } from '@client/directives';
 import { ButtonComponent } from '@client/shared/components';
-import { HasPermissionDirective } from '@client/shared/directives';
 import { AdminProfileService } from '@client/shared/services';
 
 import { LogoutService } from './services/logout.service';
