@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { CUSTOM_ELEMENTS_SCHEMA, Component, Input } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, Component, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 
 import { IconComponent } from '../icon/icon.component';
@@ -18,15 +18,10 @@ import { IconComponent } from '../icon/icon.component';
   ],
 })
 export class ButtonComponent {
-  @Input() kind?: 'elevated' | 'filled' | 'outlined' | 'text' = 'filled';
-
-  @Input() icon?: string = '';
-
-  @Input() expand? = false;
-
-  @Input() disabled? = false;
-
-  @Input() type: HTMLButtonElement['type'] = 'button';
-
-  @Input() text = '';
+  readonly kind = input<'elevated' | 'filled' | 'outlined' | 'text'>('filled');
+  readonly icon = input('');
+  readonly expand = input(false);
+  readonly disabled = input(false);
+  readonly type = input<HTMLButtonElement['type']>('button');
+  readonly text = input('');
 }

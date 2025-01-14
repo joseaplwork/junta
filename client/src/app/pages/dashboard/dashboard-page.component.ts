@@ -19,7 +19,7 @@ import { LogoutService } from './services/logout.service';
 })
 export class DashboardPageComponent {
   private readonly _logout = inject(LogoutService);
-  public readonly profile = inject(AdminProfileService);
+  readonly profile = inject(AdminProfileService);
 
   logout() {
     this._logout.endSession();

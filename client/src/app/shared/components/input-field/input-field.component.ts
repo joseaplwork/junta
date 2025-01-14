@@ -3,9 +3,9 @@ import {
   ChangeDetectorRef,
   Component,
   Injector,
-  Input,
   forwardRef,
   inject,
+  input,
 } from '@angular/core';
 import {
   AbstractControl,
@@ -34,15 +34,11 @@ export class InputFieldComponent
   private readonly _injector = inject(Injector);
   private readonly _cdr = inject(ChangeDetectorRef);
 
-  @Input() placeholder = '';
-
-  @Input() error = '';
-
-  @Input() label = '';
-
-  @Input() name = '';
-
-  @Input() type = 'text';
+  readonly placeholder = input('');
+  readonly error = input('');
+  readonly label = input('');
+  readonly name = input('');
+  readonly type = input('text');
 
   value: string | number = '';
 

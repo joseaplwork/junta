@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { CUSTOM_ELEMENTS_SCHEMA, Component, Input } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, Component, input } from '@angular/core';
 
 import { IconComponent } from '../icon/icon.component';
 
@@ -10,9 +10,7 @@ import { IconComponent } from '../icon/icon.component';
   templateUrl: './icon-button.component.html',
 })
 export class IconButtonComponent {
-  @Input() kind?: 'filled' | 'fab' | 'extended-fab' | 'text' = 'text';
-
-  @Input() name = '';
-
-  @Input() disabled = false;
+  readonly kind = input<'filled' | 'fab' | 'extended-fab' | 'text'>('text');
+  readonly name = input('');
+  readonly disabled = input(false);
 }
