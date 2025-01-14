@@ -21,10 +21,9 @@ import { DialogComponent } from './dialog.component';
 export class SessionExpiredDialogComponent implements OnInit, OnDestroy {
   private readonly _auth = inject(AuthService);
   private readonly _session = inject(AdminSessionService);
-
-  private _interval!: ReturnType<typeof setInterval>;
   readonly _dialog = inject(MatDialog);
 
+  private _interval!: ReturnType<typeof setInterval>;
   private INTERVAL_TIME = 1000 * 60 * 5;
 
   open = signal(false);

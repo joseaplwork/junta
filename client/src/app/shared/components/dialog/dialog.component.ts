@@ -26,5 +26,5 @@ import { ButtonComponent } from '@client/shared/components';
   templateUrl: './dialog.component.html',
 })
 export class DialogComponent {
-  data = inject(MAT_DIALOG_DATA);
+  readonly data = inject(MAT_DIALOG_DATA);
 }

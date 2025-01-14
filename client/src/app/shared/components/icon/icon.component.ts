@@ -12,6 +12,6 @@ import { MatIconModule } from '@angular/material/icon';
   `,
 })
 export class IconComponent {
-  name = input('');
-  label = input('');
+  readonly name = input('');
+  readonly label = input('');
 }

@@ -25,16 +25,6 @@ export class AdminProfileService implements Profile {
     this._roles.set(roles);
   }
 
-  private _decodeProfile() {
-    type Payload = JwtPayload & {
-      username: string;
-      roles: string[];
-      permissions: string[];
-    };
-
-    return jwtDecode<Payload>(this._auth.getAccessToken() || '');
-  }
-
   get id() {
     return this._id.asReadonly();
   }
@@ -49,5 +39,15 @@ export class AdminProfileService implements Profile {
 
   get roles() {
     return this._roles.asReadonly();
+  }
+
+  private _decodeProfile() {
+    type Payload = JwtPayload & {
+      username: string;
+      roles: string[];
+      permissions: string[];
+    };
+
+    return jwtDecode<Payload>(this._auth.getAccessToken() || '');
   }
 }

@@ -1,28 +1,28 @@
 <ng-template #content>
-  @if (icon) {
-    <ja-icon [name]="icon" [label]="icon"></ja-icon>
+  @if (icon()) {
+    <ja-icon [name]="icon()" [label]="icon()"></ja-icon>
   }
   <ng-content></ng-content>
 </ng-template>
 
-@switch (kind) {
+@switch (kind()) {
   @case ('elevated') {
-    <button mat-raised-button [type]="type" [disabled]="disabled">
+    <button mat-raised-button [type]="type()" [disabled]="disabled()">
       <ng-container *ngTemplateOutlet="content"></ng-container>
     </button>
   }
   @case ('filled') {
-    <button mat-flat-button [type]="type" [disabled]="disabled">
+    <button mat-flat-button [type]="type()" [disabled]="disabled()">
       <ng-container *ngTemplateOutlet="content"></ng-container>
     </button>
   }
   @case ('outlined') {
-    <button mat-stroked-button [type]="type" [disabled]="disabled">
+    <button mat-stroked-button [type]="type()" [disabled]="disabled()">
       <ng-container *ngTemplateOutlet="content"></ng-container>
     </button>
   }
   @case ('text') {
-    <button mat-button [type]="type" [disabled]="disabled">
+    <button mat-button [type]="type()" [disabled]="disabled()">
       <ng-container *ngTemplateOutlet="content"></ng-container>
     </button>
   }
