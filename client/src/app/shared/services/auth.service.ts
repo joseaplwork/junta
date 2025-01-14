@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { jwtDecode } from 'jwt-decode';
 import { Observable, map, tap } from 'rxjs';
 
@@ -9,12 +9,10 @@ import { ConfigService } from './config.service';
   providedIn: 'root',
 })
 export class AuthService {
-  private _ACCESS_TOKEN_KEY = 'accessToken';
+  private readonly _http = inject(HttpClient);
+  private readonly _config = inject(ConfigService);
 
-  constructor(
-    private _http: HttpClient,
-    private _config: ConfigService,
-  ) {}
+  private _ACCESS_TOKEN_KEY = 'accessToken';
 
   getAccessToken(): string | null {
     return sessionStorage.getItem(this._ACCESS_TOKEN_KEY);

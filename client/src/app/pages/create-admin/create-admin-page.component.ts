@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 
@@ -24,6 +24,10 @@ import { RegisterAdminDataService } from './services/register-admin-data.service
   ],
 })
 export class CreateAdminPageComponent {
+  private readonly _fb = inject(FormBuilder);
+  private readonly _admin = inject(RegisterAdminDataService);
+  private readonly _router = inject(Router);
+
   form = this._fb.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required]],
@@ -36,12 +40,6 @@ export class CreateAdminPageComponent {
   roles = Role;
 
   showFormError = false;
-
-  constructor(
-    private readonly _fb: FormBuilder,
-    private readonly _admin: RegisterAdminDataService,
-    private readonly _router: Router,
-  ) {}
 
   async onSubmit() {
     const { email, password, name, surname, phone, roles } = this.form.value;

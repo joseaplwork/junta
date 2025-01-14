@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import { JwtPayload, jwtDecode } from 'jwt-decode';
 
 import { Profile } from '../interfaces';
@@ -9,12 +9,12 @@ import { AuthService } from './auth.service';
   providedIn: 'root',
 })
 export class AdminProfileService implements Profile {
+  private readonly _auth = inject(AuthService);
+
   private _id = signal<string>('');
   private _username = signal<string>('');
   private _permissions = signal<string[]>([]);
   private _roles = signal<string[]>([]);
-
-  constructor(private _auth: AuthService) {}
 
   set() {
     const { sub, username, permissions, roles } = this._decodeProfile();

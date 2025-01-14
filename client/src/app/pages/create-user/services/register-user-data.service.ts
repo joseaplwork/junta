@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 
 import { ConfigService } from '@client/shared/services';
@@ -10,10 +10,8 @@ import { UserPayload } from '../interfaces/user-payload.interface';
   providedIn: 'root',
 })
 export class RegisterUserDataService {
-  constructor(
-    private _http: HttpClient,
-    private _config: ConfigService,
-  ) {}
+  private readonly _http = inject(HttpClient);
+  private readonly _config = inject(ConfigService);
 
   create({ name, surname, phone }: UserPayload): Promise<void> {
     const data = {

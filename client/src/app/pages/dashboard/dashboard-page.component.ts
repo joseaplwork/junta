@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
 import { HasPermissionDirective } from '@client/directives';
@@ -18,10 +18,8 @@ import { LogoutService } from './services/logout.service';
   templateUrl: './dashboard-page.component.html',
 })
 export class DashboardPageComponent {
-  constructor(
-    private _logout: LogoutService,
-    public profile: AdminProfileService,
-  ) {}
+  private readonly _logout = inject(LogoutService);
+  public readonly profile = inject(AdminProfileService);
 
   logout() {
     this._logout.endSession();

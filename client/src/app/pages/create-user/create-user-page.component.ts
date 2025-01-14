@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 
@@ -23,6 +23,10 @@ import { RegisterUserDataService } from './services/register-user-data.service';
   ],
 })
 export class CreateUserPageComponent {
+  private readonly _fb = inject(FormBuilder);
+  private readonly _user = inject(RegisterUserDataService);
+  private readonly _router = inject(Router);
+
   form = this._fb.group({
     name: ['', [Validators.required]],
     surname: ['', [Validators.required]],
@@ -30,12 +34,6 @@ export class CreateUserPageComponent {
   });
 
   showFormError = false;
-
-  constructor(
-    private readonly _fb: FormBuilder,
-    private readonly _user: RegisterUserDataService,
-    private readonly _router: Router,
-  ) {}
 
   async onSubmit() {
     const { name, surname, phone } = this.form.value;

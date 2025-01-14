@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 
 import { AppStateService } from './app-state.service';
 import { AuthService } from './auth.service';
@@ -8,11 +8,9 @@ import { NavigationService } from './navigation.service';
   providedIn: 'root',
 })
 export class AdminSessionService {
-  constructor(
-    private _auth: AuthService,
-    private _nav: NavigationService,
-    private _app: AppStateService,
-  ) {}
+  private readonly _auth = inject(AuthService);
+  private readonly _nav = inject(NavigationService);
+  private readonly _app = inject(AppStateService);
 
   startSessionAndRedirect = (accessToken: string) => {
     this._auth.setAccessToken(accessToken);

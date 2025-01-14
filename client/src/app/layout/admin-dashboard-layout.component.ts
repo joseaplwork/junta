@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 import { SessionExpiredDialogComponent } from '@client/shared/components';
@@ -14,10 +14,8 @@ import { AdminProfileService, AppStateService } from '@client/shared/services';
   `,
 })
 export class AdminDashboardLayoutComponent implements OnInit {
-  constructor(
-    private _app: AppStateService,
-    private _profile: AdminProfileService,
-  ) {}
+  private readonly _app = inject(AppStateService);
+  private readonly _profile = inject(AdminProfileService);
 
   ngOnInit(): void {
     this._profile.set();

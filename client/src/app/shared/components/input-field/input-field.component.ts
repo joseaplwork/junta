@@ -5,6 +5,7 @@ import {
   Injector,
   Input,
   forwardRef,
+  inject,
 } from '@angular/core';
 import {
   AbstractControl,
@@ -30,6 +31,9 @@ import { MatInputModule } from '@angular/material/input';
 export class InputFieldComponent
   implements ControlValueAccessor, AfterViewInit
 {
+  private readonly _injector = inject(Injector);
+  private readonly _cdr = inject(ChangeDetectorRef);
+
   @Input() placeholder = '';
 
   @Input() error = '';
@@ -48,11 +52,6 @@ export class InputFieldComponent
 
   onChange: ((event: Event) => void) | undefined;
 
-  constructor(
-    private injector: Injector,
-    private cdr: ChangeDetectorRef,
-  ) {}
-
   get hasError() {
     return (
       this.controlDir?.control?.touched && this.controlDir?.control?.errors
@@ -60,13 +59,13 @@ export class InputFieldComponent
   }
 
   ngAfterViewInit() {
-    this.controlDir = this.injector.get(NgControl);
+    this.controlDir = this._injector.get(NgControl);
     const validator = this.controlDir.control?.validator?.(
       {} as AbstractControl,
     );
     this.required = !!validator && !!validator['required'];
 
-    this.cdr.detectChanges();
+    this._cdr.detectChanges();
   }
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   onTouched() {}

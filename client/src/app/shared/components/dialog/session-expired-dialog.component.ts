@@ -9,11 +9,7 @@ import {
 import { MatDialog } from '@angular/material/dialog';
 import { take } from 'rxjs';
 
-import {
-  AdminSessionService,
-  AuthService,
-  NavigationService,
-} from '@client/shared/services';
+import { AdminSessionService, AuthService } from '@client/shared/services';
 
 import { DialogComponent } from './dialog.component';
 
@@ -23,18 +19,15 @@ import { DialogComponent } from './dialog.component';
   template: '',
 })
 export class SessionExpiredDialogComponent implements OnInit, OnDestroy {
+  private readonly _auth = inject(AuthService);
+  private readonly _session = inject(AdminSessionService);
+
   private _interval!: ReturnType<typeof setInterval>;
   readonly _dialog = inject(MatDialog);
 
   private INTERVAL_TIME = 1000 * 60 * 5;
 
   open = signal(false);
-
-  constructor(
-    public nav: NavigationService,
-    private _auth: AuthService,
-    private _session: AdminSessionService,
-  ) {}
 
   ngOnInit() {
     this._interval = setInterval(() => {

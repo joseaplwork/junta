@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 
 import { AdminSessionService, ConfigService } from '@client/shared/services';
@@ -8,11 +8,9 @@ import { AdminSessionService, ConfigService } from '@client/shared/services';
   providedIn: 'root',
 })
 export class LogoutService {
-  constructor(
-    private _http: HttpClient,
-    private _config: ConfigService,
-    private _session: AdminSessionService,
-  ) {}
+  private readonly _http = inject(HttpClient);
+  private readonly _config = inject(ConfigService);
+  private readonly _session = inject(AdminSessionService);
 
   async endSession(): Promise<void> {
     try {

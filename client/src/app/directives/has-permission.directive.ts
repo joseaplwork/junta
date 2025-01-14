@@ -1,4 +1,10 @@
-import { Directive, Input, TemplateRef, ViewContainerRef } from '@angular/core';
+import {
+  Directive,
+  Input,
+  TemplateRef,
+  ViewContainerRef,
+  inject,
+} from '@angular/core';
 
 import { AdminProfileService } from '@client/shared/services';
 import { Permission } from '@server/enums';
@@ -7,17 +13,15 @@ import { Permission } from '@server/enums';
   selector: '[hasPermission]',
 })
 export class HasPermissionDirective {
-  constructor(
-    private templateRef: TemplateRef<unknown>,
-    private viewContainer: ViewContainerRef,
-    private _profile: AdminProfileService,
-  ) {}
+  private readonly _profile = inject(AdminProfileService);
+  private readonly _viewContainer = inject(ViewContainerRef);
+  private readonly _templateRef = inject(TemplateRef<unknown>);
 
   @Input() set hasPermission(permission: keyof typeof Permission) {
     if (this._hasPermission(permission)) {
-      this.viewContainer.createEmbeddedView(this.templateRef);
+      this._viewContainer.createEmbeddedView(this._templateRef);
     } else {
-      this.viewContainer.clear();
+      this._viewContainer.clear();
     }
   }
 

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import {
@@ -20,18 +20,16 @@ import { LoginService } from './services/login-data.service';
   ],
 })
 export class LoginPageComponent {
+  private readonly _fb = inject(FormBuilder);
+  private readonly _login = inject(LoginService);
+  private readonly _session = inject(AdminSessionService);
+
   form = this._fb.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', Validators.required],
   });
 
   showFormError = false;
-
-  constructor(
-    private readonly _fb: FormBuilder,
-    private readonly _login: LoginService,
-    private readonly _session: AdminSessionService,
-  ) {}
 
   async onSubmit(): Promise<void> {
     const { email, password } = this.form.value;

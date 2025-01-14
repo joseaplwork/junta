@@ -5,24 +5,24 @@ import {
   HttpInterceptor,
   HttpRequest,
 } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable, catchError, switchMap, throwError } from 'rxjs';
 
 import { AuthService } from '@client/shared/services';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  private readonly loginUrl = '/api/auth/login';
-  private isRefreshing = false;
+  private readonly _auth = inject(AuthService);
 
-  constructor(private _auth: AuthService) {}
+  private _loginUrl = '/api/auth/login';
+  private _isRefreshing = false;
 
   intercept(
     req: HttpRequest<unknown>,
     next: HttpHandler,
   ): Observable<HttpEvent<unknown>> {
     // Skip adding the access token for login requests
-    if (req.url.includes(this.loginUrl)) {
+    if (req.url.includes(this._loginUrl)) {
       return next.handle(req);
     }
 
@@ -38,13 +38,13 @@ export class AuthInterceptor implements HttpInterceptor {
 
     return next.handle(authorizedReq).pipe(
       catchError((error: HttpErrorResponse) => {
-        if (error.status === 401 && !this.isRefreshing) {
-          this.isRefreshing = true;
+        if (error.status === 401 && !this._isRefreshing) {
+          this._isRefreshing = true;
 
           // Access token is expired, try refreshing
           return this._auth.refreshAccessToken().pipe(
             switchMap((newToken: string) => {
-              this.isRefreshing = false;
+              this._isRefreshing = false;
 
               // Set the new token in _auth for in-memory storage
               this._auth.setAccessToken(newToken);
@@ -57,7 +57,7 @@ export class AuthInterceptor implements HttpInterceptor {
               return next.handle(retriedReq);
             }),
             catchError(refreshError => {
-              this.isRefreshing = false;
+              this._isRefreshing = false;
               return throwError(() => new Error(refreshError.error));
             }),
           );

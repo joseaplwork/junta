@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 
 import { ConfigService } from '@client/shared/services';
@@ -8,10 +8,8 @@ import { ConfigService } from '@client/shared/services';
   providedIn: 'root',
 })
 export class LoginService {
-  constructor(
-    private _http: HttpClient,
-    private _config: ConfigService,
-  ) {}
+  private readonly _http = inject(HttpClient);
+  private readonly _config = inject(ConfigService);
 
   signIn(email: string, password: string): Promise<{ accessToken: string }> {
     const options = {
