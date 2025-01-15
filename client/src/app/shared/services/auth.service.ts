@@ -12,18 +12,18 @@ export class AuthService {
   private readonly _http = inject(HttpClient);
   private readonly _config = inject(ConfigService);
 
-  private _ACCESS_TOKEN_KEY = 'accessToken';
+  private ACCESS_TOKEN_KEY = 'accessToken';
 
   getAccessToken(): string | null {
-    return sessionStorage.getItem(this._ACCESS_TOKEN_KEY);
+    return sessionStorage.getItem(this.ACCESS_TOKEN_KEY);
   }
 
   setAccessToken = (accessToken: string): void => {
-    sessionStorage.setItem(this._ACCESS_TOKEN_KEY, accessToken);
+    sessionStorage.setItem(this.ACCESS_TOKEN_KEY, accessToken);
   };
 
   removeAccessToken() {
-    sessionStorage.removeItem(this._ACCESS_TOKEN_KEY);
+    sessionStorage.removeItem(this.ACCESS_TOKEN_KEY);
   }
 
   isAccessTokenExpired(token = this.getAccessToken()): boolean {

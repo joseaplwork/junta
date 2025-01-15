@@ -27,13 +27,12 @@ export class CreateUserPageComponent {
   private readonly _user = inject(RegisterUserDataService);
   private readonly _router = inject(Router);
 
+  showFormError = false;
   form = this._fb.group({
     name: ['', [Validators.required]],
     surname: ['', [Validators.required]],
     phone: ['', [Validators.required]],
   });
-
-  showFormError = false;
 
   async onSubmit() {
     const { name, surname, phone } = this.form.value;

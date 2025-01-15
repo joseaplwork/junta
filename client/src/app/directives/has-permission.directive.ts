@@ -15,7 +15,7 @@ import { Permission } from '@server/enums';
 export class HasPermissionDirective {
   private readonly _profile = inject(AdminProfileService);
   private readonly _viewContainer = inject(ViewContainerRef);
-  private readonly _templateRef = inject(TemplateRef<unknown>);
+  private readonly _templateRef = inject(TemplateRef);
 
   private _checkPermission = (permission: keyof typeof Permission) => {
     if (this._hasPermission(permission)) {

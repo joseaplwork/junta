@@ -41,11 +41,8 @@ export class InputFieldComponent
   readonly type = input('text');
 
   value: string | number = '';
-
   required = false;
-
   controlDir!: NgControl;
-
   onChange: ((event: Event) => void) | undefined;
 
   get hasError() {

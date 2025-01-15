@@ -28,6 +28,8 @@ export class CreateAdminPageComponent {
   private readonly _admin = inject(RegisterAdminDataService);
   private readonly _router = inject(Router);
 
+  roles = Role;
+  showFormError = false;
   form = this._fb.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required]],
@@ -36,10 +38,6 @@ export class CreateAdminPageComponent {
     surname: ['', [Validators.required]],
     phone: ['', [Validators.required]],
   });
-
-  roles = Role;
-
-  showFormError = false;
 
   async onSubmit() {
     const { email, password, name, surname, phone, roles } = this.form.value;

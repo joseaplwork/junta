@@ -24,12 +24,11 @@ export class LoginPageComponent {
   private readonly _login = inject(LoginService);
   private readonly _session = inject(AdminSessionService);
 
+  showFormError = false;
   form = this._fb.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', Validators.required],
   });
-
-  showFormError = false;
 
   async onSubmit(): Promise<void> {
     const { email, password } = this.form.value;
