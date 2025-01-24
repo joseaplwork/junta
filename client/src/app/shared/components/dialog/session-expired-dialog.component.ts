@@ -4,9 +4,8 @@ import {
   OnDestroy,
   OnInit,
   inject,
-  signal,
 } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { take } from 'rxjs';
 
 import { AdminSessionService, AuthService } from '@client/shared/services';
@@ -24,20 +23,30 @@ export class SessionExpiredDialogComponent implements OnInit, OnDestroy {
   private readonly _dialog = inject(MatDialog);
 
   private _interval!: ReturnType<typeof setInterval>;
+  private _ref: MatDialogRef<DialogComponent> | undefined;
   private INTERVAL_TIME = 1000 * 60 * 5;
 
-  open = signal(false);
-
   ngOnInit() {
+    let isOpened = false;
     this._interval = setInterval(() => {
-      if (this._auth.isAccessTokenExpired()) {
-        this._dialog.open(DialogComponent, {
+      if (this._auth.isAccessTokenExpired() && !isOpened) {
+        this._ref = this._dialog.open(DialogComponent, {
           data: {
             title: 'Session expired',
             content: 'Do you want to continue with the session?',
             primaryText: 'continue',
             secondaryText: 'cancel',
+            onClick: this.handleContinueClick,
           },
+        });
+
+        isOpened = true;
+
+        this._ref.afterClosed().subscribe(data => {
+          if (!data) {
+            this.handleCloseClick();
+          }
+          isOpened = false;
         });
       }
     }, this.INTERVAL_TIME);
@@ -47,17 +56,17 @@ export class SessionExpiredDialogComponent implements OnInit, OnDestroy {
     clearInterval(this._interval);
   }
 
-  handleCancelClick() {
+  handleCloseClick = () => {
     this._session.endSessionAndRedirect();
-  }
+  };
 
-  handleContinueClick() {
+  handleContinueClick = () => {
     this._auth
       .refreshAccessToken()
       .pipe(take(1))
       .subscribe({
-        next: () => this.open.set(false),
+        next: () => this._ref?.close(true),
         error: () => new Error('Could not refresh token'),
       });
-  }
+  };
 }

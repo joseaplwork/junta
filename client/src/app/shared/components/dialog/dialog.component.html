@@ -2,12 +2,12 @@
 <mat-dialog-content>{{ data.content }}</mat-dialog-content>
 <mat-dialog-actions align="end">
   @if (data.secondaryText) {
-    <ja-button kind="outlined" mat-button mat-dialog-close>
+    <ja-button kind="outlined" mat-dialog-close class="mr-3">
       {{ data.secondaryText }}
     </ja-button>
   }
   @if (data.primaryText) {
-    <ja-button mat-button [mat-dialog-close]="true" cdkFocusInitial>
+    <ja-button cdkFocusInitial (click)="handleClick()">
       {{ data.primaryText }}
     </ja-button>
   }

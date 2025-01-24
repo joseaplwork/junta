@@ -27,4 +27,8 @@ import { ButtonComponent } from '@client/shared/components';
 })
 export class DialogComponent {
   readonly data = inject(MAT_DIALOG_DATA);
+
+  handleClick() {
+    this.data.onClick();
+  }
 }
