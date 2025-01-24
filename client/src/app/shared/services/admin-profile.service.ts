@@ -1,6 +1,8 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { JwtPayload, jwtDecode } from 'jwt-decode';
 
+import { Permission } from '@server/enums';
+
 import { Profile } from '../interfaces';
 
 import { AuthService } from './auth.service';
@@ -39,6 +41,10 @@ export class AdminProfileService implements Profile {
 
   get roles() {
     return this._roles.asReadonly();
+  }
+
+  hasPermission(requiredPermission: keyof typeof Permission): boolean {
+    return this.permissions().includes(Permission[requiredPermission]);
   }
 
   private _decodeProfile() {
