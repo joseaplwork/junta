@@ -1,5 +1,5 @@
 <h1 class="text-primary mb-5 text-center text-4xl">Admin registration</h1>
-<form [formGroup]="form" (ngSubmit)="onSubmit()" class="grid gap-5">
+<form [formGroup]="form" (submit)="onSubmit()" class="grid gap-5">
   <div class="flex gap-2">
     <ja-input-field
       label="Email"
@@ -19,10 +19,11 @@
     type="tel"
     formControlName="phone"
     placeholder="+34 62346793" />
-  <select formControlName="roles" multiple>
+  <ja-select></ja-select>
+  <!-- <select formControlName="roles" multiple>
     <option [value]="roles.SUPER_ADMIN">{{ roles.SUPER_ADMIN }}</option>
     <option [value]="roles.ADMIN">{{ roles.ADMIN }}</option>
-  </select>
+  </select> -->
   <p *ngIf="showFormError" class="text-error">Registration failed</p>
   <div class="flex gap-3">
     <a routerLink="/dashboard">

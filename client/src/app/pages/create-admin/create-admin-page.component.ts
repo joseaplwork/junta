@@ -7,6 +7,7 @@ import {
   ButtonComponent,
   IconButtonComponent,
   InputFieldComponent,
+  SelectComponent,
 } from '@client/shared/components';
 import { Role } from '@server/enums';
 
@@ -19,6 +20,7 @@ import { RegisterAdminDataService } from './services/register-admin-data.service
     ButtonComponent,
     IconButtonComponent,
     InputFieldComponent,
+    SelectComponent,
     ReactiveFormsModule,
     RouterModule,
   ],

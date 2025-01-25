@@ -4,3 +4,4 @@ export * from './dialog/session-expired-dialog.component';
 export * from './icon-button/icon-button.component';
 export * from './icon/icon.component';
 export * from './input-field/input-field.component';
+export * from './select/select.component';
