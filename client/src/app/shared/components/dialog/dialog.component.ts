@@ -1,4 +1,3 @@
-import { ButtonComponent } from '@/client/shared/components'
 import { CommonModule } from '@angular/common'
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core'
 import { MatButtonModule } from '@angular/material/button'
@@ -9,6 +8,8 @@ import {
   MatDialogContent,
   MatDialogTitle,
 } from '@angular/material/dialog'
+
+import { ButtonComponent } from '@/client/shared/components'
 
 @Component({
   selector: 'ja-dialog',

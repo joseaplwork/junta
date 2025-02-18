@@ -1,6 +1,7 @@
+import { Body, Controller, Get, Post } from '@nestjs/common'
+
 import { Permissions } from '@/server/decorators'
 import { Permission } from '@/server/enums'
-import { Body, Controller, Get, Post } from '@nestjs/common'
 
 import { UserService } from './user.service'
 

@@ -1,8 +1,9 @@
-import { UserService } from '@/server/users/user.service'
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import * as bcrypt from 'bcrypt'
 import { Repository } from 'typeorm'
+
+import { UserService } from '@/server/users/user.service'
 
 import { Admin } from './admin.entity'
 import { AdminPayload } from './admin.interface'

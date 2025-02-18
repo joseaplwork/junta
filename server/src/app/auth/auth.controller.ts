@@ -1,6 +1,3 @@
-import { Admin } from '@/server/admins/admin.entity'
-import { Public, Roles } from '@/server/decorators'
-import { Role } from '@/server/enums'
 import {
   Controller,
   Get,
@@ -11,6 +8,10 @@ import {
   UseGuards,
 } from '@nestjs/common'
 import { Request, Response } from 'express'
+
+import { Admin } from '@/server/admins/admin.entity'
+import { Public, Roles } from '@/server/decorators'
+import { Role } from '@/server/enums'
 
 import { AuthService } from './auth.service'
 import { LocalAuthGuard } from './local-auth.guard'

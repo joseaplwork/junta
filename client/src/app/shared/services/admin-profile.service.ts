@@ -1,6 +1,7 @@
-import { Permission } from '@/server/enums'
 import { Injectable, inject, signal } from '@angular/core'
 import { JwtPayload, jwtDecode } from 'jwt-decode'
+
+import { Permission } from '@/server/enums'
 
 import { Profile } from '../interfaces'
 

@@ -1,5 +1,3 @@
-import { Role } from '@/server/enums'
-import { User } from '@/server/users/user.entity'
 import {
   Column,
   Entity,
@@ -7,6 +5,9 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm'
+
+import { Role } from '@/server/enums'
+import { User } from '@/server/users/user.entity'
 
 @Entity('Administrators')
 export class Admin {

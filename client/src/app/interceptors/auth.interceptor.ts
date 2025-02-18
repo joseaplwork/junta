@@ -1,4 +1,3 @@
-import { AuthService } from '@/client/shared/services'
 import {
   HttpErrorResponse,
   HttpEvent,
@@ -8,6 +7,8 @@ import {
 } from '@angular/common/http'
 import { Injectable, inject } from '@angular/core'
 import { Observable, catchError, switchMap, throwError } from 'rxjs'
+
+import { AuthService } from '@/client/shared/services'
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {

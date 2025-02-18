@@ -1,7 +1,8 @@
-import { ConfigService } from '@/client/shared/services'
 import { HttpClient } from '@angular/common/http'
 import { Injectable, inject } from '@angular/core'
 import { firstValueFrom } from 'rxjs'
+
+import { ConfigService } from '@/client/shared/services'
 
 import { UserPayload } from '../interfaces/user-payload.interface'
 

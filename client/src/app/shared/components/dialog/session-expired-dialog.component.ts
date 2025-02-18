@@ -1,4 +1,3 @@
-import { AdminSessionService, AuthService } from '@/client/shared/services'
 import {
   ChangeDetectionStrategy,
   Component,
@@ -8,6 +7,8 @@ import {
 } from '@angular/core'
 import { MatDialog, MatDialogRef } from '@angular/material/dialog'
 import { take } from 'rxjs'
+
+import { AdminSessionService, AuthService } from '@/client/shared/services'
 
 import { DialogComponent } from './dialog.component'
 

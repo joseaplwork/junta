@@ -1,5 +1,3 @@
-import { AdminProfileService } from '@/client/shared/services'
-import { Permission } from '@/server/enums'
 import {
   Directive,
   TemplateRef,
@@ -7,6 +5,9 @@ import {
   inject,
   input,
 } from '@angular/core'
+
+import { AdminProfileService } from '@/client/shared/services'
+import { Permission } from '@/server/enums'
 
 @Directive({
   selector: '[hasPermission]',

@@ -1,7 +1,8 @@
-import { PERMISSIONS_KEY } from '@/server/decorators'
-import { Role, RolePermissionMapping } from '@/server/enums'
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
+
+import { PERMISSIONS_KEY } from '@/server/decorators'
+import { Role, RolePermissionMapping } from '@/server/enums'
 
 @Injectable()
 export class PermissionsGuard implements CanActivate {

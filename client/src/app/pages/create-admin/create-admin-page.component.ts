@@ -1,3 +1,8 @@
+import { CommonModule } from '@angular/common'
+import { Component, inject } from '@angular/core'
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
+import { Router, RouterModule } from '@angular/router'
+
 import {
   ButtonComponent,
   IconButtonComponent,
@@ -5,10 +10,6 @@ import {
   SelectComponent,
 } from '@/client/shared/components'
 import { Role } from '@/server/enums'
-import { CommonModule } from '@angular/common'
-import { Component, inject } from '@angular/core'
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
-import { Router, RouterModule } from '@angular/router'
 
 import { RegisterAdminDataService } from './services/register-admin-data.service'
 
