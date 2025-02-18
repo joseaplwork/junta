@@ -47,7 +47,7 @@ export class AuthService {
         roles,
         permissions,
       };
-    } catch (_) {
+    } catch {
       throw new UnauthorizedException('Invalid refresh token');
     }
   }

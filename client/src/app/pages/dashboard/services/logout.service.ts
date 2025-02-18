@@ -17,7 +17,7 @@ export class LogoutService {
       await this._requestLogout();
 
       this._session.endSessionAndRedirect();
-    } catch (_) {
+    } catch {
       throw new Error('Failed to logout');
     }
   }

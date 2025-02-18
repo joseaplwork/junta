@@ -55,7 +55,7 @@ export class CreateAdminPageComponent {
       });
 
       this._redirectToDashboard();
-    } catch (_) {
+    } catch {
       this._displayFormError();
     }
   }

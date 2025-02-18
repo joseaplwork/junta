@@ -40,7 +40,7 @@ export class LoginPageComponent {
       );
 
       this._session.startSessionAndRedirect(accessToken);
-    } catch (_) {
+    } catch {
       this.showFormError = true;
     }
   }

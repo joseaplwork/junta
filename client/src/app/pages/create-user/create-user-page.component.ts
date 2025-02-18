@@ -45,7 +45,7 @@ export class CreateUserPageComponent {
       });
 
       this._router.navigate(['/dashboard']);
-    } catch (_) {
+    } catch {
       this.showFormError = true;
     }
   }
