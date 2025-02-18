@@ -1,14 +1,13 @@
-import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-
 import {
   ButtonComponent,
   InputFieldComponent,
-} from '@client/shared/components';
-import { AdminSessionService } from '@client/shared/services';
+} from '@/client/shared/components'
+import { AdminSessionService } from '@/client/shared/services'
+import { CommonModule } from '@angular/common'
+import { Component, inject } from '@angular/core'
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
 
-import { LoginService } from './services/login-data.service';
+import { LoginService } from './services/login-data.service'
 
 @Component({
   templateUrl: './login-page.component.html',
@@ -20,28 +19,28 @@ import { LoginService } from './services/login-data.service';
   ],
 })
 export class LoginPageComponent {
-  private readonly _fb = inject(FormBuilder);
-  private readonly _login = inject(LoginService);
-  private readonly _session = inject(AdminSessionService);
+  private readonly _fb = inject(FormBuilder)
+  private readonly _login = inject(LoginService)
+  private readonly _session = inject(AdminSessionService)
 
-  showFormError = false;
+  showFormError = false
   form = this._fb.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', Validators.required],
-  });
+  })
 
   async onSubmit(): Promise<void> {
-    const { email, password } = this.form.value;
+    const { email, password } = this.form.value
 
     try {
       const { accessToken } = await this._login.signIn(
         email ?? '',
         password ?? '',
-      );
+      )
 
-      this._session.startSessionAndRedirect(accessToken);
+      this._session.startSessionAndRedirect(accessToken)
     } catch {
-      this.showFormError = true;
+      this.showFormError = true
     }
   }
 }

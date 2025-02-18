@@ -18,7 +18,7 @@
           "error",
           {
             "enforceBuildableLibDependency": true,
-            "allow": ["@client/**", "@server/**"],
+            "allow": ["@/client/**", "@/server/**"],
             "depConstraints": [
               {
                 "sourceTag": "*",
@@ -40,11 +40,11 @@
             ],
             "pathGroups": [
               {
-                "pattern": "@server/**",
+                "pattern": "@/server/**",
                 "group": "internal"
               },
               {
-                "pattern": "@client/**",
+                "pattern": "@/client/**",
                 "group": "internal"
               }
             ],

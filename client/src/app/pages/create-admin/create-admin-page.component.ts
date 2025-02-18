@@ -1,17 +1,16 @@
-import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
-
 import {
   ButtonComponent,
   IconButtonComponent,
   InputFieldComponent,
   SelectComponent,
-} from '@client/shared/components';
-import { Role } from '@server/enums';
+} from '@/client/shared/components'
+import { Role } from '@/server/enums'
+import { CommonModule } from '@angular/common'
+import { Component, inject } from '@angular/core'
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
+import { Router, RouterModule } from '@angular/router'
 
-import { RegisterAdminDataService } from './services/register-admin-data.service';
+import { RegisterAdminDataService } from './services/register-admin-data.service'
 
 @Component({
   templateUrl: './create-admin-page.component.html',
@@ -26,12 +25,12 @@ import { RegisterAdminDataService } from './services/register-admin-data.service
   ],
 })
 export class CreateAdminPageComponent {
-  private readonly _fb = inject(FormBuilder);
-  private readonly _admin = inject(RegisterAdminDataService);
-  private readonly _router = inject(Router);
+  private readonly _fb = inject(FormBuilder)
+  private readonly _admin = inject(RegisterAdminDataService)
+  private readonly _router = inject(Router)
 
-  roles = Role;
-  showFormError = false;
+  roles = Role
+  showFormError = false
   form = this._fb.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required]],
@@ -39,10 +38,10 @@ export class CreateAdminPageComponent {
     name: ['', [Validators.required]],
     surname: ['', [Validators.required]],
     phone: ['', [Validators.required]],
-  });
+  })
 
   async onSubmit() {
-    const { email, password, name, surname, phone, roles } = this.form.value;
+    const { email, password, name, surname, phone, roles } = this.form.value
 
     try {
       await this._admin.create({
@@ -52,19 +51,19 @@ export class CreateAdminPageComponent {
         surname: surname ?? '',
         phone: phone ?? '',
         roles: (roles as Role[]) ?? [],
-      });
+      })
 
-      this._redirectToDashboard();
+      this._redirectToDashboard()
     } catch {
-      this._displayFormError();
+      this._displayFormError()
     }
   }
 
   private _redirectToDashboard() {
-    this._router.navigate(['/dashboard']);
+    this._router.navigate(['/dashboard'])
   }
 
   private _displayFormError = (): void => {
-    this.showFormError = true;
-  };
+    this.showFormError = true
+  }
 }

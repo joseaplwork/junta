@@ -1,13 +1,13 @@
-import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { Module } from '@nestjs/common'
+import { TypeOrmModule } from '@nestjs/typeorm'
 
-import { Admin } from './admins/admin.entity';
-import { AdminModule } from './admins/admin.module';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { AuthModule } from './auth/auth.module';
-import { User } from './users/user.entity';
-import { UserModule } from './users/user.module';
+import { Admin } from './admins/admin.entity'
+import { AdminModule } from './admins/admin.module'
+import { AppController } from './app.controller'
+import { AppService } from './app.service'
+import { AuthModule } from './auth/auth.module'
+import { User } from './users/user.entity'
+import { UserModule } from './users/user.module'
 
 @Module({
   imports: [

@@ -1,5 +1,5 @@
-import { Permission } from './permission.enum';
-import { Role } from './role.enum';
+import { Permission } from './permission.enum'
+import { Role } from './role.enum'
 
 const {
   ADMIN_CREATE,
@@ -14,7 +14,7 @@ const {
   JUNTA_READ,
   JUNTA_UPDATE,
   JUNTA_DELETE,
-} = Permission;
+} = Permission
 
 export const RolePermissionMapping = {
   [Role.SUPER_ADMIN]: [
@@ -42,4 +42,4 @@ export const RolePermissionMapping = {
     USER_DELETE,
   ],
   [Role.USER]: [JUNTA_READ, USER_READ],
-};
+}

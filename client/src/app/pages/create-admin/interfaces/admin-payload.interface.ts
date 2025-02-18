@@ -1,10 +1,10 @@
-import { Role } from '@server/enums';
+import { Role } from '@/server/enums'
 
 export interface AdminPayload {
-  email: string;
-  password: string;
-  name: string;
-  surname: string;
-  phone: string;
-  roles: Role[];
+  email: string
+  password: string
+  name: string
+  surname: string
+  phone: string
+  roles: Role[]
 }

@@ -1,15 +1,14 @@
-import { Module } from '@nestjs/common';
-import { APP_GUARD } from '@nestjs/core';
-import { JwtModule } from '@nestjs/jwt';
+import { AdminModule } from '@/server/admins/admin.module'
+import { AuthGuard, PermissionsGuard, RolesGuard } from '@/server/guards'
+import { Module } from '@nestjs/common'
+import { APP_GUARD } from '@nestjs/core'
+import { JwtModule } from '@nestjs/jwt'
 
-import { AdminModule } from '@server/admins/admin.module';
-import { AuthGuard, PermissionsGuard, RolesGuard } from '@server/guards';
-
-import { jwtConstants } from './auth.constants';
-import { AuthController } from './auth.controller';
-import { AuthService } from './auth.service';
-import { JwtStrategy } from './jwt.strategy';
-import { LocalStrategy } from './local.strategy';
+import { jwtConstants } from './auth.constants'
+import { AuthController } from './auth.controller'
+import { AuthService } from './auth.service'
+import { JwtStrategy } from './jwt.strategy'
+import { LocalStrategy } from './local.strategy'
 
 @Module({
   imports: [

@@ -1,17 +1,17 @@
-import { Injectable, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { Injectable, inject } from '@angular/core'
+import { Router } from '@angular/router'
 
 @Injectable({
   providedIn: 'root',
 })
 export class NavigationService {
-  private readonly _route = inject(Router);
+  private readonly _route = inject(Router)
 
   goToLoginPage() {
-    return this._route.navigate(['login']);
+    return this._route.navigate(['login'])
   }
 
   goToDashboardPage() {
-    return this._route.navigate(['dashboard']);
+    return this._route.navigate(['dashboard'])
   }
 }

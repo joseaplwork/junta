@@ -1,29 +1,28 @@
+import { Role } from '@/server/enums'
+import { User } from '@/server/users/user.entity'
 import {
   Column,
   Entity,
   JoinColumn,
   OneToOne,
   PrimaryGeneratedColumn,
-} from 'typeorm';
-
-import { Role } from '@server/enums';
-import { User } from '@server/users/user.entity';
+} from 'typeorm'
 
 @Entity('Administrators')
 export class Admin {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id: string
 
   @Column({ type: 'varchar', unique: true })
-  email: string;
+  email: string
 
   @Column({ type: 'varchar' })
-  password: string;
+  password: string
 
   @Column({ type: 'simple-array', default: Role.USER })
-  roles: Role[];
+  roles: Role[]
 
   @OneToOne(() => User)
   @JoinColumn()
-  user: User;
+  user: User
 }

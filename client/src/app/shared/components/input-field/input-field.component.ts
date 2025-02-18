@@ -6,15 +6,15 @@ import {
   forwardRef,
   inject,
   input,
-} from '@angular/core';
+} from '@angular/core'
 import {
   AbstractControl,
   ControlValueAccessor,
   NG_VALUE_ACCESSOR,
   NgControl,
-} from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
+} from '@angular/forms'
+import { MatFormFieldModule } from '@angular/material/form-field'
+import { MatInputModule } from '@angular/material/input'
 
 @Component({
   providers: [
@@ -31,62 +31,60 @@ import { MatInputModule } from '@angular/material/input';
 export class InputFieldComponent
   implements ControlValueAccessor, AfterViewInit
 {
-  private readonly _injector = inject(Injector);
-  private readonly _cdr = inject(ChangeDetectorRef);
+  private readonly _injector = inject(Injector)
+  private readonly _cdr = inject(ChangeDetectorRef)
 
-  readonly placeholder = input('');
-  readonly error = input('');
-  readonly label = input('');
-  readonly name = input('');
-  readonly type = input('text');
+  readonly placeholder = input('')
+  readonly error = input('')
+  readonly label = input('')
+  readonly name = input('')
+  readonly type = input('text')
 
-  value: string | number = '';
-  required = false;
-  controlDir!: NgControl;
-  onChange: ((event: Event) => void) | undefined;
+  value: string | number = ''
+  required = false
+  controlDir!: NgControl
+  onChange: ((event: Event) => void) | undefined
 
   get hasError() {
-    return (
-      this.controlDir?.control?.touched && this.controlDir?.control?.errors
-    );
+    return this.controlDir?.control?.touched && this.controlDir?.control?.errors
   }
 
   ngAfterViewInit() {
-    this.controlDir = this._injector.get(NgControl);
+    this.controlDir = this._injector.get(NgControl)
     const validator = this.controlDir.control?.validator?.(
       {} as AbstractControl,
-    );
-    this.required = !!validator && !!validator['required'];
+    )
+    this.required = !!validator && !!validator['required']
 
-    this._cdr.detectChanges();
+    this._cdr.detectChanges()
   }
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   onTouched() {}
 
   writeValue(value: string | number): void {
-    this.value = value;
+    this.value = value
   }
 
   registerOnChange(fn: (val: string) => unknown): void {
     this.onChange = (event: Event) => {
-      const { value } = event.target as HTMLInputElement;
-      fn(value);
-    };
+      const { value } = event.target as HTMLInputElement
+      fn(value)
+    }
   }
 
   registerOnTouched(fn: () => unknown): void {
-    this.onTouched = fn;
+    this.onTouched = fn
   }
 
   getErrorMessage() {
     if (this.controlDir?.control?.errors?.['required']) {
-      return 'This field is required';
+      return 'This field is required'
     }
 
     if (this.controlDir?.control?.errors?.['email']) {
-      return 'Invalid email';
+      return 'Invalid email'
     }
 
-    return '';
+    return ''
   }
 }

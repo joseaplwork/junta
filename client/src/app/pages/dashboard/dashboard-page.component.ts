@@ -1,12 +1,11 @@
-import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { HasPermissionDirective } from '@/client/directives'
+import { ButtonComponent } from '@/client/shared/components'
+import { AdminProfileService } from '@/client/shared/services'
+import { CommonModule } from '@angular/common'
+import { Component, inject } from '@angular/core'
+import { RouterModule } from '@angular/router'
 
-import { HasPermissionDirective } from '@client/directives';
-import { ButtonComponent } from '@client/shared/components';
-import { AdminProfileService } from '@client/shared/services';
-
-import { LogoutService } from './services/logout.service';
+import { LogoutService } from './services/logout.service'
 
 @Component({
   imports: [
@@ -18,10 +17,10 @@ import { LogoutService } from './services/logout.service';
   templateUrl: './dashboard-page.component.html',
 })
 export class DashboardPageComponent {
-  private readonly _logout = inject(LogoutService);
-  readonly profile = inject(AdminProfileService);
+  private readonly _logout = inject(LogoutService)
+  readonly profile = inject(AdminProfileService)
 
   logout() {
-    this._logout.endSession();
+    this._logout.endSession()
   }
 }

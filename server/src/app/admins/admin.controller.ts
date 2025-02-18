@@ -1,10 +1,9 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Permissions } from '@/server/decorators'
+import { Permission, Role } from '@/server/enums'
+import { Body, Controller, Post } from '@nestjs/common'
 
-import { Permissions } from '@server/decorators';
-import { Permission, Role } from '@server/enums';
-
-import { Admin } from './admin.entity';
-import { AdminService } from './admin.service';
+import { Admin } from './admin.entity'
+import { AdminService } from './admin.service'
 
 @Controller()
 export class AdminController {
@@ -27,8 +26,8 @@ export class AdminController {
       name,
       surname,
       phoneNumber,
-    });
+    })
 
-    return result;
+    return result
   }
 }

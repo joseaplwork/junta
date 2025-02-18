@@ -1,17 +1,16 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
-import { firstValueFrom } from 'rxjs';
+import { ConfigService } from '@/client/shared/services'
+import { HttpClient } from '@angular/common/http'
+import { Injectable, inject } from '@angular/core'
+import { firstValueFrom } from 'rxjs'
 
-import { ConfigService } from '@client/shared/services';
-
-import { AdminPayload } from '../interfaces/admin-payload.interface';
+import { AdminPayload } from '../interfaces/admin-payload.interface'
 
 @Injectable({
   providedIn: 'root',
 })
 export class RegisterAdminDataService {
-  private readonly _http = inject(HttpClient);
-  private readonly _config = inject(ConfigService);
+  private readonly _http = inject(HttpClient)
+  private readonly _config = inject(ConfigService)
 
   create(admin: AdminPayload): Promise<void> {
     return firstValueFrom(
@@ -23,6 +22,6 @@ export class RegisterAdminDataService {
         phone: admin.phone,
         roles: admin.roles,
       }),
-    );
+    )
   }
 }

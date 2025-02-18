@@ -1,15 +1,14 @@
-import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
+import { ButtonComponent } from '@/client/shared/components'
+import { CommonModule } from '@angular/common'
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core'
+import { MatButtonModule } from '@angular/material/button'
 import {
   MAT_DIALOG_DATA,
   MatDialogActions,
   MatDialogClose,
   MatDialogContent,
   MatDialogTitle,
-} from '@angular/material/dialog';
-
-import { ButtonComponent } from '@client/shared/components';
+} from '@angular/material/dialog'
 
 @Component({
   selector: 'ja-dialog',
@@ -26,9 +25,9 @@ import { ButtonComponent } from '@client/shared/components';
   templateUrl: './dialog.component.html',
 })
 export class DialogComponent {
-  readonly data = inject(MAT_DIALOG_DATA);
+  readonly data = inject(MAT_DIALOG_DATA)
 
   handleClick() {
-    this.data.onClick();
+    this.data.onClick()
   }
 }

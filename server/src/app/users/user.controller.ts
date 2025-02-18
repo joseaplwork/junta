@@ -1,9 +1,8 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Permissions } from '@/server/decorators'
+import { Permission } from '@/server/enums'
+import { Body, Controller, Get, Post } from '@nestjs/common'
 
-import { Permissions } from '@server/decorators';
-import { Permission } from '@server/enums';
-
-import { UserService } from './user.service';
+import { UserService } from './user.service'
 
 @Controller()
 export class UserController {
@@ -12,7 +11,7 @@ export class UserController {
   @Get('/user')
   @Permissions(Permission.USER_READ)
   getAllUsers() {
-    return this.app.findAll();
+    return this.app.findAll()
   }
 
   @Post('/user')
@@ -22,6 +21,6 @@ export class UserController {
     @Body('surname') surname: string,
     @Body('phone') phoneNumber: string,
   ) {
-    return this.app.createOne({ name, surname, phoneNumber });
+    return this.app.createOne({ name, surname, phoneNumber })
   }
 }

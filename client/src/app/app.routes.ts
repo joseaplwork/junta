@@ -1,13 +1,13 @@
-import { Routes } from '@angular/router';
+import { Routes } from '@angular/router'
 
-import { AuthGuard, AuthRedirectGuard } from './guards';
-import { AdminDashboardLayoutComponent } from './layout';
+import { AuthGuard, AuthRedirectGuard } from './guards'
+import { AdminDashboardLayoutComponent } from './layout'
 import {
   CreateAdminPageComponent,
   CreateUserPageComponent,
   DashboardPageComponent,
   LoginPageComponent,
-} from './pages';
+} from './pages'
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -32,4 +32,4 @@ export const routes: Routes = [
       },
     ],
   },
-];
+]

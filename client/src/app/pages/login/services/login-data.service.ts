@@ -1,24 +1,23 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
-import { firstValueFrom } from 'rxjs';
-
-import { ConfigService } from '@client/shared/services';
+import { ConfigService } from '@/client/shared/services'
+import { HttpClient } from '@angular/common/http'
+import { Injectable, inject } from '@angular/core'
+import { firstValueFrom } from 'rxjs'
 
 @Injectable({
   providedIn: 'root',
 })
 export class LoginService {
-  private readonly _http = inject(HttpClient);
-  private readonly _config = inject(ConfigService);
+  private readonly _http = inject(HttpClient)
+  private readonly _config = inject(ConfigService)
 
   signIn(email: string, password: string): Promise<{ accessToken: string }> {
     const options = {
       withCredentials: true,
-    };
+    }
     const data = {
       email,
       password,
-    };
+    }
 
     return firstValueFrom(
       this._http.post<{ accessToken: string }>(
@@ -26,6 +25,6 @@ export class LoginService {
         data,
         options,
       ),
-    );
+    )
   }
 }

@@ -1,1 +1,1 @@
-export * from './admin-dashboard-layout.component';
+export * from './admin-dashboard-layout.component'

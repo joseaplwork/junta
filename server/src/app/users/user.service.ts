@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Injectable } from '@nestjs/common'
+import { InjectRepository } from '@nestjs/typeorm'
+import { Repository } from 'typeorm'
 
-import { User } from './user.entity';
-import { UserPayload } from './user.interface';
+import { User } from './user.entity'
+import { UserPayload } from './user.interface'
 
 @Injectable()
 export class UserService {
@@ -13,7 +13,7 @@ export class UserService {
   ) {}
 
   findAll(): Promise<User[]> {
-    return this.usersRepository.find();
+    return this.usersRepository.find()
   }
 
   createOne({ name, surname, phoneNumber }: UserPayload): Promise<User> {
@@ -21,8 +21,8 @@ export class UserService {
       name,
       surname,
       phone_number: phoneNumber,
-    });
+    })
 
-    return this.usersRepository.save(user);
+    return this.usersRepository.save(user)
   }
 }

@@ -1,6 +1,6 @@
-import { CommonModule } from '@angular/common';
-import { CUSTOM_ELEMENTS_SCHEMA, Component, input } from '@angular/core';
-import { MatIconModule } from '@angular/material/icon';
+import { CommonModule } from '@angular/common'
+import { CUSTOM_ELEMENTS_SCHEMA, Component, input } from '@angular/core'
+import { MatIconModule } from '@angular/material/icon'
 
 @Component({
   selector: 'ja-icon',
@@ -12,6 +12,6 @@ import { MatIconModule } from '@angular/material/icon';
   `,
 })
 export class IconComponent {
-  readonly name = input('');
-  readonly label = input('');
+  readonly name = input('')
+  readonly label = input('')
 }

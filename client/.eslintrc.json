@@ -11,7 +11,7 @@
         "plugin:@nx/angular",
         "plugin:@angular-eslint/template/process-inline-templates",
         "google",
-        "plugin:prettier/recommended"
+        "plugin:prettier"
       ],
       "rules": {
         "require-jsdoc": "off",
@@ -34,6 +34,12 @@
             "type": "element",
             "prefix": ["app", "ja"],
             "style": "kebab-case"
+          }
+        ],
+        "prettier/prettier": [
+          "error",
+          {
+            "semi": false
           }
         ]
       }

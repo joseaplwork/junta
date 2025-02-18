@@ -1,6 +1,6 @@
-import { Component, input } from '@angular/core';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
+import { Component, input } from '@angular/core'
+import { MatFormFieldModule } from '@angular/material/form-field'
+import { MatSelectModule } from '@angular/material/select'
 
 @Component({
   selector: 'ja-select',
@@ -9,5 +9,5 @@ import { MatSelectModule } from '@angular/material/select';
   templateUrl: './select.component.html',
 })
 export class SelectComponent {
-  readonly multi = input(false);
+  readonly multi = input(false)
 }
