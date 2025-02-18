@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common'
 import { Request, Response } from 'express'
 
-import { Admin } from '@/server/admins/admin.entity'
+import { Admin } from '@/server/admins'
 import { Public, Roles } from '@/server/decorators'
 import { Role } from '@/server/enums'
 

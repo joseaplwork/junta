@@ -2,7 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common'
 import { PassportStrategy } from '@nestjs/passport'
 import { Strategy } from 'passport-local'
 
-import { Admin } from '@/server/admins/admin.entity'
+import { Admin } from '@/server/admins'
 
 import { AuthService } from './auth.service'
 

@@ -7,7 +7,7 @@ import {
 } from 'typeorm'
 
 import { Role } from '@/server/enums'
-import { User } from '@/server/users/user.entity'
+import { User } from '@/server/users'
 
 @Entity('Administrators')
 export class Admin {

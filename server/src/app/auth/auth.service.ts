@@ -7,8 +7,7 @@ import { JwtService } from '@nestjs/jwt'
 import * as bcrypt from 'bcrypt'
 import { randomUUID } from 'crypto'
 
-import { Admin } from '@/server/admins/admin.entity'
-import { AdminService } from '@/server/admins/admin.service'
+import { Admin, AdminService } from '@/server/admins'
 import { RolePermissionMapping } from '@/server/enums'
 
 import { AuthTokenPayload } from './auth.interface'

@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm'
 import * as bcrypt from 'bcrypt'
 import { Repository } from 'typeorm'
 
-import { UserService } from '@/server/users/user.service'
+import { UserService } from '@/server/users'
 
 import { Admin } from './admin.entity'
 import { AdminPayload } from './admin.interface'
