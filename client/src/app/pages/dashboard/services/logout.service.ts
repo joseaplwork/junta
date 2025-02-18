@@ -13,17 +13,13 @@ export class LogoutService {
   private readonly _session = inject(AdminSessionService)
 
   async endSession(): Promise<void> {
-    try {
-      await this._requestLogout()
+    await this._requestLogout()
 
-      this._session.endSessionAndRedirect()
-    } catch {
-      throw new Error('Failed to logout')
-    }
+    this._session.endSessionAndRedirect()
   }
 
   private async _requestLogout(): Promise<void> {
-    await firstValueFrom<unknown>(
+    await firstValueFrom(
       this._http.get(`${this._config.api.auth}/logout`, {
         withCredentials: true,
       }),
