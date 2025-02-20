@@ -7,20 +7,13 @@
   "overrides": [
     {
       "files": ["*.ts"],
-      "extends": ["google", "plugin:prettier/recommended"],
+      "extends": [
+        "plugin:@typescript-eslint/recommended",
+        "plugin:@typescript-eslint/stylistic",
+        "plugin:prettier/recommended"
+      ],
       "rules": {
-        "require-jsdoc": "off",
-        "import/prefer-default-export": "off",
-        "import/no-extraneous-dependencies": "off",
-        "no-underscore-dangle": "off",
-        "class-methods-use-this": "off",
-        "new-cap": "off",
-        "@typescript-eslint/no-unused-vars": [
-          "warn",
-          {
-            "caughtErrorsIgnorePattern": "^_"
-          }
-        ]
+        "prettier/prettier": "error"
       }
     }
   ]

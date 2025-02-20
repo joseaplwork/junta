@@ -54,14 +54,14 @@ export class CreateAdminPageComponent {
         roles: (roles as Role[]) ?? [],
       })
 
-      this._redirectToDashboard()
+      await this._redirectToDashboard()
     } catch {
       this._displayFormError()
     }
   }
 
-  private _redirectToDashboard() {
-    this._router.navigate(['/dashboard'])
+  private async _redirectToDashboard() {
+    await this._router.navigate(['/dashboard'])
   }
 
   private _displayFormError = (): void => {

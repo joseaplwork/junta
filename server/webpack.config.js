@@ -1,5 +1,5 @@
-const { composePlugins, withNx } = require('@nx/webpack');
-const webpack = require('webpack');
+const { composePlugins, withNx } = require('@nx/webpack')
+const webpack = require('webpack')
 
 module.exports = composePlugins(
   withNx({
@@ -32,19 +32,19 @@ module.exports = composePlugins(
             'react-native-sqlite-storage',
             'mssql',
             // etc...
-          ];
+          ]
           if (!lazyImports.includes(resource)) {
-            return false;
+            return false
           }
           try {
-            require.resolve(resource);
+            require.resolve(resource)
           } catch (err) {
-            return true;
+            return true
           }
-          return false;
+          return false
         },
       }),
-    );
-    return config;
+    )
+    return config
   },
-);
+)

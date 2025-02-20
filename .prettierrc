@@ -7,8 +7,6 @@
   "trailingComma": "all",
   "bracketSameLine": true,
   "printWidth": 80,
-  "importOrderSeparation": true,
-  "importOrderSortSpecifiers": true,
   "semi": false,
   "importOrder": [
     "<THIRD_PARTY_MODULES>",
@@ -22,7 +20,9 @@
     "decorators-legacy"
   ],
   "plugins": [
-    "prettier-plugin-tailwindcss",
-    "@trivago/prettier-plugin-sort-imports"
-  ]
+    "@trivago/prettier-plugin-sort-imports",
+    "prettier-plugin-tailwindcss"
+  ],
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true
 }

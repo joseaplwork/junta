@@ -4,11 +4,6 @@
   "parserOptions": {
     "project": "./tsconfig.base.json"
   },
-  "settings": {
-    "import/resolver": {
-      "typescript": {}
-    }
-  },
   "plugins": ["@nx", "import"],
   "overrides": [
     {
@@ -26,43 +21,7 @@
               }
             ]
           }
-        ],
-        "import/order": [
-          "error",
-          {
-            "newlines-between": "always",
-            "groups": [
-              ["builtin", "external"],
-              "internal",
-              "parent",
-              "sibling",
-              "index"
-            ],
-            "pathGroups": [
-              {
-                "pattern": "@/server/**",
-                "group": "internal"
-              },
-              {
-                "pattern": "@/client/**",
-                "group": "internal"
-              }
-            ],
-            "pathGroupsExcludedImportTypes": ["builtin"],
-            "alphabetize": {
-              "order": "asc",
-              "caseInsensitive": true
-            }
-          }
         ]
-      }
-    },
-    {
-      "files": ["*.ts", "*.tsx"],
-      "extends": ["plugin:@nx/typescript"],
-      "rules": {
-        "@typescript-eslint/no-extra-semi": "error",
-        "no-extra-semi": "off"
       }
     },
     {
