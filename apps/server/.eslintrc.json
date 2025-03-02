@@ -1,8 +1,8 @@
 {
-  "extends": ["../.eslintrc.json"],
+  "extends": ["../../.eslintrc.json"],
   "ignorePatterns": ["!**/*", "webpack.config.js"],
   "parserOptions": {
-    "project": ["server/tsconfig*.json"]
+    "project": ["apps/server/tsconfig*.json"]
   },
   "overrides": [
     {

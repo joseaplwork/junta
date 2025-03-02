@@ -75,9 +75,6 @@
     "vite-tsconfig-paths": "~4.2.0",
     "vitest": "1.6.0"
   },
-  "workspaces": [
-    "packages/*"
-  ],
   "dependencies": {
     "@angular/animations": "^19.0.5",
     "@angular/cdk": "^19.0.4",

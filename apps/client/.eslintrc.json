@@ -1,8 +1,8 @@
 {
-  "extends": ["../.eslintrc.json"],
+  "extends": ["../../.eslintrc.json"],
   "ignorePatterns": ["!**/*", "index.html", "tailwind.config.js"],
   "parserOptions": {
-    "project": ["client/tsconfig*.json"]
+    "project": ["apps/client/tsconfig*.json"]
   },
   "overrides": [
     {
@@ -29,7 +29,7 @@
     {
       "files": ["*.html"],
       "parserOptions": {
-        "project": ["client/tsconfig*.json"]
+        "project": ["apps/client/tsconfig*.json"]
       },
       "extends": ["plugin:@nx/angular-template"],
       "rules": {}
