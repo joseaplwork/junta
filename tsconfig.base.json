@@ -5,6 +5,8 @@
     "sourceMap": true,
     "declaration": false,
     "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": true,
@@ -16,6 +18,9 @@
     "baseUrl": ".",
     "paths": {
       "@/client/*": ["apps/client/src/app/*"],
+      "@/client/components*": ["apps/client/src/app/shared/components/*"],
+      "@/client/interfaces*": ["apps/client/src/app/shared/interfaces/*"],
+      "@/client/services*": ["apps/client/src/app/shared/services/*"],
       "@/server/*": ["apps/server/src/app/*"]
     }
   },

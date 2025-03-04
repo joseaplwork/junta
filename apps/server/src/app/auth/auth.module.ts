@@ -2,8 +2,10 @@ import { Module } from '@nestjs/common'
 import { APP_GUARD } from '@nestjs/core'
 import { JwtModule } from '@nestjs/jwt'
 
-import { AdminModule } from '@/server/admins'
-import { AuthGuard, PermissionsGuard, RolesGuard } from '@/server/guards'
+import { AdminModule } from '@/server/admins/admin.module'
+import { AuthGuard } from '@/server/guards/auth.guard'
+import { PermissionsGuard } from '@/server/guards/permissions.guard'
+import { RolesGuard } from '@/server/guards/roles.guard'
 
 import { jwtConstants } from './auth.constants'
 import { AuthController } from './auth.controller'

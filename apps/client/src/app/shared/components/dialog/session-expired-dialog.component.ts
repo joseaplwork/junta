@@ -8,7 +8,8 @@ import {
 import { MatDialog, MatDialogRef } from '@angular/material/dialog'
 import { take } from 'rxjs'
 
-import { AdminSessionService, AuthService } from '@/client/shared/services'
+import { AdminSessionService } from '@/client/services/admin-session.service'
+import { AuthService } from '@/client/services/auth.service'
 
 import { DialogComponent } from './dialog.component'
 

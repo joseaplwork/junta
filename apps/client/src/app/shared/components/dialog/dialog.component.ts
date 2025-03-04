@@ -9,7 +9,7 @@ import {
   MatDialogTitle,
 } from '@angular/material/dialog'
 
-import { ButtonComponent } from '@/client/shared/components'
+import { ButtonComponent } from '@/client/components/button/button.component'
 
 @Component({
   selector: 'ja-dialog',

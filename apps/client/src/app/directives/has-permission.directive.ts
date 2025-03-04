@@ -6,8 +6,8 @@ import {
   input,
 } from '@angular/core'
 
-import { AdminProfileService } from '@/client/shared/services'
-import { Permission } from '@/server/enums'
+import { AdminProfileService } from '@/client/services/admin-profile.service'
+import { Permission } from '@/server/enums/permission.enum'
 
 @Directive({
   selector: '[hasPermission]',

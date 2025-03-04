@@ -1,7 +1,8 @@
 import { Body, Controller, Post } from '@nestjs/common'
 
-import { Permissions } from '@/server/decorators'
-import { Permission, Role } from '@/server/enums'
+import { Permissions } from '@/server/decorators/permissions.decorator'
+import { Permission } from '@/server/enums/permission.enum'
+import { Role } from '@/server/enums/role.enum'
 
 import { Admin } from './admin.entity'
 import { AdminService } from './admin.service'

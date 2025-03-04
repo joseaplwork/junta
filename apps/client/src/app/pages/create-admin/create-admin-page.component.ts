@@ -3,13 +3,11 @@ import { Component, inject } from '@angular/core'
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
 import { Router, RouterModule } from '@angular/router'
 
-import {
-  ButtonComponent,
-  IconButtonComponent,
-  InputFieldComponent,
-  SelectComponent,
-} from '@/client/shared/components'
-import { Role } from '@/server/enums'
+import { ButtonComponent } from '@/client/components/button/button.component'
+import { IconButtonComponent } from '@/client/components/icon-button/icon-button.component'
+import { InputFieldComponent } from '@/client/components/input-field/input-field.component'
+import { SelectComponent } from '@/client/components/select/select.component'
+import { Role } from '@/server/enums/role.enum'
 
 import { RegisterAdminDataService } from './services/register-admin-data.service'
 

@@ -3,11 +3,9 @@ import { Component, inject } from '@angular/core'
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
 import { Router, RouterModule } from '@angular/router'
 
-import {
-  ButtonComponent,
-  IconButtonComponent,
-  InputFieldComponent,
-} from '@/client/shared/components'
+import { ButtonComponent } from '@/client/components/button/button.component'
+import { IconButtonComponent } from '@/client/components/icon-button/icon-button.component'
+import { InputFieldComponent } from '@/client/components/input-field/input-field.component'
 
 import { RegisterUserDataService } from './services/register-user-data.service'
 

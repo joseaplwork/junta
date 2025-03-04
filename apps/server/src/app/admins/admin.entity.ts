@@ -6,8 +6,8 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm'
 
-import { Role } from '@/server/enums'
-import { User } from '@/server/users'
+import { Role } from '@/server/enums/role.enum'
+import { User } from '@/server/users/user.entity'
 
 @Entity('Administrators')
 export class Admin {

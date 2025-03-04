@@ -2,7 +2,8 @@ import { HttpClient } from '@angular/common/http'
 import { Injectable, inject } from '@angular/core'
 import { firstValueFrom } from 'rxjs'
 
-import { AdminSessionService, ConfigService } from '@/client/shared/services'
+import { AdminSessionService } from '@/client/services/admin-session.service'
+import { ConfigService } from '@/client/services/config.service'
 
 @Injectable({
   providedIn: 'root',

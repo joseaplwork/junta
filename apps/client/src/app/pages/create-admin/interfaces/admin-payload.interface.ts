@@ -1,4 +1,4 @@
-import { Role } from '@/server/enums'
+import { Role } from '@/server/enums/role.enum'
 
 export interface AdminPayload {
   email: string

@@ -1,8 +1,9 @@
 import { Component, OnInit, inject } from '@angular/core'
 import { RouterOutlet } from '@angular/router'
 
-import { SessionExpiredDialogComponent } from '@/client/shared/components'
-import { AdminProfileService, AppStateService } from '@/client/shared/services'
+import { SessionExpiredDialogComponent } from '@/client/components/dialog/session-expired-dialog.component'
+import { AdminProfileService } from '@/client/services/admin-profile.service'
+import { AppStateService } from '@/client/services/app-state.service'
 
 @Component({
   imports: [RouterOutlet, SessionExpiredDialogComponent],
