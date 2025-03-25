@@ -1,5 +1,5 @@
 {
-  "name": "client",
+  "name": "@junta/client",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
   "prefix": "app",
@@ -70,7 +70,8 @@
     "lint": {
       "executor": "@nx/eslint:lint",
       "options": {
-        "fix": true
+        "fix": true,
+        "printConfig": ""
       }
     },
     "test": {

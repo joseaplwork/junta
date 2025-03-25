@@ -13,7 +13,6 @@
           "error",
           {
             "enforceBuildableLibDependency": true,
-            "allow": ["@/client/**", "@/server/**"],
             "depConstraints": [
               {
                 "sourceTag": "*",

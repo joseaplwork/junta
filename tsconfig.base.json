@@ -12,17 +12,33 @@
     "importHelpers": true,
     "target": "es2015",
     "module": "esnext",
-    "lib": ["es2020", "dom"],
+    "lib": [
+      "es2020",
+      "dom"
+    ],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@/client/*": ["apps/client/src/app/*"],
-      "@/client/components*": ["apps/client/src/app/shared/components/*"],
-      "@/client/interfaces*": ["apps/client/src/app/shared/interfaces/*"],
-      "@/client/services*": ["apps/client/src/app/shared/services/*"],
-      "@/server/*": ["apps/server/src/app/*"]
+      "@/client/*": [
+        "apps/client/src/app/*"
+      ],
+      "@/client/components*": [
+        "apps/client/src/app/shared/components/*"
+      ],
+      "@/client/interfaces*": [
+        "apps/client/src/app/shared/interfaces/*"
+      ],
+      "@/client/services*": [
+        "apps/client/src/app/shared/services/*"
+      ],
+      "@/api/*": [
+        "apps/api/src/app/*"
+      ]
     }
   },
-  "exclude": ["node_modules", "tmp"]
+  "exclude": [
+    "node_modules",
+    "tmp"
+  ]
 }
