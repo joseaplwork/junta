@@ -10,7 +10,8 @@
   "semi": false,
   "importOrder": [
     "<THIRD_PARTY_MODULES>",
-    "^@/(client|server)(.*)$",
+    "^@(junta)(.*)$",
+    "^@/(admin|api)(.*)$",
     "^../",
     "^[./]"
   ],
@@ -19,10 +20,7 @@
     "classProperties",
     "decorators-legacy"
   ],
-  "plugins": [
-    "@trivago/prettier-plugin-sort-imports",
-    "prettier-plugin-tailwindcss"
-  ],
+  "plugins": ["@trivago/prettier-plugin-sort-imports"],
   "importOrderSeparation": true,
   "importOrderSortSpecifiers": true
 }

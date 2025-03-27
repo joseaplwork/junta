@@ -12,6 +12,7 @@
         "@nx/enforce-module-boundaries": [
           "error",
           {
+            "allow": ["@/**"],
             "enforceBuildableLibDependency": true,
             "depConstraints": [
               {
