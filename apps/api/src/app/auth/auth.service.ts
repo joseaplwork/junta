@@ -7,7 +7,7 @@ import { JwtService } from '@nestjs/jwt'
 import * as bcrypt from 'bcrypt'
 import { randomUUID } from 'crypto'
 
-import { RolePermissionMapping } from '@junta/access/enums/role-permission'
+import { RolePermissionMapping } from '@junta/shared/enums/role-permission'
 
 import { Admin } from '@/api/admins/admin.entity'
 import { AdminService } from '@/api/admins/admin.service'

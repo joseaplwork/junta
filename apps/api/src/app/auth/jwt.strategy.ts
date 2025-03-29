@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common'
 import { PassportStrategy } from '@nestjs/passport'
 import { ExtractJwt, Strategy } from 'passport-jwt'
 
-import { Permission } from '@junta/access/enums/permission'
-import { Role } from '@junta/access/enums/role'
+import { Permission } from '@junta/shared/enums/permission'
+import { Role } from '@junta/shared/enums/role'
 
 import { jwtConstants } from './auth.constants'
 

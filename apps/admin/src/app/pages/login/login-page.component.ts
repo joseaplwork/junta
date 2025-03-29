@@ -2,6 +2,8 @@ import { CommonModule } from '@angular/common'
 import { Component, inject } from '@angular/core'
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
 
+import { myFunction } from '@junta/my-function'
+
 import { ButtonComponent } from '@/admin/shared/components/button/button.component'
 import { InputFieldComponent } from '@/admin/shared/components/input-field/input-field.component'
 import { AdminSessionService } from '@/admin/shared/services/admin-session.service'
@@ -21,6 +23,10 @@ export class LoginPageComponent {
   private readonly _fb = inject(FormBuilder)
   private readonly _login = inject(LoginService)
   private readonly _session = inject(AdminSessionService)
+
+  constructor() {
+    myFunction()
+  }
 
   showFormError = false
   form = this._fb.group({

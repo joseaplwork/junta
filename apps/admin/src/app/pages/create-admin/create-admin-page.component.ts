@@ -3,7 +3,7 @@ import { Component, inject } from '@angular/core'
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
 import { Router, RouterModule } from '@angular/router'
 
-import { Role } from '@junta/access/enums/role'
+import { Role } from '@junta/shared/enums/role'
 
 import { ButtonComponent } from '@/admin/shared/components/button/button.component'
 import { IconButtonComponent } from '@/admin/shared/components/icon-button/icon-button.component'

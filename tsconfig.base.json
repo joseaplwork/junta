@@ -19,7 +19,7 @@
     "paths": {
       "@/admin/*": ["apps/admin/src/app/*"],
       "@/api/*": ["apps/api/src/app/*"],
-      "@junta/access/enums/*": ["libs/access/enums/src/lib/*"]
+      "@junta/shared/enums/*": ["libs/shared/enums/src/lib/*"]
     }
   },
   "exclude": ["node_modules", "tmp"]

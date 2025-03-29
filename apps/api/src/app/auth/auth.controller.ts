@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common'
 import { Request, Response } from 'express'
 
-import { Role } from '@junta/access/enums/role'
+import { Role } from '@junta/shared/enums/role'
 
 import { Admin } from '@/api/admins/admin.entity'
 import { Public } from '@/api/decorators/is-public.decorator'

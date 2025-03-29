@@ -6,7 +6,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm'
 
-import { Role } from '@junta/access/enums/role'
+import { Role } from '@junta/shared/enums/role'
 
 import { User } from '@/api/users/user.entity'
 

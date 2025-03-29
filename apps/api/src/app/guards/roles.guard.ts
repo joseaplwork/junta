@@ -1,7 +1,7 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
 
-import { Role } from '@junta/access/enums/role'
+import { Role } from '@junta/shared/enums/role'
 
 import { ROLES_KEY } from '@/api/decorators/roles.decorator'
 

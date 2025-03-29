@@ -6,7 +6,7 @@ import {
   input,
 } from '@angular/core'
 
-import { Permission } from '@junta/access/enums/permission'
+import { Permission } from '@junta/shared/enums/permission'
 
 import { AdminProfileService } from '@/admin/shared/services/admin-profile.service'
 

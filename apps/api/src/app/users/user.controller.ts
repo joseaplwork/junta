@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Post } from '@nestjs/common'
 
-import { Permission } from '@junta/access/enums/permission'
+import { Permission } from '@junta/shared/enums/permission'
 
 import { Permissions } from '@/api/decorators/permissions.decorator'
 

@@ -1,7 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core'
 import { JwtPayload, jwtDecode } from 'jwt-decode'
 
-import { Permission } from '@junta/access/enums/permission'
+import { Permission } from '@junta/shared/enums/permission'
 
 import { Profile } from '@/admin/shared/interfaces/profile.interface'
 
