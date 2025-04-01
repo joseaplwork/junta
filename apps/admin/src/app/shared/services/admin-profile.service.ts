@@ -3,7 +3,7 @@ import { JwtPayload, jwtDecode } from 'jwt-decode'
 
 import { Permission } from '@junta/shared/enums/permission'
 
-import { Profile } from '@/admin/shared/interfaces/profile.interface'
+import { Profile } from '@/admin/shared/interfaces/profile'
 
 import { AuthService } from './auth.service'
 
