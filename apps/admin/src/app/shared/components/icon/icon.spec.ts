@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing'
 
-import { IconButton } from './icon-button.component'
+import { IconButton } from './icon-button'
 
 describe('IconButton', () => {
   let component: IconButton

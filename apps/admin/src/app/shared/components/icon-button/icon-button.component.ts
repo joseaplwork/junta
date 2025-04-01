@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common'
 import { CUSTOM_ELEMENTS_SCHEMA, Component, input } from '@angular/core'
 
-import { IconComponent } from '../icon/icon.component'
+import { Icon } from '../icon'
 
 @Component({
   selector: 'ja-icon-button',
-  imports: [CommonModule, IconComponent],
+  imports: [CommonModule, Icon],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './icon-button.component.html',
 })
