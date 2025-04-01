@@ -9,13 +9,13 @@ import {
   MatDialogTitle,
 } from '@angular/material/dialog'
 
-import { ButtonComponent } from '@/admin/shared/components/button/button.component'
+import { Button } from '@/admin/shared/components/button/button'
 
 @Component({
   selector: 'ja-dialog',
   imports: [
     CommonModule,
-    ButtonComponent,
+    Button,
     MatButtonModule,
     MatDialogTitle,
     MatDialogContent,

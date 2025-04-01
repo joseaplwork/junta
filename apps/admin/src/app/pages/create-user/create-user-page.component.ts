@@ -3,8 +3,8 @@ import { Component, inject } from '@angular/core'
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
 import { Router, RouterModule } from '@angular/router'
 
-import { ButtonComponent } from '@/admin/shared/components/button/button.component'
-import { IconButtonComponent } from '@/admin/shared/components/icon-button/icon-button.component'
+import { Button } from '@/admin/shared/components/button/button'
+import { IconButton } from '@/admin/shared/components/icon-button/icon-button.component'
 import { InputFieldComponent } from '@/admin/shared/components/input-field/input-field.component'
 
 import { RegisterUserDataService } from './services/register-user-data.service'
@@ -13,8 +13,8 @@ import { RegisterUserDataService } from './services/register-user-data.service'
   templateUrl: './create-user-page.component.html',
   imports: [
     CommonModule,
-    ButtonComponent,
-    IconButtonComponent,
+    Button,
+    IconButton,
     InputFieldComponent,
     ReactiveFormsModule,
     RouterModule,

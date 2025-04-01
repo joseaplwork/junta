@@ -16,6 +16,10 @@
       ],
       "rules": {
         "prettier/prettier": "error",
+        "@angular-eslint/directive-class-suffix": "off",
+        "@angular-eslint/component-class-suffix": "off",
+        "@angular-eslint/service-class-suffix": "off",
+        "@angular-eslint/guard-class-suffix": "off",
         "@angular-eslint/component-selector": [
           "error",
           {

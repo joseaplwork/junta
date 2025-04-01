@@ -13,7 +13,7 @@ import { AdminProfileService } from '@/admin/shared/services/admin-profile.servi
 @Directive({
   selector: '[hasPermission]',
 })
-export class HasPermissionDirective {
+export class HasPermission {
   private readonly _profile = inject(AdminProfileService)
   private readonly _viewContainer = inject(ViewContainerRef)
   private readonly _templateRef = inject(TemplateRef)

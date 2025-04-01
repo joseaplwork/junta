@@ -9,7 +9,7 @@ import { IconComponent } from '../icon/icon.component'
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './icon-button.component.html',
 })
-export class IconButtonComponent {
+export class IconButton {
   readonly kind = input<'filled' | 'fab' | 'extended-fab' | 'text'>('text')
   readonly name = input('')
   readonly disabled = input(false)

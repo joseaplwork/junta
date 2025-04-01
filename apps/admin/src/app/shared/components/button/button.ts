@@ -8,7 +8,7 @@ import { IconComponent } from '../icon/icon.component'
   selector: 'ja-button',
   imports: [CommonModule, MatButtonModule, IconComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  templateUrl: './button.component.html',
+  templateUrl: './button.html',
   styles: [
     `
       :host {
@@ -17,7 +17,7 @@ import { IconComponent } from '../icon/icon.component'
     `,
   ],
 })
-export class ButtonComponent {
+export class Button {
   readonly kind = input<'elevated' | 'filled' | 'outlined' | 'text'>('filled')
   readonly icon = input('')
   readonly expand = input(false)

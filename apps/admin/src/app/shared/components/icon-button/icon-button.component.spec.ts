@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing'
 
-import { IconButtonComponent } from './icon-button.component'
+import { IconButton } from './icon-button.component'
 
-describe('IconButtonComponent', () => {
-  let component: IconButtonComponent
-  let fixture: ComponentFixture<IconButtonComponent>
+describe('IconButton', () => {
+  let component: IconButton
+  let fixture: ComponentFixture<IconButton>
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [IconButtonComponent],
+      imports: [IconButton],
     }).compileComponents()
 
-    fixture = TestBed.createComponent(IconButtonComponent)
+    fixture = TestBed.createComponent(IconButton)
     component = fixture.componentInstance
     fixture.detectChanges()
   })

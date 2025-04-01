@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common'
 import { Component, inject } from '@angular/core'
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
 
-import { ButtonComponent } from '@/admin/shared/components/button/button.component'
+import { Button } from '@/admin/shared/components/button/button'
 import { InputFieldComponent } from '@/admin/shared/components/input-field/input-field.component'
 import { AdminSessionService } from '@/admin/shared/services/admin-session.service'
 
@@ -10,12 +10,7 @@ import { LoginService } from './services/login-data.service'
 
 @Component({
   templateUrl: './login-page.component.html',
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    InputFieldComponent,
-    ButtonComponent,
-  ],
+  imports: [CommonModule, ReactiveFormsModule, InputFieldComponent, Button],
 })
 export class LoginPageComponent {
   private readonly _fb = inject(FormBuilder)
