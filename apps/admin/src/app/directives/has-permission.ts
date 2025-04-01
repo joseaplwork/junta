@@ -8,13 +8,13 @@ import {
 
 import { Permission } from '@junta/shared/enums/permission'
 
-import { AdminProfileService } from '@/admin/shared/services/admin-profile.service'
+import { AdminProfile } from '@/admin/shared/services/admin-profile'
 
 @Directive({
   selector: '[hasPermission]',
 })
 export class HasPermission {
-  private readonly _profile = inject(AdminProfileService)
+  private readonly _profile = inject(AdminProfile)
   private readonly _viewContainer = inject(ViewContainerRef)
   private readonly _templateRef = inject(TemplateRef)
 

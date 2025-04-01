@@ -8,11 +8,11 @@ import {
 import { Injectable, inject } from '@angular/core'
 import { Observable, catchError, switchMap, throwError } from 'rxjs'
 
-import { AuthService } from '@/admin/shared/services/auth.service'
+import { AccessTokenManager } from '@/admin/shared/services/access-token-manager'
 
 @Injectable()
-export class AuthInterceptor implements HttpInterceptor {
-  private readonly _auth = inject(AuthService)
+export class InjectAuthorizationInRequest implements HttpInterceptor {
+  private readonly _auth = inject(AccessTokenManager)
 
   private _loginUrl = '/api/auth/login'
   private _isRefreshing = false

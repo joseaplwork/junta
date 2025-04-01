@@ -2,8 +2,8 @@ import { Component, OnInit, inject } from '@angular/core'
 import { RouterOutlet } from '@angular/router'
 
 import { SessionExpiredDialog } from '@/admin/shared/components/dialog/session-expired-dialog'
-import { AdminProfileService } from '@/admin/shared/services/admin-profile.service'
-import { AppStateService } from '@/admin/shared/services/app-state.service'
+import { AdminProfile } from '@/admin/shared/services/admin-profile'
+import { AppState } from '@/admin/shared/services/app-state'
 
 @Component({
   imports: [RouterOutlet, SessionExpiredDialog],
@@ -14,9 +14,9 @@ import { AppStateService } from '@/admin/shared/services/app-state.service'
     <ja-session-expired-dialog></ja-session-expired-dialog>
   `,
 })
-export class AdminDashboardLayoutComponent implements OnInit {
-  private readonly _app = inject(AppStateService)
-  private readonly _profile = inject(AdminProfileService)
+export class AdminDashboardLayout implements OnInit {
+  private readonly _app = inject(AppState)
+  private readonly _profile = inject(AdminProfile)
 
   ngOnInit(): void {
     this._profile.set()

@@ -3,14 +3,14 @@ import { Injectable, inject } from '@angular/core'
 import { jwtDecode } from 'jwt-decode'
 import { Observable, map, tap } from 'rxjs'
 
-import { ConfigService } from './config.service'
+import { Config } from './config'
 
 @Injectable({
   providedIn: 'root',
 })
-export class AuthService {
+export class AccessTokenManager {
   private readonly _http = inject(HttpClient)
-  private readonly _config = inject(ConfigService)
+  private readonly _config = inject(Config)
 
   private ACCESS_TOKEN_KEY = 'accessToken'
 

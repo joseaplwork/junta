@@ -1,33 +1,33 @@
 import { Routes } from '@angular/router'
 
-import { AuthRedirectGuard } from './guards/auth-redirect.guard'
-import { AuthGuard } from './guards/auth.guard'
-import { AdminDashboardLayoutComponent } from './layout/admin-dashboard-layout.component'
-import { CreateAdminPageComponent } from './pages/create-admin/create-admin-page.component'
-import { CreateUserPageComponent } from './pages/create-user/create-user-page.component'
-import { DashboardPageComponent } from './pages/dashboard/dashboard-page.component'
-import { LoginPageComponent } from './pages/login/login-page.component'
+import { RouteAuthProtection } from './guards/route-auth-protection'
+import { RouteSessionRedirection } from './guards/route-session-redirection'
+import { AdminDashboardLayout } from './layout/admin-dashboard-layout'
+import { CreateAdminPage } from './pages/create-admin/create-admin-page'
+import { CreateUserPage } from './pages/create-user/create-user-page'
+import { DashboardPage } from './pages/dashboard/dashboard-page'
+import { LoginPageComponent } from './pages/login/login-page'
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   {
     path: 'login',
-    canActivate: [AuthRedirectGuard],
+    canActivate: [RouteSessionRedirection],
     component: LoginPageComponent,
   },
   {
     path: 'dashboard',
-    component: AdminDashboardLayoutComponent,
-    canActivate: [AuthGuard],
+    component: AdminDashboardLayout,
+    canActivate: [RouteAuthProtection],
     children: [
-      { path: '', component: DashboardPageComponent },
+      { path: '', component: DashboardPage },
       {
         path: 'create-admin',
-        component: CreateAdminPageComponent,
+        component: CreateAdminPage,
       },
       {
         path: 'create-user',
-        component: CreateUserPageComponent,
+        component: CreateUserPage,
       },
     ],
   },

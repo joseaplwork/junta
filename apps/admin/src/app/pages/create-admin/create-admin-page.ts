@@ -10,10 +10,10 @@ import { IconButton } from '@/admin/shared/components/icon-button'
 import { InputField } from '@/admin/shared/components/input-field'
 import { Select } from '@/admin/shared/components/select'
 
-import { RegisterAdminDataService } from './services/register-admin-data.service'
+import { RegisterAdminData } from './services/register-admin-data'
 
 @Component({
-  templateUrl: './create-admin-page.component.html',
+  templateUrl: './create-admin-page.html',
   imports: [
     Button,
     IconButton,
@@ -24,9 +24,9 @@ import { RegisterAdminDataService } from './services/register-admin-data.service
     RouterModule,
   ],
 })
-export class CreateAdminPageComponent {
+export class CreateAdminPage {
   private readonly _fb = inject(FormBuilder)
-  private readonly _admin = inject(RegisterAdminDataService)
+  private readonly _admin = inject(RegisterAdminData)
   private readonly _router = inject(Router)
 
   roles = Role

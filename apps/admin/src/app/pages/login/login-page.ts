@@ -4,18 +4,18 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
 
 import { Button } from '@/admin/shared/components/button'
 import { InputField } from '@/admin/shared/components/input-field'
-import { AdminSessionService } from '@/admin/shared/services/admin-session.service'
+import { AdminSession } from '@/admin/shared/services/admin-session'
 
-import { LoginService } from './services/login-data.service'
+import { LoginData } from './services/login-data'
 
 @Component({
-  templateUrl: './login-page.component.html',
+  templateUrl: './login-page.html',
   imports: [CommonModule, ReactiveFormsModule, InputField, Button],
 })
 export class LoginPageComponent {
   private readonly _fb = inject(FormBuilder)
-  private readonly _login = inject(LoginService)
-  private readonly _session = inject(AdminSessionService)
+  private readonly _login = inject(LoginData)
+  private readonly _session = inject(AdminSession)
 
   showFormError = false
   form = this._fb.group({

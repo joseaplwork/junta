@@ -4,7 +4,7 @@ import { Router } from '@angular/router'
 @Injectable({
   providedIn: 'root',
 })
-export class NavigationService {
+export class Navigation {
   private readonly _route = inject(Router)
 
   goToLoginPage() {

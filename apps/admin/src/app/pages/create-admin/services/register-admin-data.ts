@@ -2,16 +2,16 @@ import { HttpClient } from '@angular/common/http'
 import { Injectable, inject } from '@angular/core'
 import { firstValueFrom } from 'rxjs'
 
-import { ConfigService } from '@/admin/shared/services/config.service'
+import { Config } from '@/admin/shared/services/config'
 
-import { AdminPayload } from '../interfaces/admin-payload.interface'
+import { AdminPayload } from '../interfaces/admin-payload'
 
 @Injectable({
   providedIn: 'root',
 })
-export class RegisterAdminDataService {
+export class RegisterAdminData {
   private readonly _http = inject(HttpClient)
-  private readonly _config = inject(ConfigService)
+  private readonly _config = inject(Config)
 
   create(admin: AdminPayload): Promise<void> {
     return firstValueFrom(

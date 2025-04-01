@@ -7,10 +7,10 @@ import { Button } from '@/admin/shared/components/button'
 import { IconButton } from '@/admin/shared/components/icon-button'
 import { InputField } from '@/admin/shared/components/input-field'
 
-import { RegisterUserDataService } from './services/register-user-data.service'
+import { RegisterUserData } from './services/register-user-data'
 
 @Component({
-  templateUrl: './create-user-page.component.html',
+  templateUrl: './create-user-page.html',
   imports: [
     CommonModule,
     Button,
@@ -20,9 +20,9 @@ import { RegisterUserDataService } from './services/register-user-data.service'
     RouterModule,
   ],
 })
-export class CreateUserPageComponent {
+export class CreateUserPage {
   private readonly _fb = inject(FormBuilder)
-  private readonly _user = inject(RegisterUserDataService)
+  private readonly _user = inject(RegisterUserData)
   private readonly _router = inject(Router)
 
   showFormError = false

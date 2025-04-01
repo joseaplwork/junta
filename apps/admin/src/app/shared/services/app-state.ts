@@ -3,7 +3,7 @@ import { Injectable, signal } from '@angular/core'
 @Injectable({
   providedIn: 'root',
 })
-export class AppStateService {
+export class AppState {
   private _hasSession = signal(false)
 
   get hasSession() {

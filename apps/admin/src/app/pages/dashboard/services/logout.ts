@@ -2,16 +2,16 @@ import { HttpClient } from '@angular/common/http'
 import { Injectable, inject } from '@angular/core'
 import { firstValueFrom } from 'rxjs'
 
-import { AdminSessionService } from '@/admin/shared/services/admin-session.service'
-import { ConfigService } from '@/admin/shared/services/config.service'
+import { AdminSession } from '@/admin/shared/services/admin-session'
+import { Config } from '@/admin/shared/services/config'
 
 @Injectable({
   providedIn: 'root',
 })
-export class LogoutService {
+export class Logout {
   private readonly _http = inject(HttpClient)
-  private readonly _config = inject(ConfigService)
-  private readonly _session = inject(AdminSessionService)
+  private readonly _config = inject(Config)
+  private readonly _session = inject(AdminSession)
 
   async endSession(): Promise<void> {
     await this._requestLogout()

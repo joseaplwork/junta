@@ -5,13 +5,13 @@ import { Permission } from '@junta/shared/enums/permission'
 
 import { Profile } from '@/admin/shared/interfaces/profile'
 
-import { AuthService } from './auth.service'
+import { AccessTokenManager } from './access-token-manager'
 
 @Injectable({
   providedIn: 'root',
 })
-export class AdminProfileService implements Profile {
-  private readonly _auth = inject(AuthService)
+export class AdminProfile implements Profile {
+  private readonly _auth = inject(AccessTokenManager)
   private _id = signal<string>('')
   private _username = signal<string>('')
   private _permissions = signal<string[]>([])

@@ -2,16 +2,16 @@ import { HttpClient } from '@angular/common/http'
 import { Injectable, inject } from '@angular/core'
 import { firstValueFrom } from 'rxjs'
 
-import { ConfigService } from '@/admin/shared/services/config.service'
+import { Config } from '@/admin/shared/services/config'
 
-import { UserPayload } from '../interfaces/user-payload.interface'
+import { UserPayload } from '../interfaces/user-payload'
 
 @Injectable({
   providedIn: 'root',
 })
-export class RegisterUserDataService {
+export class RegisterUserData {
   private readonly _http = inject(HttpClient)
-  private readonly _config = inject(ConfigService)
+  private readonly _config = inject(Config)
 
   create({ name, surname, phone }: UserPayload): Promise<void> {
     const data = {

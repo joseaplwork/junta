@@ -8,8 +8,8 @@ import {
 import { MatDialog, MatDialogRef } from '@angular/material/dialog'
 import { take } from 'rxjs'
 
-import { AdminSessionService } from '@/admin/shared/services/admin-session.service'
-import { AuthService } from '@/admin/shared/services/auth.service'
+import { AccessTokenManager } from '@/admin/shared/services/access-token-manager'
+import { AdminSession } from '@/admin/shared/services/admin-session'
 
 import { Dialog } from './dialog'
 
@@ -19,8 +19,8 @@ import { Dialog } from './dialog'
   template: '',
 })
 export class SessionExpiredDialog implements OnInit, OnDestroy {
-  private readonly _auth = inject(AuthService)
-  private readonly _session = inject(AdminSessionService)
+  private readonly _auth = inject(AccessTokenManager)
+  private readonly _session = inject(AdminSession)
   private readonly _dialog = inject(MatDialog)
 
   private _interval!: ReturnType<typeof setInterval>

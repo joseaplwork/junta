@@ -4,17 +4,17 @@ import { RouterModule } from '@angular/router'
 
 import { HasPermission } from '@/admin/directives/has-permission'
 import { Button } from '@/admin/shared/components/button'
-import { AdminProfileService } from '@/admin/shared/services/admin-profile.service'
+import { AdminProfile } from '@/admin/shared/services/admin-profile'
 
-import { LogoutService } from './services/logout.service'
+import { Logout } from './services/logout'
 
 @Component({
   imports: [CommonModule, Button, HasPermission, RouterModule],
-  templateUrl: './dashboard-page.component.html',
+  templateUrl: './dashboard-page.html',
 })
-export class DashboardPageComponent {
-  private readonly _logout = inject(LogoutService)
-  readonly profile = inject(AdminProfileService)
+export class DashboardPage {
+  private readonly _logout = inject(Logout)
+  readonly profile = inject(AdminProfile)
 
   logout() {
     this._logout.endSession()
