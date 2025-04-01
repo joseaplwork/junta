@@ -20,17 +20,15 @@ import { MatInputModule } from '@angular/material/input'
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => InputFieldComponent),
+      useExisting: forwardRef(() => InputField),
       multi: true,
     },
   ],
   imports: [MatFormFieldModule, MatInputModule],
   selector: 'ja-input-field',
-  templateUrl: './input-field.component.html',
+  templateUrl: './input-field.html',
 })
-export class InputFieldComponent
-  implements ControlValueAccessor, AfterViewInit
-{
+export class InputField implements ControlValueAccessor, AfterViewInit {
   private readonly _injector = inject(Injector)
   private readonly _cdr = inject(ChangeDetectorRef)
 

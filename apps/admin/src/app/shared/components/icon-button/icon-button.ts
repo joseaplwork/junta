@@ -7,7 +7,7 @@ import { Icon } from '../icon'
   selector: 'ja-icon-button',
   imports: [CommonModule, Icon],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  templateUrl: './icon-button.component.html',
+  templateUrl: './icon-button.html',
 })
 export class IconButton {
   readonly kind = input<'filled' | 'fab' | 'extended-fab' | 'text'>('text')

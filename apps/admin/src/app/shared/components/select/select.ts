@@ -6,8 +6,8 @@ import { MatSelectModule } from '@angular/material/select'
   selector: 'ja-select',
   standalone: true,
   imports: [MatSelectModule, MatFormFieldModule],
-  templateUrl: './select.component.html',
+  templateUrl: './select.html',
 })
-export class SelectComponent {
+export class Select {
   readonly multi = input(false)
 }

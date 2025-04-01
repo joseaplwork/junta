@@ -4,8 +4,8 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
 import { Router, RouterModule } from '@angular/router'
 
 import { Button } from '@/admin/shared/components/button'
-import { IconButton } from '@/admin/shared/components/icon-button/icon-button.component'
-import { InputFieldComponent } from '@/admin/shared/components/input-field/input-field.component'
+import { IconButton } from '@/admin/shared/components/icon-button'
+import { InputField } from '@/admin/shared/components/input-field'
 
 import { RegisterUserDataService } from './services/register-user-data.service'
 
@@ -15,7 +15,7 @@ import { RegisterUserDataService } from './services/register-user-data.service'
     CommonModule,
     Button,
     IconButton,
-    InputFieldComponent,
+    InputField,
     ReactiveFormsModule,
     RouterModule,
   ],

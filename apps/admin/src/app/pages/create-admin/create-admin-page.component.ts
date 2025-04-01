@@ -6,20 +6,20 @@ import { Router, RouterModule } from '@angular/router'
 import { Role } from '@junta/shared/enums/role'
 
 import { Button } from '@/admin/shared/components/button'
-import { IconButton } from '@/admin/shared/components/icon-button/icon-button.component'
-import { InputFieldComponent } from '@/admin/shared/components/input-field/input-field.component'
-import { SelectComponent } from '@/admin/shared/components/select/select.component'
+import { IconButton } from '@/admin/shared/components/icon-button'
+import { InputField } from '@/admin/shared/components/input-field'
+import { Select } from '@/admin/shared/components/select'
 
 import { RegisterAdminDataService } from './services/register-admin-data.service'
 
 @Component({
   templateUrl: './create-admin-page.component.html',
   imports: [
-    CommonModule,
     Button,
     IconButton,
-    InputFieldComponent,
-    SelectComponent,
+    InputField,
+    Select,
+    CommonModule,
     ReactiveFormsModule,
     RouterModule,
   ],

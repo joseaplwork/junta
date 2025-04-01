@@ -3,14 +3,14 @@ import { Component, inject } from '@angular/core'
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
 
 import { Button } from '@/admin/shared/components/button'
-import { InputFieldComponent } from '@/admin/shared/components/input-field/input-field.component'
+import { InputField } from '@/admin/shared/components/input-field'
 import { AdminSessionService } from '@/admin/shared/services/admin-session.service'
 
 import { LoginService } from './services/login-data.service'
 
 @Component({
   templateUrl: './login-page.component.html',
-  imports: [CommonModule, ReactiveFormsModule, InputFieldComponent, Button],
+  imports: [CommonModule, ReactiveFormsModule, InputField, Button],
 })
 export class LoginPageComponent {
   private readonly _fb = inject(FormBuilder)
