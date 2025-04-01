@@ -3,7 +3,7 @@ import { Component, inject } from '@angular/core'
 import { RouterModule } from '@angular/router'
 
 import { HasPermission } from '@/admin/directives/has-permission'
-import { Button } from '@/admin/shared/components/button/button'
+import { Button } from '@/admin/shared/components/button'
 import { AdminProfileService } from '@/admin/shared/services/admin-profile.service'
 
 import { LogoutService } from './services/logout.service'

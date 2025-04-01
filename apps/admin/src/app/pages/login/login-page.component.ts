@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common'
 import { Component, inject } from '@angular/core'
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
 
-import { Button } from '@/admin/shared/components/button/button'
+import { Button } from '@/admin/shared/components/button'
 import { InputFieldComponent } from '@/admin/shared/components/input-field/input-field.component'
 import { AdminSessionService } from '@/admin/shared/services/admin-session.service'
 

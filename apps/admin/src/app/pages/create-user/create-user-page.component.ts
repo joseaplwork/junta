@@ -3,7 +3,7 @@ import { Component, inject } from '@angular/core'
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
 import { Router, RouterModule } from '@angular/router'
 
-import { Button } from '@/admin/shared/components/button/button'
+import { Button } from '@/admin/shared/components/button'
 import { IconButton } from '@/admin/shared/components/icon-button/icon-button.component'
 import { InputFieldComponent } from '@/admin/shared/components/input-field/input-field.component'
 

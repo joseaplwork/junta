@@ -9,7 +9,7 @@ import {
   MatDialogTitle,
 } from '@angular/material/dialog'
 
-import { Button } from '@/admin/shared/components/button/button'
+import { Button } from '@/admin/shared/components/button'
 
 @Component({
   selector: 'ja-dialog',
@@ -23,9 +23,9 @@ import { Button } from '@/admin/shared/components/button/button'
     MatDialogClose,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './dialog.component.html',
+  templateUrl: './dialog.html',
 })
-export class DialogComponent {
+export class Dialog {
   readonly data = inject(MAT_DIALOG_DATA)
 
   handleClick() {
