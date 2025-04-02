@@ -12,7 +12,7 @@ import { AccessTokenManager } from '@/admin/shared/services/access-token-manager
 
 @Injectable()
 export class InjectAuthorizationInRequest implements HttpInterceptor {
-  private readonly _auth = inject(AccessTokenManager)
+  private readonly _accessTokenManager = inject(AccessTokenManager)
 
   private _loginUrl = '/api/auth/login'
   private _isRefreshing = false
@@ -27,7 +27,7 @@ export class InjectAuthorizationInRequest implements HttpInterceptor {
     }
 
     // Add the access token to the headers for non-login requests
-    const accessToken = this._auth.getAccessToken()
+    const accessToken = this._accessTokenManager.getAccessToken()
     let authorizedReq = req
 
     if (accessToken) {
@@ -42,12 +42,12 @@ export class InjectAuthorizationInRequest implements HttpInterceptor {
           this._isRefreshing = true
 
           // Access token is expired, try refreshing
-          return this._auth.refreshAccessToken().pipe(
+          return this._accessTokenManager.refreshAccessToken().pipe(
             switchMap((newToken: string) => {
               this._isRefreshing = false
 
-              // Set the new token in _auth for in-memory storage
-              this._auth.setAccessToken(newToken)
+              // Set the new token in _accessTokenManager for in-memory storage
+              this._accessTokenManager.setAccessToken(newToken)
 
               // Use the new token for the retry
               const retriedReq = req.clone({

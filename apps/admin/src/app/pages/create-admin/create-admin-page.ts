@@ -26,7 +26,7 @@ import { RegisterAdminData } from './services/register-admin-data'
 })
 export class CreateAdminPage {
   private readonly _fb = inject(FormBuilder)
-  private readonly _admin = inject(RegisterAdminData)
+  private readonly _registerAdminData = inject(RegisterAdminData)
   private readonly _router = inject(Router)
 
   roles = Role
@@ -44,7 +44,7 @@ export class CreateAdminPage {
     const { email, password, name, surname, phone, roles } = this.form.value
 
     try {
-      await this._admin.create({
+      await this._registerAdminData.create({
         email: email ?? '',
         password: password ?? '',
         name: name ?? '',

@@ -22,7 +22,7 @@ import { RegisterUserData } from './services/register-user-data'
 })
 export class CreateUserPage {
   private readonly _fb = inject(FormBuilder)
-  private readonly _user = inject(RegisterUserData)
+  private readonly _registerUserData = inject(RegisterUserData)
   private readonly _router = inject(Router)
 
   showFormError = false
@@ -36,7 +36,7 @@ export class CreateUserPage {
     const { name, surname, phone } = this.form.value
 
     try {
-      await this._user.create({
+      await this._registerUserData.create({
         name: name ?? '',
         surname: surname ?? '',
         phone: phone ?? '',

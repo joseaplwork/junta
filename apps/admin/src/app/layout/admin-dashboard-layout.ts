@@ -15,11 +15,11 @@ import { AppState } from '@/admin/shared/services/app-state'
   `,
 })
 export class AdminDashboardLayout implements OnInit {
-  private readonly _app = inject(AppState)
+  private readonly _appState = inject(AppState)
   private readonly _profile = inject(AdminProfile)
 
   ngOnInit(): void {
     this._profile.set()
-    this._app.startSession()
+    this._appState.startSession()
   }
 }

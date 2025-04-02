@@ -12,9 +12,9 @@ import { LoginData } from './services/login-data'
   templateUrl: './login-page.html',
   imports: [CommonModule, ReactiveFormsModule, InputField, Button],
 })
-export class LoginPageComponent {
+export class LoginPage {
   private readonly _fb = inject(FormBuilder)
-  private readonly _login = inject(LoginData)
+  private readonly _loginData = inject(LoginData)
   private readonly _session = inject(AdminSession)
 
   showFormError = false
@@ -27,7 +27,7 @@ export class LoginPageComponent {
     const { email, password } = this.form.value
 
     try {
-      const { accessToken } = await this._login.signIn(
+      const { accessToken } = await this._loginData.signIn(
         email ?? '',
         password ?? '',
       )

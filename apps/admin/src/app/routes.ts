@@ -6,14 +6,14 @@ import { AdminDashboardLayout } from './layout/admin-dashboard-layout'
 import { CreateAdminPage } from './pages/create-admin/create-admin-page'
 import { CreateUserPage } from './pages/create-user/create-user-page'
 import { DashboardPage } from './pages/dashboard/dashboard-page'
-import { LoginPageComponent } from './pages/login/login-page'
+import { LoginPage } from './pages/login/login-page'
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   {
     path: 'login',
     canActivate: [RouteSessionRedirection],
-    component: LoginPageComponent,
+    component: LoginPage,
   },
   {
     path: 'dashboard',
