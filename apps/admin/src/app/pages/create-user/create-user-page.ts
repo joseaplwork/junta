@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common'
 import { Component, inject } from '@angular/core'
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
+import { MatFormFieldModule } from '@angular/material/form-field'
+import { MatInputModule } from '@angular/material/input'
 import { Router, RouterModule } from '@angular/router'
 
 import { Button } from '@/admin/shared/components/button'
 import { IconButton } from '@/admin/shared/components/icon-button'
-import { InputField } from '@/admin/shared/components/input-field'
 
 import { RegisterUserData } from './services/register-user-data'
 
@@ -15,9 +16,10 @@ import { RegisterUserData } from './services/register-user-data'
     CommonModule,
     Button,
     IconButton,
-    InputField,
     ReactiveFormsModule,
     RouterModule,
+    MatFormFieldModule,
+    MatInputModule,
   ],
 })
 export class CreateUserPage {
@@ -31,6 +33,14 @@ export class CreateUserPage {
     surname: ['', [Validators.required]],
     phone: ['', [Validators.required]],
   })
+
+  getErrorMessage(fieldName: string): string {
+    const control = this.form.get(fieldName)
+    if (control?.hasError('required')) {
+      return 'This field is required'
+    }
+    return ''
+  }
 
   async onSubmit() {
     const { name, surname, phone } = this.form.value

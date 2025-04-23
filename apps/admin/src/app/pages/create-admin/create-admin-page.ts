@@ -1,14 +1,15 @@
 import { CommonModule } from '@angular/common'
 import { Component, inject } from '@angular/core'
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
+import { MatFormFieldModule } from '@angular/material/form-field'
+import { MatInputModule } from '@angular/material/input'
+import { MatSelectModule } from '@angular/material/select'
 import { Router, RouterModule } from '@angular/router'
 
 import { Role } from '@junta/shared/enums/role'
 
 import { Button } from '@/admin/shared/components/button'
 import { IconButton } from '@/admin/shared/components/icon-button'
-import { InputField } from '@/admin/shared/components/input-field'
-import { Select } from '@/admin/shared/components/select'
 
 import { RegisterAdminData } from './services/register-admin-data'
 
@@ -17,11 +18,12 @@ import { RegisterAdminData } from './services/register-admin-data'
   imports: [
     Button,
     IconButton,
-    InputField,
-    Select,
     CommonModule,
     ReactiveFormsModule,
     RouterModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
   ],
 })
 export class CreateAdminPage {
@@ -57,6 +59,17 @@ export class CreateAdminPage {
     } catch {
       this._displayFormError()
     }
+  }
+
+  getErrorMessage(fieldName: string): string {
+    const control = this.form.get(fieldName)
+    if (control?.hasError('required')) {
+      return 'This field is required'
+    }
+    if (control?.hasError('email')) {
+      return 'Invalid email format'
+    }
+    return ''
   }
 
   private async _redirectToDashboard() {
