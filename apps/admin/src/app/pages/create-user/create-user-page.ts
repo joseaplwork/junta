@@ -36,6 +36,7 @@ export class CreateUserPage {
 
   getErrorMessage(fieldName: string): string {
     const control = this.form.get(fieldName)
+
     if (control?.hasError('required')) {
       return 'This field is required'
     }

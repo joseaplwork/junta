@@ -36,7 +36,7 @@ export class CreateAdminPage {
   form = this._fb.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required]],
-    roles: [[''], [Validators.required]],
+    roles: [[], [Validators.required]],
     name: ['', [Validators.required]],
     surname: ['', [Validators.required]],
     phone: ['', [Validators.required]],
@@ -52,7 +52,7 @@ export class CreateAdminPage {
         name: name ?? '',
         surname: surname ?? '',
         phone: phone ?? '',
-        roles: (roles as Role[]) ?? [],
+        roles: roles ?? [],
       })
 
       await this._redirectToDashboard()
@@ -63,6 +63,7 @@ export class CreateAdminPage {
 
   getErrorMessage(fieldName: string): string {
     const control = this.form.get(fieldName)
+
     if (control?.hasError('required')) {
       return 'This field is required'
     }

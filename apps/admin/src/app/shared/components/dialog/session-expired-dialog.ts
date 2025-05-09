@@ -29,6 +29,7 @@ export class SessionExpiredDialog implements OnInit, OnDestroy {
 
   ngOnInit() {
     let isOpened = false
+
     this._interval = setInterval(() => {
       if (this._auth.isAccessTokenExpired() && !isOpened) {
         this._ref = this._dialog.open(Dialog, {
