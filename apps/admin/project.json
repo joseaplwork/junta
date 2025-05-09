@@ -8,15 +8,24 @@
   "targets": {
     "build": {
       "executor": "@angular-devkit/build-angular:application",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "options": {
         "outputPath": "dist/admin",
         "index": "apps/admin/src/index.html",
         "browser": "apps/admin/src/main.ts",
-        "polyfills": ["zone.js"],
+        "polyfills": [
+          "zone.js"
+        ],
         "tsConfig": "apps/admin/tsconfig.app.json",
-        "assets": ["apps/admin/src/favicon.ico", "apps/admin/src/assets"],
-        "styles": ["apps/admin/src/styles.scss"],
+        "assets": [
+          "apps/admin/src/favicon.ico",
+          "apps/admin/src/assets"
+        ],
+        "styles": [
+          "apps/admin/src/styles.scss"
+        ],
         "scripts": []
       },
       "configurations": {
@@ -59,7 +68,8 @@
           "buildTarget": "@junta/admin:build:development"
         }
       },
-      "defaultConfiguration": "development"
+      "defaultConfiguration": "development",
+      "continuous": true
     },
     "extract-i18n": {
       "executor": "@angular-devkit/build-angular:extract-i18n",
@@ -76,7 +86,9 @@
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "outputs": [
+        "{workspaceRoot}/coverage/{projectRoot}"
+      ],
       "options": {
         "jestConfig": "apps/admin/jest.config.ts"
       }

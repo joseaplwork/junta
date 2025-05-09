@@ -1,14 +1,25 @@
 {
+  "pluginsConfig": {
+    "@nx/js": {
+      "analyzeSourceFiles": true
+    }
+  },
   "extends": "nx/presets/npm.json",
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "targetDefaults": {
     "build": {
       "cache": true,
-      "dependsOn": ["^build"]
+      "dependsOn": [
+        "^build"
+      ]
     },
     "@nx/jest:jest": {
       "cache": true,
-      "inputs": ["default", "^default", "{workspaceRoot}/jest.preset.js"],
+      "inputs": [
+        "default",
+        "^default",
+        "{workspaceRoot}/jest.preset.js"
+      ],
       "options": {
         "passWithNoTests": true
       },
@@ -30,8 +41,13 @@
     },
     "@nx/js:tsc": {
       "cache": true,
-      "dependsOn": ["^build"],
-      "inputs": ["default", "^default"]
+      "dependsOn": [
+        "^build"
+      ],
+      "inputs": [
+        "default",
+        "^default"
+      ]
     }
   },
   "generators": {
@@ -56,10 +72,5 @@
         "targetName": "eslint:lint"
       }
     }
-  ],
-  "pluginsConfig": {
-    "@nx/js": {
-      "analyzeSourceFiles": true
-    }
-  }
+  ]
 }
