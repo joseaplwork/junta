@@ -1,26 +1,18 @@
-@switch (kind()) {
-  @case ('text') {
-    <button mat-icon-button type="button" [disabled]="disabled()">
-      <ja-icon [name]="name()"></ja-icon>
-    </button>
-  }
-
-  @case ('filled') {
-    <button mat-mini-fab type="button" [disabled]="disabled()">
-      <ja-icon [name]="name()"></ja-icon>
-    </button>
-  }
-
-  @case ('fab') {
-    <button mat-fab type="button" [disabled]="disabled()">
-      <ja-icon [name]="name()"></ja-icon>
-    </button>
-  }
-
-  @case ('extended-fab') {
-    <button mat-fab extended type="button" [disabled]="disabled()">
-      <ja-icon [name]="name()"></ja-icon>
-      <ng-content></ng-content>
-    </button>
-  }
-}
+@switch (kind()) { @case ('text') {
+<button mat-icon-button type="button" [disabled]="disabled()">
+  <mat-icon aria-hidden="false" [fontIcon]="name()"></mat-icon>
+</button>
+} @case ('filled') {
+<button mat-mini-fab type="button" [disabled]="disabled()">
+  <mat-icon aria-hidden="false" [fontIcon]="name()"></mat-icon>
+</button>
+} @case ('fab') {
+<button mat-fab type="button" [disabled]="disabled()">
+  <mat-icon aria-hidden="false" [fontIcon]="name()"></mat-icon>
+</button>
+} @case ('extended-fab') {
+<button mat-fab extended type="button" [disabled]="disabled()">
+  <mat-icon aria-hidden="false" [fontIcon]="name()"></mat-icon>
+  <ng-content></ng-content>
+</button>
+} }
