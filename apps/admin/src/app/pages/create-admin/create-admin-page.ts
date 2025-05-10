@@ -1,29 +1,28 @@
 import { CommonModule } from '@angular/common'
 import { Component, inject } from '@angular/core'
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
+import { MatButtonModule } from '@angular/material/button'
 import { MatFormFieldModule } from '@angular/material/form-field'
+import { MatIconModule } from '@angular/material/icon'
 import { MatInputModule } from '@angular/material/input'
 import { MatSelectModule } from '@angular/material/select'
 import { Router, RouterModule } from '@angular/router'
 
 import { Role } from '@junta/shared/enums/role'
 
-import { Button } from '@/admin/shared/components/button'
-import { IconButton } from '@/admin/shared/components/icon-button'
-
 import { RegisterAdminData } from './services/register-admin-data'
 
 @Component({
   templateUrl: './create-admin-page.html',
   imports: [
-    Button,
-    IconButton,
     CommonModule,
     ReactiveFormsModule,
     RouterModule,
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
+    MatButtonModule,
+    MatIconModule,
   ],
 })
 export class CreateAdminPage {

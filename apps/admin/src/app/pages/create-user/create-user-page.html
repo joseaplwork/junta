@@ -31,14 +31,16 @@
   }
   <div class="flex gap-3">
     <a routerLink="/dashboard">
-      <ja-icon-button kind="filled" name="arrow_back"></ja-icon-button>
+      <button mat-mini-fab type="button">
+        <mat-icon aria-hidden="false" fontIcon="arrow_back"></mat-icon>
+      </button>
     </a>
-    <ja-button
-      [expand]="true"
+    <button
+      mat-flat-button
       class="w-full"
       type="submit"
       [disabled]="!form.valid">
       Register
-    </ja-button>
+    </button>
   </div>
 </form>

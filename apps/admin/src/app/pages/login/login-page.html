@@ -30,8 +30,8 @@
     @if (showFormError) {
     <p class="text-error">Login credentials invalid</p>
     }
-    <ja-button kind="filled" type="submit" [disabled]="!form.valid">
+    <button mat-flat-button type="submit" [disabled]="!form.valid">
       Login
-    </ja-button>
+    </button>
   </form>
 </div>

@@ -1,12 +1,11 @@
 import { CommonModule } from '@angular/common'
 import { Component, inject } from '@angular/core'
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
+import { MatButtonModule } from '@angular/material/button'
 import { MatFormFieldModule } from '@angular/material/form-field'
+import { MatIconModule } from '@angular/material/icon'
 import { MatInputModule } from '@angular/material/input'
 import { Router, RouterModule } from '@angular/router'
-
-import { Button } from '@/admin/shared/components/button'
-import { IconButton } from '@/admin/shared/components/icon-button'
 
 import { RegisterUserData } from './services/register-user-data'
 
@@ -14,12 +13,12 @@ import { RegisterUserData } from './services/register-user-data'
   templateUrl: './create-user-page.html',
   imports: [
     CommonModule,
-    Button,
-    IconButton,
     ReactiveFormsModule,
     RouterModule,
     MatFormFieldModule,
     MatInputModule,
+    MatButtonModule,
+    MatIconModule,
   ],
 })
 export class CreateUserPage {

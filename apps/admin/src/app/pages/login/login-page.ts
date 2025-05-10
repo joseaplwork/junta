@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common'
 import { Component, inject } from '@angular/core'
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
+import { MatButtonModule } from '@angular/material/button'
 import { MatFormFieldModule } from '@angular/material/form-field'
 import { MatInputModule } from '@angular/material/input'
 
-import { Button } from '@/admin/shared/components/button'
 import { AdminSession } from '@/admin/shared/services/admin-session'
 
 import { LoginData } from './services/login-data'
@@ -14,9 +14,9 @@ import { LoginData } from './services/login-data'
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    Button,
     MatFormFieldModule,
     MatInputModule,
+    MatButtonModule,
   ],
 })
 export class LoginPage {
