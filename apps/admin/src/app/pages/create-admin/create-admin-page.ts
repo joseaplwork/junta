@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common'
+
 import { Component, inject } from '@angular/core'
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
 import { MatButtonModule } from '@angular/material/button'
@@ -15,15 +15,14 @@ import { RegisterAdminData } from './services/register-admin-data'
 @Component({
   templateUrl: './create-admin-page.html',
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     RouterModule,
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
     MatButtonModule,
-    MatIconModule,
-  ],
+    MatIconModule
+],
 })
 export class CreateAdminPage {
   private readonly _fb = inject(FormBuilder)

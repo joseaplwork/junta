@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common'
+
 import { Component, inject } from '@angular/core'
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
 import { MatButtonModule } from '@angular/material/button'
@@ -12,12 +12,11 @@ import { LoginData } from './services/login-data'
 @Component({
   templateUrl: './login-page.html',
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatButtonModule,
-  ],
+    MatButtonModule
+],
 })
 export class LoginPage {
   private readonly _fb = inject(FormBuilder)

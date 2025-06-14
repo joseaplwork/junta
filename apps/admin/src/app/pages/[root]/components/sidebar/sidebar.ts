@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common'
+
 import { Component, inject } from '@angular/core'
 import { MatButtonModule } from '@angular/material/button'
 import { MatDividerModule } from '@angular/material/divider'
@@ -14,15 +14,14 @@ import { Logout } from '@/admin/shared/services/logout'
 @Component({
   selector: 'ja-sidebar',
   imports: [
-    CommonModule,
     RouterModule,
     MatSidenavModule,
     MatListModule,
     MatIconModule,
     MatButtonModule,
     MatDividerModule,
-    HasPermission,
-  ],
+    HasPermission
+],
   templateUrl: './sidebar.html',
 })
 export class Sidebar {
