@@ -3,5 +3,6 @@
     "source.fixAll.eslint": "explicit"
   },
   "jest.runMode": "on-demand",
-  "vsicons.presets.angular": true
+  "vsicons.presets.angular": true,
+  "nxConsole.generateAiAgentRules": true
 }

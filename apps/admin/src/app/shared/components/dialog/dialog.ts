@@ -1,6 +1,6 @@
-import { CommonModule } from '@angular/common'
+
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core'
-import { MatButtonModule } from '@angular/material/button'
+import { MatButton, MatButtonModule } from '@angular/material/button'
 import {
   MAT_DIALOG_DATA,
   MatDialogActions,
@@ -9,19 +9,16 @@ import {
   MatDialogTitle,
 } from '@angular/material/dialog'
 
-import { Button } from '@/admin/shared/components/button'
-
 @Component({
   selector: 'ja-dialog',
   imports: [
-    CommonModule,
-    Button,
+    MatButton,
     MatButtonModule,
     MatDialogTitle,
     MatDialogContent,
     MatDialogActions,
-    MatDialogClose,
-  ],
+    MatDialogClose
+],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './dialog.html',
 })

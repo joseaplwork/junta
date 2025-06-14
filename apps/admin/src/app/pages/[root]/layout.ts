@@ -5,16 +5,18 @@ import { SessionExpiredDialog } from '@/admin/shared/components/dialog/session-e
 import { AdminProfile } from '@/admin/shared/services/admin-profile'
 import { AppState } from '@/admin/shared/services/app-state'
 
+import { Sidebar } from './components/sidebar/sidebar'
+
 @Component({
-  imports: [RouterOutlet, SessionExpiredDialog],
+  imports: [RouterOutlet, SessionExpiredDialog, Sidebar],
   template: `
-    <main>
+    <ja-sidebar>
       <router-outlet></router-outlet>
-    </main>
+    </ja-sidebar>
     <ja-session-expired-dialog></ja-session-expired-dialog>
   `,
 })
-export class AdminDashboardLayout implements OnInit {
+export class RootLayout implements OnInit {
   private readonly _appState = inject(AppState)
   private readonly _profile = inject(AdminProfile)
 

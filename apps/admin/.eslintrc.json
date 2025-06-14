@@ -27,6 +27,28 @@
             "prefix": ["app", "ja"],
             "style": "kebab-case"
           }
+        ],
+        "lines-between-class-members": [
+          "error",
+          {
+            "enforce": [
+              { "blankLine": "always", "prev": "field", "next": "method" },
+              { "blankLine": "always", "prev": "method", "next": "method" }
+            ]
+          }
+        ],
+        "padding-line-between-statements": [
+          "error",
+          {
+            "blankLine": "always",
+            "prev": ["const", "let", "var"],
+            "next": "*"
+          },
+          {
+            "blankLine": "any",
+            "prev": ["const", "let", "var"],
+            "next": ["const", "let", "var"]
+          }
         ]
       }
     },

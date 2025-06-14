@@ -16,6 +16,7 @@ export class AdminProfile implements Profile {
   private _username = signal<string>('')
   private _permissions = signal<string[]>([])
   private _roles = signal<string[]>([])
+
   set() {
     const { sub, username, permissions, roles } = this._decodeProfile()
 

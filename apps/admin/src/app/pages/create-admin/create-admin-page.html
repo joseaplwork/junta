@@ -1,40 +1,84 @@
 <h1 class="text-primary mb-5 text-center text-4xl">Admin registration</h1>
 <form [formGroup]="form" (submit)="onSubmit()" class="grid gap-5">
   <div class="flex gap-2">
-    <ja-input-field
-      label="Email"
-      type="email"
-      formControlName="email"
-      placeholder="Ex. test@test.com" />
-    <ja-input-field
-      label="Password"
-      type="password"
-      formControlName="password"
-      placeholder="******" />
+    <mat-form-field appearance="outline">
+      <mat-label>Email</mat-label>
+      <input
+        matInput
+        type="email"
+        formControlName="email"
+        placeholder="Ex. test@test.com"
+        required />
+      @if (form.get('email')?.invalid) {
+      <mat-error> {{ getErrorMessage('email') }} </mat-error>
+      }
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Password</mat-label>
+      <input
+        matInput
+        type="password"
+        formControlName="password"
+        placeholder="******"
+        required />
+      @if (form.get('password')?.invalid) {
+      <mat-error> {{ getErrorMessage('password') }} </mat-error>
+      }
+    </mat-form-field>
   </div>
-  <ja-input-field label="Name" formControlName="name" placeholder="John" />
-  <ja-input-field label="Surname" formControlName="surname" placeholder="Doe" />
-  <ja-input-field
-    label="Phone"
-    type="tel"
-    formControlName="phone"
-    placeholder="+34 62346793" />
-  <!-- <ja-select></ja-select> -->
-  <select formControlName="roles" multiple>
-    <option [value]="roles.SUPER_ADMIN">{{ roles.SUPER_ADMIN }}</option>
-    <option [value]="roles.ADMIN">{{ roles.ADMIN }}</option>
-  </select>
-  <p *ngIf="showFormError" class="text-error">Registration failed</p>
+  <mat-form-field appearance="outline">
+    <mat-label>Name</mat-label>
+    <input matInput formControlName="name" placeholder="John" required />
+    @if (form.get('name')?.invalid) {
+    <mat-error> {{ getErrorMessage('name') }} </mat-error>
+    }
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Surname</mat-label>
+    <input matInput formControlName="surname" placeholder="Doe" required />
+    @if (form.get('surname')?.invalid) {
+    <mat-error> {{ getErrorMessage('surname') }} </mat-error>
+    }
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Phone</mat-label>
+    <input
+      matInput
+      type="tel"
+      formControlName="phone"
+      placeholder="+34 62346793"
+      required />
+    @if (form.get('phone')?.invalid) {
+    <mat-error> {{ getErrorMessage('phone') }} </mat-error>
+    }
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Roles</mat-label>
+    <mat-select formControlName="roles" multiple required>
+      <mat-option [value]="roles.SUPER_ADMIN"
+        >{{ roles.SUPER_ADMIN }}</mat-option
+      >
+      <mat-option [value]="roles.ADMIN">{{ roles.ADMIN }}</mat-option>
+    </mat-select>
+    @if (form.get('roles')?.invalid) {
+    <mat-error> {{ getErrorMessage('roles') }} </mat-error>
+    }
+  </mat-form-field>
+  @if (showFormError) {
+  <p class="text-error">Registration failed</p>
+  }
   <div class="flex gap-3">
     <a routerLink="/dashboard">
-      <ja-icon-button kind="filled" name="arrow_back"></ja-icon-button>
+      <button mat-mini-fab type="button">
+        <mat-icon aria-hidden="false" fontIcon="arrow_back"></mat-icon>
+      </button>
     </a>
-    <ja-button
-      [expand]="true"
+    <button
+      mat-flat-button
       class="w-full"
       type="submit"
       [disabled]="!form.valid">
       Register
-    </ja-button>
+    </button>
   </div>
 </form>

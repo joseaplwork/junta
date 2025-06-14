@@ -1,16 +1,22 @@
-import { CommonModule } from '@angular/common'
+
 import { Component, inject } from '@angular/core'
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
+import { MatButtonModule } from '@angular/material/button'
+import { MatFormFieldModule } from '@angular/material/form-field'
+import { MatInputModule } from '@angular/material/input'
 
-import { Button } from '@/admin/shared/components/button'
-import { InputField } from '@/admin/shared/components/input-field'
 import { AdminSession } from '@/admin/shared/services/admin-session'
 
 import { LoginData } from './services/login-data'
 
 @Component({
   templateUrl: './login-page.html',
-  imports: [CommonModule, ReactiveFormsModule, InputField, Button],
+  imports: [
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule
+],
 })
 export class LoginPage {
   private readonly _fb = inject(FormBuilder)
@@ -22,6 +28,18 @@ export class LoginPage {
     email: ['', [Validators.required, Validators.email]],
     password: ['', Validators.required],
   })
+
+  getErrorMessage(fieldName: string): string {
+    const control = this.form.get(fieldName)
+
+    if (control?.hasError('required')) {
+      return 'This field is required'
+    }
+    if (control?.hasError('email')) {
+      return 'Invalid email format'
+    }
+    return ''
+  }
 
   async onSubmit(): Promise<void> {
     const { email, password } = this.form.value

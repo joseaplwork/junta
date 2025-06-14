@@ -1,10 +1,1 @@
-<h1 class="mb-5 text-2xl">Welcome {{ profile.username() }}</h1>
-<div class="flex gap-5">
-  <a routerLink="/dashboard/create-admin" *hasPermission="'ADMIN_CREATE'">
-    <ja-button kind="outlined">Register new admin</ja-button>
-  </a>
-  <a routerLink="/dashboard/create-user" *hasPermission="'USER_CREATE'">
-    <ja-button kind="outlined">Register new user</ja-button>
-  </a>
-  <ja-button kind="elevated" (click)="logout()">Logout</ja-button>
-</div>
+<h1 class="mb-5 text-2xl">Welcome</h1>
