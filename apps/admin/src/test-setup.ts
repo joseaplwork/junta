@@ -1,9 +1,8 @@
 import '@testing-library/jest-dom'
+import { setupZonelessTestEnv } from 'jest-preset-angular/setup-env/zoneless'
 
-// @ts-expect-error https://thymikee.github.io/jest-preset-angular/docs/getting-started/test-environment
-globalThis.ngJest = {
-  testEnvironmentOptions: {
-    errorOnUnknownElements: true,
-    errorOnUnknownProperties: true,
-  },
-}
+setupZonelessTestEnv({
+  teardown: { destroyAfterEach: true },
+  errorOnUnknownElements: true,
+  errorOnUnknownProperties: true,
+})
