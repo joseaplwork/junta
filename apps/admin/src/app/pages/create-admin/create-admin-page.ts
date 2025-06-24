@@ -1,4 +1,3 @@
-
 import { Component, inject } from '@angular/core'
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
 import { MatButtonModule } from '@angular/material/button'
@@ -21,8 +20,8 @@ import { RegisterAdminData } from './services/register-admin-data'
     MatInputModule,
     MatSelectModule,
     MatButtonModule,
-    MatIconModule
-],
+    MatIconModule,
+  ],
 })
 export class CreateAdminPage {
   private readonly _fb = inject(FormBuilder)

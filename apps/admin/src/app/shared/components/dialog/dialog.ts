@@ -1,4 +1,3 @@
-
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core'
 import { MatButton, MatButtonModule } from '@angular/material/button'
 import {
@@ -17,8 +16,8 @@ import {
     MatDialogTitle,
     MatDialogContent,
     MatDialogActions,
-    MatDialogClose
-],
+    MatDialogClose,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './dialog.html',
 })

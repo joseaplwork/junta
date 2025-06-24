@@ -1,4 +1,3 @@
-
 import { Component, inject } from '@angular/core'
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
 import { MatButtonModule } from '@angular/material/button'
@@ -17,8 +16,8 @@ import { RegisterUserData } from './services/register-user-data'
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    MatIconModule
-],
+    MatIconModule,
+  ],
 })
 export class CreateUserPage {
   private readonly _fb = inject(FormBuilder)

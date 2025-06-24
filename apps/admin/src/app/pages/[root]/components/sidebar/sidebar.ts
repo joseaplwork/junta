@@ -1,4 +1,3 @@
-
 import { Component, inject } from '@angular/core'
 import { MatButtonModule } from '@angular/material/button'
 import { MatDividerModule } from '@angular/material/divider'
@@ -20,8 +19,8 @@ import { Logout } from '@/admin/shared/services/logout'
     MatIconModule,
     MatButtonModule,
     MatDividerModule,
-    HasPermission
-],
+    HasPermission,
+  ],
   templateUrl: './sidebar.html',
 })
 export class Sidebar {
