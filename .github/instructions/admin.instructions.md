@@ -2,24 +2,74 @@
 applyTo: '/apps/admin/**/*'
 ---
 
-## Admin App Guidelines
+## GitHub Copilot Instructions for Admin App
 
-When generating code, please follow these guidelines:
+This document provides guidelines for using GitHub Copilot effectively in the Admin application of the Junta project. It covers code style, best practices, and functional requirements to ensure consistency and maintainability across the codebase.
 
-- Follow the ESLint rules and formatting rules defined in #file:../../apps/admin/.eslintrc.json and #file:../../.eslintrc.json
-- Keep in mind the project structure defined in #file:../../apps/admin/tsconfig.json
-- Make sure to solve the conflicts between eslint and prettier after generating code
-- Admin app components should use standalone component architecture
-- Keep in mind the test setup defined in #file:../../apps/admin/src/test-setup.ts
-- Admin routes should be lazy loaded
-- My project uses Jest, so ensure that all tests are compatible with Jest
-- Use Material Design components for UI elements
-- All forms should include proper validation messages
-- Admin services should handle authentication via the AdminSession service
-- Follow the latest Angular project structure conventions
-- Generate angular components, services, and modules following the latest Angular API guidelines
-- Services should use the inject() function for dependency injection
-- Use signals for state management, following the latest Angular best practices
-- Use input() and output() decorators for component communication
-- Use zoneless change detection as configured in our app
-- When creating new test files they must have the extension `.spec.*`
+## Code Style Guidelines
+
+### General Formatting
+
+- Use 2 spaces for indentation (no tabs)
+- Maximum line length of 80 characters
+- Use single quotes for strings
+- Use trailing commas in multiline constructs
+- Omit semicolons
+- Use arrow functions with implicit return when possible
+- Arrow functions should omit parentheses for single parameters
+
+### Import Structure
+
+- Group imports in this specific order:
+  1. Third-party modules
+  2. @junta modules
+  3. @/admin or @/api modules
+  4. Relative parent imports (../)
+  5. Local imports (./)
+- Separate import groups with blank lines
+- Sort import specifiers alphabetically
+
+### Angular Component Guidelines
+
+- Component selectors should use kebab-case
+- Component selectors should have prefix "app" or "ja"
+- Class suffixes (Component, Service, etc.) are optional
+- Use Angular Material components where applicable
+
+### Code Structure
+
+- Always add blank lines between class fields and methods
+- Always add blank lines between different methods
+- Add blank lines after variable declarations, unless followed by another variable
+
+### TypeScript Rules
+
+- Use TypeScript strict mode
+- Prefer readonly properties when appropriate
+- Use explicit return types on functions
+- Prefer interfaces over types when possible
+
+### Angular Best Practices
+
+- Use Angular's dependency injection pattern
+- Follow Angular's component lifecycle practices
+- Use signals for state management where applicable
+- Separate component logic from templates
+- Keep components focused on a single responsibility
+
+### Testing
+
+- Write tests with Jest
+- Follow the zoneless testing setup
+- Test components in isolation using mocks for dependencies
+
+### Project Structure
+
+- Follow the NX workspace structure
+- Place components, services and other artifacts in appropriate directories
+- Use the established project module organization
+
+### Functional Requirements
+
+- When implementing Junta-related features, ensure they follow the business requirements defined in the design document
+- Support for creating juntas, managing groups, and tracking financial transactions
