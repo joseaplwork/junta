@@ -45,4 +45,10 @@ export class AdminService {
 
     return admin
   }
+
+  findAll(): Promise<Admin[]> {
+    return this.adminRepository.find({
+      relations: ['user'],
+    })
+  }
 }
