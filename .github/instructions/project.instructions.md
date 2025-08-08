@@ -24,3 +24,12 @@ When generating code, please follow these guidelines:
 
 - The app is split into two apps, the admin app which is the UI interface to create and manage juntas, users, and the API app which is the backend service for juntas, admin, and users.
 - When generating code bare in mind that there is #file:../../libs folder which contains shared code between the two apps.
+
+## Architecture
+
+- The project focuses on single responsibility and separation of concerns.
+- KISS (Keep It Simple, Stupid) principle is applied throughout the codebase.
+- DRY (Don't Repeat Yourself) principle is also followed to reduce code duplication.
+- YAGNI (You Aren't Gonna Need It) principle is applied to avoid adding unnecessary features.
+- When creating code, abstract logic from presentation
+- Write readable code with no comments
