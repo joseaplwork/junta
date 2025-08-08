@@ -21,8 +21,6 @@ import { AdminListDataService } from './services/admin-data'
     MatDialogModule,
     MatSnackBarModule,
     RouterModule,
-    EditAdminDialog,
-    DeleteAdminDialog,
   ],
   templateUrl: './admin-list-page.html',
 })

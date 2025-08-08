@@ -1,0 +1,12 @@
+<h2 mat-dialog-title>Confirm Delete</h2>
+<div mat-dialog-content>
+  <p>
+    Are you sure you want to delete the admin {{ data.user.name }} {{
+    data.user.surname }}?
+  </p>
+  <p class="mt-2 text-red-500">This action cannot be undone.</p>
+</div>
+<div mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-raised-button color="warn" (click)="onConfirm()">Delete</button>
+</div>
