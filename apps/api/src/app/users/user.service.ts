@@ -12,10 +12,6 @@ export class UserService {
     private usersRepository: Repository<User>,
   ) {}
 
-  findAll(): Promise<User[]> {
-    return this.usersRepository.find()
-  }
-
   createOne({ name, surname, phoneNumber }: UserPayload): Promise<User> {
     const user = this.usersRepository.create({
       name,
@@ -23,6 +19,14 @@ export class UserService {
       phone_number: phoneNumber,
     })
 
+    return this.usersRepository.save(user)
+  }
+
+  findAll(): Promise<User[]> {
+    return this.usersRepository.find()
+  }
+
+  update(user: User): Promise<User> {
     return this.usersRepository.save(user)
   }
 }

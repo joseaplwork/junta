@@ -8,3 +8,5 @@ export interface AdminPayload {
   surname: string
   phoneNumber: string
 }
+
+export type AdminUpdatePayload = Partial<AdminPayload>
