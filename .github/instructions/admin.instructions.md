@@ -73,3 +73,7 @@ This document provides guidelines for using GitHub Copilot effectively in the Ad
 
 - When implementing Junta-related features, ensure they follow the business requirements defined in the design document
 - Support for creating juntas, managing groups, and tracking financial transactions
+
+### Code guidelines
+
+- Lint the edited file after making changes

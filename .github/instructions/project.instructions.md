@@ -19,3 +19,8 @@ When generating code, please follow these guidelines:
 
 - Unit tests should be created using Jest following the patterns in our existing spec files
 - Ensure tests work with our zoneless test setup
+
+## Project structure
+
+- The app is split into two apps, the admin app which is the UI interface to create and manage juntas, users, and the API app which is the backend service for juntas, admin, and users.
+- When generating code bare in mind that there is #file:../../libs folder which contains shared code between the two apps.
