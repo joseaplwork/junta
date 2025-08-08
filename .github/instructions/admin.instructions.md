@@ -76,4 +76,4 @@ This document provides guidelines for using GitHub Copilot effectively in the Ad
 
 ### Code guidelines
 
-- Lint the edited file after making changes
+- Lint the edited file after making changes #file:../../apps/admin

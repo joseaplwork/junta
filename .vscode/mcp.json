@@ -1,8 +1,9 @@
 {
   "servers": {
     "nx-mcp": {
-      "type": "sse",
-      "url": "http://localhost:9112/sse"
+      "type": "stdio",
+      "command": "npx",
+      "args": ["nx-mcp@latest"]
     },
     "ESLint": {
       "type": "stdio",
