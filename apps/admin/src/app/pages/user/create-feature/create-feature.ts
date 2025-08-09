@@ -3,7 +3,7 @@ import { MatButtonModule } from '@angular/material/button'
 import { MatDialog, MatDialogModule } from '@angular/material/dialog'
 import { MatIconModule } from '@angular/material/icon'
 
-import { UsersState } from '../users-state'
+import { UserState } from '../user-page-state'
 
 import { CreateUserDialog } from './components/create-user-dialog'
 import { UserCreatePayload } from './interfaces/user-create-payload'
@@ -17,7 +17,7 @@ import { CreateUser } from './services/create-user'
 export class CreateFeature {
   private readonly _dialog = inject(MatDialog)
   private readonly _createUser = inject(CreateUser)
-  private readonly _usersState = inject(UsersState)
+  private readonly _UserState = inject(UserState)
 
   readonly creating = signal(false)
 
@@ -34,7 +34,7 @@ export class CreateFeature {
       try {
         const user = await this._createUser.create(result)
 
-        this._usersState.addNewUser(user)
+        this._UserState.addNewUser(user)
       } catch (error) {
         console.error('Failed to create user:', error)
       } finally {

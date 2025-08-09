@@ -9,7 +9,7 @@ import { User } from '@/admin/shared/interfaces/user'
 
 import { DeleteFeature } from '../delete-feature/delete-feature'
 import { UpdateFeature } from '../update-feature/update-feature'
-import { UsersState } from '../users-state'
+import { UserState } from '../user-page-state'
 
 import { UserListTable } from './components/user-list-table'
 import { UserData } from './services/user-data'
@@ -30,7 +30,7 @@ export class ListFeature {
   private readonly _data = inject(UserData)
   private readonly _dialog = inject(MatDialog)
   private readonly _snack = inject(MatSnackBar)
-  private readonly _usersState = inject(UsersState)
+  private readonly _UserState = inject(UserState)
 
   readonly users = signal<User[]>([])
   readonly loading = signal(true)
@@ -40,12 +40,12 @@ export class ListFeature {
     this.loadUsers()
 
     effect(() => {
-      const newUser = this._usersState.newUser()
+      const newUser = this._UserState.newUser()
 
       if (newUser) {
         this.users.update(arr => [...arr, newUser])
         this._snack.open('User created', 'Close', { duration: 2500 })
-        this._usersState.clearNewUser()
+        this._UserState.clearNewUser()
       }
     })
   }

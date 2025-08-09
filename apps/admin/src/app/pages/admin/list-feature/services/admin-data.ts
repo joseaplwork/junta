@@ -3,13 +3,21 @@ import { Injectable, inject } from '@angular/core'
 import { firstValueFrom } from 'rxjs'
 
 import { Admin } from '@/admin/shared/interfaces/admin'
-import { AdminUpdateDto } from '@/admin/shared/interfaces/admin-update'
 import { Config } from '@/admin/shared/services/config'
 
-@Injectable({
-  providedIn: 'root',
-})
-export class AdminListDataService {
+export interface AdminUpdateDto {
+  email?: string
+  roles?: string[]
+}
+
+export interface AdminCreateDto {
+  email: string
+  password: string
+  roles: string[]
+}
+
+@Injectable({ providedIn: 'root' })
+export class AdminDataService {
   private readonly _http = inject(HttpClient)
   private readonly _config = inject(Config)
 
@@ -19,9 +27,9 @@ export class AdminListDataService {
     )
   }
 
-  getById(id: string): Promise<Admin> {
+  create(data: AdminCreateDto): Promise<Admin> {
     return firstValueFrom(
-      this._http.get<Admin>(`${this._config.api.url}/admin/${id}`),
+      this._http.post<Admin>(`${this._config.api.url}/admin`, data),
     )
   }
 

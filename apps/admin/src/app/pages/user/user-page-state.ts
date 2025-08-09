@@ -2,7 +2,7 @@ import { signal } from '@angular/core'
 
 import { User } from '@/admin/shared/interfaces/user'
 
-export class UsersState {
+export class UserState {
   private readonly _newUser = signal<User | null>(null)
 
   readonly newUser = this._newUser.asReadonly()
