@@ -22,9 +22,6 @@ export class PermissionsGuard implements CanActivate {
       user.roles.flatMap((role: Role) => RolePermissionMapping[role] || []),
     )
 
-    console.log('REQUIRED PERM', requiredPermissions)
-    console.log('USER PERM', userPermissions)
-
     return requiredPermissions.every(permission =>
       userPermissions.has(permission),
     )

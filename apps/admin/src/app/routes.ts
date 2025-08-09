@@ -32,7 +32,7 @@ export const routes: Routes = [
         component: CreateAdminPage,
       },
       {
-        path: 'users',
+        path: 'user',
         component: UserListPage,
       },
       {

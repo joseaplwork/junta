@@ -6,22 +6,16 @@ import { Config } from '@/admin/shared/services/config'
 
 import { UserPayload } from '../interfaces/user-payload'
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class RegisterUserData {
-  private readonly _http = inject(HttpClient)
-  private readonly _config = inject(Config)
+  private readonly http = inject(HttpClient)
+  private readonly config = inject(Config)
 
   create({ name, surname, phone }: UserPayload): Promise<void> {
-    const data = {
-      name,
-      surname,
-      phone,
-    }
+    const data = { name, surname, phone }
 
     return firstValueFrom(
-      this._http.post<void>(`${this._config.api.url}/user`, data),
+      this.http.post<void>(`${this.config.api.url}/user`, data),
     )
   }
 }

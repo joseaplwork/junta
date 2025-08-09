@@ -1,0 +1,8 @@
+<div class="mx-auto max-w-xl p-6">
+  <h1 class="mb-6 text-center text-3xl font-semibold">User registration</h1>
+  <app-create-user-form
+    [loading]="loading()"
+    [error]="error()"
+    (submitUser)="handleSubmit($event)"
+    (back)="back()" />
+</div>
