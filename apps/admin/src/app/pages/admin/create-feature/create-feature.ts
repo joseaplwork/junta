@@ -11,20 +11,11 @@ import { CreateAdminDialog } from './components/create-admin-dialog'
   selector: 'app-admin-create-feature',
   standalone: true,
   imports: [MatFabButton, MatIcon],
-  template: `
-    <button
-      mat-fab
-      color="primary"
-      (click)="openCreateDialog()"
-      class="fixed bottom-6 right-6 z-10"
-      aria-label="Create admin">
-      <mat-icon>add</mat-icon>
-    </button>
-  `,
+  templateUrl: './create-feature.html',
 })
 export class CreateFeature {
   private readonly _dialog = inject(MatDialog)
-  private readonly _AdminPageState = inject(AdminPageState)
+  private readonly _state = inject(AdminPageState)
 
   openCreateDialog(): void {
     const dialogRef = this._dialog.open(CreateAdminDialog, {
@@ -33,7 +24,7 @@ export class CreateFeature {
 
     dialogRef.afterClosed().subscribe(admin => {
       if (admin) {
-        this._AdminPageState.addNewAdmin(admin)
+        this._state.addNewAdmin(admin)
       }
     })
   }
