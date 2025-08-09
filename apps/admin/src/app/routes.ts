@@ -8,6 +8,7 @@ import { CreateAdminPage } from './pages/create-admin/create-admin-page'
 import { CreateUserPage } from './pages/create-user/create-user-page'
 import { DashboardPage } from './pages/dashboard/dashboard-page'
 import { LoginPage } from './pages/login/login-page'
+import { UserListPage } from './pages/user-list/user-list-page'
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -29,6 +30,10 @@ export const routes: Routes = [
       {
         path: 'create-admin',
         component: CreateAdminPage,
+      },
+      {
+        path: 'users',
+        component: UserListPage,
       },
       {
         path: 'create-user',

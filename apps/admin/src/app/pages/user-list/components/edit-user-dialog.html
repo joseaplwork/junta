@@ -1,0 +1,36 @@
+<h2 mat-dialog-title>
+  <mat-icon>edit</mat-icon>
+  Edit user
+</h2>
+<form [formGroup]="form" (ngSubmit)="save()">
+  <div mat-dialog-content class="grid gap-4">
+    <mat-form-field appearance="outline">
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name" required />
+      @if (form.get('name')?.invalid) {
+      <mat-error>{{ getError('name') }}</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Surname</mat-label>
+      <input matInput formControlName="surname" required />
+      @if (form.get('surname')?.invalid) {
+      <mat-error>{{ getError('surname') }}</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Phone</mat-label>
+      <input matInput formControlName="phone" required />
+      @if (form.get('phone')?.invalid) {
+      <mat-error>{{ getError('phone') }}</mat-error>
+      }
+    </mat-form-field>
+  </div>
+
+  <div mat-dialog-actions align="end">
+    <button mat-stroked-button type="button" (click)="cancel()">Cancel</button>
+    <button mat-flat-button color="primary" type="submit">Save</button>
+  </div>
+</form>
