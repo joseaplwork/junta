@@ -1,52 +1,63 @@
-import { Component, inject, signal } from '@angular/core'
+import { Component, effect, inject, signal } from '@angular/core'
 import { MatButtonModule } from '@angular/material/button'
 import { MatDialog, MatDialogModule } from '@angular/material/dialog'
 import { MatIconModule } from '@angular/material/icon'
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar'
 import { MatTableModule } from '@angular/material/table'
-import { RouterModule } from '@angular/router'
 
 import { User } from '@/admin/shared/interfaces/user'
 
-import { DeleteUserDialog } from './components/delete-user-dialog'
-import {
-  EditUserDialog,
-  EditUserDialogData,
-} from './components/edit-user-dialog'
-import { UserListDataService } from './services/user-data'
+import { DeleteFeature } from '../delete-feature/delete-feature'
+import { UpdateFeature } from '../update-feature/update-feature'
+import { UsersState } from '../users-state'
+
+import { UserListTable } from './components/user-list-table'
+import { UserData } from './services/user-data'
 
 @Component({
-  templateUrl: './user-list-page.html',
+  selector: 'app-users-list-feature',
+  templateUrl: './list-feature.html',
   imports: [
-    RouterModule,
     MatTableModule,
     MatButtonModule,
     MatIconModule,
     MatDialogModule,
     MatSnackBarModule,
+    UserListTable,
   ],
 })
-export class UserListPage {
-  private readonly _data = inject(UserListDataService)
+export class ListFeature {
+  private readonly _data = inject(UserData)
   private readonly _dialog = inject(MatDialog)
   private readonly _snack = inject(MatSnackBar)
+  private readonly _usersState = inject(UsersState)
 
-  users = signal<User[]>([])
-  loading = signal(true)
-  error = signal<string | null>(null)
-  displayedColumns = ['name', 'phone', 'actions']
+  readonly users = signal<User[]>([])
+  readonly loading = signal(true)
+  readonly error = signal<string | null>(null)
 
   constructor() {
-    this.load()
+    this.loadUsers()
+
+    effect(() => {
+      const newUser = this._usersState.newUser()
+
+      if (newUser) {
+        this.users.update(arr => [...arr, newUser])
+        this._snack.open('User created', 'Close', { duration: 2500 })
+        this._usersState.clearNewUser()
+      }
+    })
   }
 
-  async load() {
+  async loadUsers() {
     this.loading.set(true)
+    this.error.set(null)
+
     try {
       const list = await this._data.fetchAll()
 
       this.users.set(list)
-      this.error.set(null)
     } catch {
       this.error.set('Failed to load users')
     } finally {
@@ -54,23 +65,24 @@ export class UserListPage {
     }
   }
 
-  openEditDialog(user: User) {
-    const dialogRef = this._dialog.open(EditUserDialog, {
+  async onEditUser(user: User) {
+    const dialogRef = this._dialog.open(UpdateFeature, {
       width: '420px',
-      data: {
-        name: user.name,
-        surname: user.surname,
-        phone: user.phoneNumber,
-      } as EditUserDialogData,
+      data: user,
     })
 
-    dialogRef.afterClosed().subscribe(async (result?: EditUserDialogData) => {
-      if (!result) return
+    dialogRef.afterClosed().subscribe(async (updated?: User) => {
+      if (!updated) return
+
       try {
-        const updated = await this._data.update(user.id, result)
+        const result = await this._data.update(user.id, {
+          name: updated.name,
+          surname: updated.surname,
+          phone: updated.phoneNumber,
+        })
 
         this.users.update(arr =>
-          arr.map(u => (u.id === user.id ? { ...u, ...updated } : u)),
+          arr.map(u => (u.id === user.id ? { ...u, ...result } : u)),
         )
         this._snack.open('User updated', 'Close', { duration: 2500 })
       } catch {
@@ -79,14 +91,15 @@ export class UserListPage {
     })
   }
 
-  confirmDelete(user: User) {
-    const dialogRef = this._dialog.open(DeleteUserDialog, {
+  async onDeleteUser(user: User) {
+    const dialogRef = this._dialog.open(DeleteFeature, {
       width: '400px',
       data: { name: `${user.name} ${user.surname}` },
     })
 
     dialogRef.afterClosed().subscribe(async (confirmed: boolean) => {
       if (!confirmed) return
+
       try {
         await this._data.delete(user.id)
 

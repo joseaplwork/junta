@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core'
+import { Component, inject } from '@angular/core'
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
 import { MatButtonModule } from '@angular/material/button'
 import {
@@ -10,15 +10,11 @@ import { MatFormFieldModule } from '@angular/material/form-field'
 import { MatIconModule } from '@angular/material/icon'
 import { MatInputModule } from '@angular/material/input'
 
-export interface EditUserDialogData {
-  name: string
-  surname: string
-  phone: string
-}
+import { User } from '@/admin/shared/interfaces/user'
 
 @Component({
-  selector: 'app-edit-user-dialog',
-  templateUrl: './edit-user-dialog.html',
+  selector: 'app-update-feature',
+  templateUrl: './update-feature.html',
   imports: [
     ReactiveFormsModule,
     MatDialogModule,
@@ -28,23 +24,23 @@ export interface EditUserDialogData {
     MatIconModule,
   ],
 })
-export class EditUserDialog implements OnInit {
+export class UpdateFeature {
   private readonly _fb = inject(FormBuilder)
-  private readonly _dialogRef = inject(MatDialogRef<EditUserDialog>)
-  private readonly _data = inject<EditUserDialogData>(MAT_DIALOG_DATA)
+  private readonly _dialogRef = inject(MatDialogRef<UpdateFeature>)
+  public readonly data = inject<User>(MAT_DIALOG_DATA)
 
   form = this._fb.nonNullable.group({
     name: ['', Validators.required],
     surname: ['', Validators.required],
-    phone: ['', Validators.required],
+    phoneNumber: ['', Validators.required],
   })
 
-  ngOnInit() {
-    if (this._data) {
+  constructor() {
+    if (this.data) {
       this.form.patchValue({
-        name: this._data.name,
-        surname: this._data.surname,
-        phone: this._data.phone,
+        name: this.data.name,
+        surname: this.data.surname,
+        phoneNumber: this.data.phoneNumber,
       })
     }
   }
@@ -60,7 +56,12 @@ export class EditUserDialog implements OnInit {
   save() {
     if (this.form.invalid) return
 
-    this._dialogRef.close(this.form.value)
+    const updatedUser: User = {
+      ...this.data,
+      ...this.form.value,
+    } as User
+
+    this._dialogRef.close(updatedUser)
   }
 
   cancel() {

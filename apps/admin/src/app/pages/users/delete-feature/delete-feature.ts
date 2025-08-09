@@ -7,20 +7,24 @@ import {
 } from '@angular/material/dialog'
 import { MatIconModule } from '@angular/material/icon'
 
+interface DeleteDialogData {
+  name: string
+}
+
 @Component({
-  selector: 'app-delete-user-dialog',
-  templateUrl: './delete-user-dialog.html',
+  selector: 'app-delete-feature',
+  templateUrl: './delete-feature.html',
   imports: [MatDialogModule, MatButtonModule, MatIconModule],
 })
-export class DeleteUserDialog {
-  private readonly dialogRef = inject(MatDialogRef<DeleteUserDialog>)
-  readonly data = inject<{ name: string }>(MAT_DIALOG_DATA)
+export class DeleteFeature {
+  private readonly _dialogRef = inject(MatDialogRef<DeleteFeature>)
+  public data = inject<DeleteDialogData>(MAT_DIALOG_DATA)
 
   confirmDelete() {
-    this.dialogRef.close(true)
+    this._dialogRef.close(true)
   }
 
   cancel() {
-    this.dialogRef.close(false)
+    this._dialogRef.close(false)
   }
 }

@@ -1,0 +1,6 @@
+<app-user-list-table
+  [users]="users()"
+  [loading]="loading()"
+  [error]="error()"
+  (editUser)="onEditUser($event)"
+  (deleteUser)="onDeleteUser($event)" />

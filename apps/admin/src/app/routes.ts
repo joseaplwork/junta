@@ -5,10 +5,9 @@ import { RouteSessionRedirection } from './guards/route-session-redirection'
 import { RootLayout } from './pages/[root]/layout'
 import { AdminListPage } from './pages/admin-list/admin-list-page'
 import { CreateAdminPage } from './pages/create-admin/create-admin-page'
-import { CreateUserPage } from './pages/create-user/create-user-page'
 import { DashboardPage } from './pages/dashboard/dashboard-page'
 import { LoginPage } from './pages/login/login-page'
-import { UserListPage } from './pages/user-list/user-list-page'
+import { UsersPage } from './pages/users/users-page'
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -33,11 +32,7 @@ export const routes: Routes = [
       },
       {
         path: 'user',
-        component: UserListPage,
-      },
-      {
-        path: 'create-user',
-        component: CreateUserPage,
+        component: UsersPage,
       },
     ],
   },

@@ -1,13 +1,13 @@
 <h2 mat-dialog-title>
-  <mat-icon>edit</mat-icon>
-  Edit user
+  <mat-icon>person_add</mat-icon>
+  Create user
 </h2>
 <form [formGroup]="form" (ngSubmit)="save()">
   <div mat-dialog-content class="grid gap-4">
     <mat-form-field appearance="outline">
       <mat-label>Name</mat-label>
       <input matInput formControlName="name" required />
-      @if (form.get('name')?.invalid) {
+      @if (form.get('name')?.invalid && form.get('name')?.touched) {
       <mat-error>{{ getError('name') }}</mat-error>
       }
     </mat-form-field>
@@ -15,7 +15,7 @@
     <mat-form-field appearance="outline">
       <mat-label>Surname</mat-label>
       <input matInput formControlName="surname" required />
-      @if (form.get('surname')?.invalid) {
+      @if (form.get('surname')?.invalid && form.get('surname')?.touched) {
       <mat-error>{{ getError('surname') }}</mat-error>
       }
     </mat-form-field>
@@ -23,7 +23,7 @@
     <mat-form-field appearance="outline">
       <mat-label>Phone</mat-label>
       <input matInput formControlName="phone" required />
-      @if (form.get('phone')?.invalid) {
+      @if (form.get('phone')?.invalid && form.get('phone')?.touched) {
       <mat-error>{{ getError('phone') }}</mat-error>
       }
     </mat-form-field>
@@ -31,6 +31,12 @@
 
   <div mat-dialog-actions align="end">
     <button mat-stroked-button type="button" (click)="cancel()">Cancel</button>
-    <button mat-flat-button color="primary" type="submit">Save</button>
+    <button
+      mat-flat-button
+      color="primary"
+      type="submit"
+      [disabled]="form.invalid">
+      Create
+    </button>
   </div>
 </form>

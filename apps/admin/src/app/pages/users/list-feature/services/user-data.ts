@@ -11,14 +11,26 @@ export interface UserUpdateDto {
   phone?: string
 }
 
+export interface UserCreateDto {
+  name: string
+  surname: string
+  phone: string
+}
+
 @Injectable({ providedIn: 'root' })
-export class UserListDataService {
+export class UserData {
   private readonly _http = inject(HttpClient)
   private readonly _config = inject(Config)
 
   fetchAll(): Promise<User[]> {
     return firstValueFrom(
       this._http.get<User[]>(`${this._config.api.url}/user`),
+    )
+  }
+
+  create(data: UserCreateDto): Promise<User> {
+    return firstValueFrom(
+      this._http.post<User>(`${this._config.api.url}/user`, data),
     )
   }
 

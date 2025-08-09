@@ -92,6 +92,7 @@ src/
 │   │   │   ├── services/            # Business logic for feature-1 in home page
 │   │   │   ├── custom1-feature.html # Feature 1 entry point component template
 │   │   │   └── custom1-feature.ts   # Feature 1 entry point controller component definition
+│   │   ├── home-state.ts          # Signals state that serves to communicate features and decouple feature dependency (optional)
 │   │   ├── home-page.html           # Home page entry point component template which layouts features
 │   │   └── home-page.ts             # Home page entry point component definition
 │   ├── page-1/                      # Page 1
@@ -103,6 +104,7 @@ src/
 │   │   │   ├── services/            # Business logic for feature-2 in page-1
 │   │   │   ├── custom2-feature.html # Feature 2 entry point component template
 │   │   │   └── custom2-feature.ts   # Feature 2 entry point controller component definition
+│   │   ├── page-1-state.ts          # Signals state that serves to communicate features and decouple feature dependency (optional)
 │   │   ├── page-1-page.html         # Page 1 entry point component template which layouts features
 │   │   └── page-1-page.ts           # Page 1 entry point component definition
 │   └── page-2/                      # Page 2
@@ -114,6 +116,7 @@ src/
 │       │   ├── services/            # Business logic for feature-2 in page-2
 │       │   ├── custom2-feature.html # Feature 2 entry point component template
 │       │   └── custom2-feature.ts   # Feature 2 entry point controller component definition
+│   │   ├── page-2-state.ts          # Signals state that serves to communicate features and decouple feature dependency (optional)
 │       ├── page-2-page.html         # Page 2 entry point component template which layouts features
 │       └── page-2-page.ts           # Page 2 entry point component definition
 └── shared/                          # Reusable functionality for the admin app
