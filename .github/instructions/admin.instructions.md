@@ -89,21 +89,33 @@ src/
 │   │   │   ├── components/    # Presentational components for  for feature-1 in home page
 │   │   │   ├── constants/     # Constants for feature-1 in home page
 │   │   │   ├── interfaces/    # Interfaces for feature-1 in home page
-│   │   │   └── services/      # Business logic for feature-1 in home page
+│   │   │   ├── services/      # Business logic for feature-1 in home page
+│   │   │   ├── feature-1.html # Feature 1 entry point component template
+│   │   │   └── feature-1.ts   # Feature 1 entry point controller component definition
+│   │   ├── home-page.html     # Home page entry point component template which layouts features
+│   │   └── home-page.ts       # Home page entry point component definition
 │   ├── page-1/                # Page 1
 │   │   ├── feature-1/         # Feature-1 in page-1
-│   │   └── feature-2/         # Feature-2 in page-1
-│   │       ├── components/    # Presentational components for feature-2 in page-1
-│   │       ├── constants/     # Constants for feature-2 in page-1
-│   │       ├── interfaces/    # Interfaces for feature-2 in page-1
-│   │       └── services/      # Business logic for feature-2 in page-1
+│   │   ├── feature-2/         # Feature-2 in page-1
+│   │   │   ├── components/    # Presentational components for feature-2 in page-1
+│   │   │   ├── constants/     # Constants for feature-2 in page-1
+│   │   │   ├── interfaces/    # Interfaces for feature-2 in page-1
+│   │   │   ├── services/      # Business logic for feature-2 in page-1
+│   │   │   ├── feature-2.html # Feature 2 entry point component template
+│   │   │   └── feature-2.ts   # Feature 2 entry point controller component definition
+│   │   ├── page-1-page.html   # Page 1 entry point component template which layouts features
+│   │   └── page-1-page.ts     # Page 1 entry point component definition
 │   └── page-2/                # Page 2
 │       ├── feature-1/         # Components for feature-1 in page-2
-│       └── feature-2/         # Components for feature-2 in page-2
-│           ├── components/    # Presentational components for feature-2 in page-2
-│           ├── constants/     # Constants for feature-2 in page-2
-│           ├── interfaces/    # Interfaces for feature-2 in page-2
-│           └── services/      # Business logic for feature-2 in page-2
+│       ├── feature-2/         # Components for feature-2 in page-2
+│       │   ├── components/    # Presentational components for feature-2 in page-2
+│       │   ├── constants/     # Constants for feature-2 in page-2
+│       │   ├── interfaces/    # Interfaces for feature-2 in page-2
+│       │   ├── services/      # Business logic for feature-2 in page-2
+│       │   ├── feature-2.html # Feature 2 entry point component template
+│       │   └── feature-2.ts   # Feature 2 entry point controller component definition
+│       ├── page-2-page.html   # Page 2 entry point component template which layouts features
+│       └── page-2-page.ts     # Page 2 entry point component definition
 └── shared/                    # Reusable functionality for the admin app
     ├── components/            # Presentational components used across the admin app
     ├── constants/             # Constants used across the admin app
