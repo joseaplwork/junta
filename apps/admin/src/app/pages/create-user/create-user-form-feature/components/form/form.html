@@ -50,7 +50,14 @@
       class="flex-1"
       type="submit"
       [disabled]="loading || form.invalid">
-      <ng-container *ngIf="!loading; else loadingTpl">Register</ng-container>
+      @if (!loading) { Register } @else {
+      <span class="flex items-center gap-2">
+        <mat-progress-spinner
+          mode="indeterminate"
+          diameter="18"></mat-progress-spinner>
+        Saving...
+      </span>
+      }
     </button>
   </div>
 
