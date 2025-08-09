@@ -35,6 +35,7 @@ This document provides guidelines for using GitHub Copilot effectively in the Ad
 - Component selectors should have prefix "app" or "ja"
 - Class suffixes (Component, Service, etc.) are optional
 - Use Angular Material components where applicable
+- Always create component's template in a separate HTML file
 
 ### Code Structure
 
@@ -77,3 +78,34 @@ This document provides guidelines for using GitHub Copilot effectively in the Ad
 ### Code guidelines
 
 - Lint the edited file after making changes #file:../../apps/admin
+
+## Architecture
+
+- Keep this project structure as reference when building new features:
+src/
+├── pages/                     # Main entry points
+│   ├── home/                  # Home page
+│   │   ├── feature-1/         # Feature-1 in home page
+│   │   │   ├── components/    # Presentational components for  for feature-1 in home page
+│   │   │   ├── constants/     # Constants for feature-1 in home page
+│   │   │   ├── interfaces/    # Interfaces for feature-1 in home page
+│   │   │   └── services/      # Business logic for feature-1 in home page
+│   ├── page-1/                # Page 1
+│   │   ├── feature-1/         # Feature-1 in page-1
+│   │   └── feature-2/         # Feature-2 in page-1
+│   │       ├── components/    # Presentational components for feature-2 in page-1
+│   │       ├── constants/     # Constants for feature-2 in page-1
+│   │       ├── interfaces/    # Interfaces for feature-2 in page-1
+│   │       └── services/      # Business logic for feature-2 in page-1
+│   └── page-2/                # Page 2
+│       ├── feature-1/         # Components for feature-1 in page-2
+│       └── feature-2/         # Components for feature-2 in page-2
+│           ├── components/    # Presentational components for feature-2 in page-2
+│           ├── constants/     # Constants for feature-2 in page-2
+│           ├── interfaces/    # Interfaces for feature-2 in page-2
+│           └── services/      # Business logic for feature-2 in page-2
+└── shared/                    # Reusable functionality for the admin app
+    ├── components/            # Presentational components used across the admin app
+    ├── constants/             # Constants used across the admin app
+    ├── interfaces/            # Interfaces used across the admin app
+    └── services/              # Business logic services and utilities used across the admin app

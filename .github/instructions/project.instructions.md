@@ -33,3 +33,4 @@ When generating code, please follow these guidelines:
 - YAGNI (You Aren't Gonna Need It) principle is applied to avoid adding unnecessary features.
 - When creating code, abstract logic from presentation
 - Write readable code with no comments
+- Add reusable code across apps in the #file:../../libs folder
