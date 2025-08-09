@@ -89,7 +89,7 @@ export class AdminService {
         updatedUser.phone_number = data.phoneNumber
       }
 
-      await this.user.update(updatedUser)
+      await this.user.save(updatedUser)
     }
 
     return this.adminRepository.save(admin)

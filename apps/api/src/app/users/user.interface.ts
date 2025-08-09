@@ -3,3 +3,5 @@ export interface UserPayload {
   surname: string
   phoneNumber: string
 }
+
+export type UserUpdatePayload = Partial<UserPayload>
