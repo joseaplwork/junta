@@ -16,16 +16,12 @@ import {
   MatDialogTitle,
 } from '@angular/material/dialog'
 import { MatFormFieldModule } from '@angular/material/form-field'
+import { MatIconModule } from '@angular/material/icon'
 import { MatInputModule } from '@angular/material/input'
-import { MatSnackBar } from '@angular/material/snack-bar'
-
-import { Admin } from '@/admin/shared/interfaces/admin'
-
-import { AdminDataService } from '../../list-feature/services/admin-data'
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
 
 @Component({
-  selector: 'ja-update-admin-dialog',
-  standalone: true,
+  selector: 'app-create-admin-dialog',
   imports: [
     TitleCasePipe,
     ReactiveFormsModule,
@@ -36,24 +32,22 @@ import { AdminDataService } from '../../list-feature/services/admin-data'
     MatDialogActions,
     MatFormFieldModule,
     MatInputModule,
+    MatProgressSpinnerModule,
+    MatIconModule,
   ],
-  templateUrl: './update-admin-dialog.html',
+  templateUrl: './create-admin-dialog.html',
 })
-export class UpdateAdminDialog {
-  private readonly _dialogRef = inject(MatDialogRef<UpdateAdminDialog>)
-  private readonly _admin = inject<Admin>(MAT_DIALOG_DATA)
+export class CreateAdminDialog {
+  private readonly _dialogRef = inject(MatDialogRef<CreateAdminDialog>)
   private readonly _fb = inject(FormBuilder)
-  private readonly _adminDataService = inject(AdminDataService)
-  private readonly _snackBar = inject(MatSnackBar)
+  private readonly _data = inject(MAT_DIALOG_DATA)
 
-  submitting = signal(false)
+  readonly submitting = signal(false)
 
   form = this._fb.group({
-    email: [this._admin.email, [Validators.required, Validators.email]],
-    roles: this._fb.array(
-      this._admin.roles.map(role => role), // Role is an enum, use directly
-      [Validators.required],
-    ),
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', [Validators.required, Validators.minLength(6)]],
+    roles: this._fb.array(['admin'], [Validators.required]),
   })
 
   get rolesFormArray(): FormArray {
@@ -79,28 +73,20 @@ export class UpdateAdminDialog {
   }
 
   async onSubmit(): Promise<void> {
-    if (this.form.invalid) return
+    if (this.form.invalid || this.submitting()) return
 
     this.submitting.set(true)
 
-    try {
-      const formValue = this.form.value
-      const admin = await this._adminDataService.update(this._admin.id, {
-        email: formValue.email!,
-        roles: formValue.roles!.filter(Boolean) as string[],
-      })
-
-      this._snackBar.open('Admin updated successfully', 'Close', {
-        duration: 3000,
-      })
-      this._dialogRef.close(admin)
-    } catch {
-      this._snackBar.open('Failed to update admin', 'Close', {
-        duration: 3000,
-      })
-    } finally {
-      this.submitting.set(false)
+    const formValue = this.form.value
+    const formData = {
+      email: formValue.email!,
+      password: formValue.password!,
+      roles: formValue.roles!.filter(Boolean) as string[],
     }
+
+    await this._data.handleSubmit(formData)
+
+    this.submitting.set(false)
   }
 
   onCancel(): void {

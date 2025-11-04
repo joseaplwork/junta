@@ -1,7 +1,7 @@
 import { Component } from '@angular/core'
 
-import { CreateFeature } from './create-feature/create-feature'
-import { ListFeature } from './list-feature/list-feature'
+import { CreateFeature } from './create-ft/create-ft'
+import { ListFeature } from './list-ft/list-ft'
 import { UserState } from './user-page-state'
 
 @Component({

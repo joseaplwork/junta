@@ -9,6 +9,7 @@ import {
 import { MatButtonModule } from '@angular/material/button'
 import { MatCheckboxModule } from '@angular/material/checkbox'
 import {
+  MAT_DIALOG_DATA,
   MatDialogActions,
   MatDialogContent,
   MatDialogRef,
@@ -16,13 +17,13 @@ import {
 } from '@angular/material/dialog'
 import { MatFormFieldModule } from '@angular/material/form-field'
 import { MatInputModule } from '@angular/material/input'
-import { MatSnackBar } from '@angular/material/snack-bar'
 
-import { AdminDataService } from '../../list-feature/services/admin-data'
+import { Admin } from '@/admin/shared/interfaces/admin'
+
+import { AdminUpdateDto } from '../interfaces/admin-update-dto'
 
 @Component({
-  selector: 'app-create-admin-dialog',
-  standalone: true,
+  selector: 'ja-update-admin-dialog',
   imports: [
     TitleCasePipe,
     ReactiveFormsModule,
@@ -34,20 +35,24 @@ import { AdminDataService } from '../../list-feature/services/admin-data'
     MatFormFieldModule,
     MatInputModule,
   ],
-  templateUrl: './create-admin-dialog.html',
+  templateUrl: './update-admin-dialog.html',
 })
-export class CreateAdminDialog {
-  private readonly _dialogRef = inject(MatDialogRef<CreateAdminDialog>)
+export class UpdateAdminDialog {
+  private readonly _dialogRef = inject(MatDialogRef<UpdateAdminDialog>)
   private readonly _fb = inject(FormBuilder)
-  private readonly _adminDataService = inject(AdminDataService)
-  private readonly _snackBar = inject(MatSnackBar)
 
-  submitting = signal(false)
+  readonly submitting = signal(false)
+  readonly data = inject<{
+    admin: Admin
+    handleUpdate: (id: string, updateData: AdminUpdateDto) => Promise<void>
+  }>(MAT_DIALOG_DATA)
 
   form = this._fb.group({
-    email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(6)]],
-    roles: this._fb.array(['admin'], [Validators.required]),
+    email: [this.data.admin.email, [Validators.required, Validators.email]],
+    roles: this._fb.array(
+      this.data.admin.roles.map(role => role),
+      [Validators.required],
+    ),
   })
 
   get rolesFormArray(): FormArray {
@@ -79,26 +84,21 @@ export class CreateAdminDialog {
 
     try {
       const formValue = this.form.value
-      const admin = await this._adminDataService.create({
+      const updateData: AdminUpdateDto = {
         email: formValue.email!,
-        password: formValue.password!,
         roles: formValue.roles!.filter(Boolean) as string[],
-      })
+      }
 
-      this._snackBar.open('Admin created successfully', 'Close', {
-        duration: 3000,
-      })
-      this._dialogRef.close(admin)
+      await this.data.handleUpdate(this.data.admin.id, updateData)
+      this._dialogRef.close(true)
     } catch {
-      this._snackBar.open('Failed to create admin', 'Close', {
-        duration: 3000,
-      })
+      // Error handling is done in the parent component
     } finally {
       this.submitting.set(false)
     }
   }
 
   onCancel(): void {
-    this._dialogRef.close()
+    this._dialogRef.close(false)
   }
 }

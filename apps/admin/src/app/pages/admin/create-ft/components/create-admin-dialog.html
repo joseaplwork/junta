@@ -61,8 +61,12 @@
       type="submit"
       mat-raised-button
       color="primary"
-      [disabled]="form.invalid || submitting()">
-      @if (submitting()) { Creating... } @else { Create Admin }
+      [disabled]="form.invalid || submitting()"
+      class="flex items-center justify-center">
+      @if (submitting()) {
+      <mat-icon><mat-spinner diameter="18"></mat-spinner></mat-icon>
+      }
+      <span>Create Admin</span>
     </button>
   </mat-dialog-actions>
 </form>

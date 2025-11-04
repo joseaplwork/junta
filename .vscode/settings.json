@@ -4,5 +4,6 @@
   },
   "jest.runMode": "on-demand",
   "vsicons.presets.angular": true,
-  "nxConsole.generateAiAgentRules": true
+  "nxConsole.generateAiAgentRules": true,
+  "kiroAgent.configureMCP": "Disabled"
 }

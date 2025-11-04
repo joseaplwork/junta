@@ -7,16 +7,16 @@ import { MatTableModule } from '@angular/material/table'
 
 import { User } from '@/admin/shared/interfaces/user'
 
-import { DeleteFeature } from '../delete-feature/delete-feature'
-import { UpdateFeature } from '../update-feature/update-feature'
+import { DeleteFeature } from '../delete-ft/delete-ft'
+import { UpdateFeature } from '../update-ft/update-ft'
 import { UserState } from '../user-page-state'
 
 import { UserListTable } from './components/user-list-table'
 import { UserData } from './services/user-data'
 
 @Component({
-  selector: 'app-users-list-feature',
-  templateUrl: './list-feature.html',
+  selector: 'app-users-list-ft',
+  templateUrl: './list-ft.html',
   imports: [
     MatTableModule,
     MatButtonModule,

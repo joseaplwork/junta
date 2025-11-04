@@ -12,8 +12,8 @@ interface DeleteDialogData {
 }
 
 @Component({
-  selector: 'app-delete-feature',
-  templateUrl: './delete-feature.html',
+  selector: 'app-delete-ft',
+  templateUrl: './delete-ft.html',
   imports: [MatDialogModule, MatButtonModule, MatIconModule],
 })
 export class DeleteFeature {
