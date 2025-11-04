@@ -12,12 +12,12 @@ interface DeleteDialogData {
 }
 
 @Component({
-  selector: 'app-delete-ft',
-  templateUrl: './delete-ft.html',
+  selector: 'app-delete-feat',
+  templateUrl: './delete-feat.html',
   imports: [MatDialogModule, MatButtonModule, MatIconModule],
 })
-export class DeleteFeature {
-  private readonly _dialogRef = inject(MatDialogRef<DeleteFeature>)
+export class DeleteFeat {
+  private readonly _dialogRef = inject(MatDialogRef<DeleteFeat>)
   public data = inject<DeleteDialogData>(MAT_DIALOG_DATA)
 
   confirmDelete() {

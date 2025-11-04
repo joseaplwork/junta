@@ -85,37 +85,37 @@ This document provides guidelines for using GitHub Copilot effectively in the Ad
 src/
 ├── pages/                           # Main entry points
 │   ├── home/                        # Home page
-│   │   ├── custom1-ft/         # Feature-1 in home page
+│   │   ├── custom1-feat/         # Feature-1 in home page
 │   │   │   ├── components/          # Presentational components for  for feature-1 in home page
 │   │   │   ├── constants/           # Constants for feature-1 in home page
 │   │   │   ├── interfaces/          # Interfaces for feature-1 in home page
 │   │   │   ├── services/            # Business logic only for feature-1 in home page
-│   │   │   ├── custom1-ft.html # Feature 1 entry point component template
-│   │   │   └── custom1-ft.ts   # Feature 1 entry point controller component definition
+│   │   │   ├── custom1-feat.html # Feature 1 entry point component template
+│   │   │   └── custom1-feat.ts   # Feature 1 entry point controller component definition
 │   │   ├── home-state.ts          # Signals state that serves to communicate features and decouple feature dependency (optional)
 │   │   ├── home-page.html           # Home page entry point component template which layouts features
 │   │   └── home-page.ts             # Home page entry point component definition
 │   ├── page-1/                      # Page 1
-│   │   ├── custom1-ft/         # Feature-1 in page-1
-│   │   ├── custom2-ft/         # Feature-2 in page-1
+│   │   ├── custom1-feat/         # Feature-1 in page-1
+│   │   ├── custom2-feat/         # Feature-2 in page-1
 │   │   │   ├── components/          # Presentational components for feature-2 in page-1
 │   │   │   ├── constants/           # Constants for feature-2 in page-1
 │   │   │   ├── interfaces/          # Interfaces for feature-2 in page-1
 │   │   │   ├── services/            # Business logic only for feature-2 in page-1
-│   │   │   ├── custom2-ft.html # Feature 2 entry point component template
-│   │   │   └── custom2-ft.ts   # Feature 2 entry point controller component definition
+│   │   │   ├── custom2-feat.html # Feature 2 entry point component template
+│   │   │   └── custom2-feat.ts   # Feature 2 entry point controller component definition
 │   │   ├── page-1-state.ts          # Signals state that serves to communicate features and decouple feature dependency (optional)
 │   │   ├── page-1-page.html         # Page 1 entry point component template which layouts features
 │   │   └── page-1-page.ts           # Page 1 entry point component definition
 │   └── page-2/                      # Page 2
-│       ├── custom1-ft/         # Feature-1 in page-2
-│       ├── custom2-ft/         # Feature-2 in page-2
+│       ├── custom1-feat/         # Feature-1 in page-2
+│       ├── custom2-feat/         # Feature-2 in page-2
 │       │   ├── components/          # Presentational components for feature-2 in page-2
 │       │   ├── constants/           # Constants for feature-2 in page-2
 │       │   ├── interfaces/          # Interfaces for feature-2 in page-2
 │       │   ├── services/            # Business logic only for feature-2 in page-2
-│       │   ├── custom2-ft.html # Feature 2 entry point component template
-│       │   └── custom2-ft.ts   # Feature 2 entry point controller component definition
+│       │   ├── custom2-feat.html # Feature 2 entry point component template
+│       │   └── custom2-feat.ts   # Feature 2 entry point controller component definition
 │   │   ├── page-2-state.ts          # Signals state that serves to communicate features and decouple feature dependency (optional)
 │       ├── page-2-page.html         # Page 2 entry point component template which layouts features
 │       └── page-2-page.ts           # Page 2 entry point component definition

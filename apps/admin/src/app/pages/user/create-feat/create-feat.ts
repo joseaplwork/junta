@@ -10,11 +10,11 @@ import { UserCreatePayload } from './interfaces/user-create-payload'
 import { CreateUser } from './services/create-user'
 
 @Component({
-  selector: 'app-users-create-ft',
-  templateUrl: './create-ft.html',
+  selector: 'app-users-create-feat',
+  templateUrl: './create-feat.html',
   imports: [MatButtonModule, MatIconModule, MatDialogModule],
 })
-export class CreateFeature {
+export class CreateFeat {
   private readonly _dialog = inject(MatDialog)
   private readonly _createUser = inject(CreateUser)
   private readonly _UserState = inject(UserState)

@@ -7,16 +7,16 @@ import { MatTableModule } from '@angular/material/table'
 
 import { User } from '@/admin/shared/interfaces/user'
 
-import { DeleteFeature } from '../delete-ft/delete-ft'
-import { UpdateFeature } from '../update-ft/update-ft'
+import { DeleteFeat } from '../delete-feat/delete-feat'
+import { UpdateFeat } from '../update-feat/update-feat'
 import { UserState } from '../user-page-state'
 
 import { UserListTable } from './components/user-list-table'
 import { UserData } from './services/user-data'
 
 @Component({
-  selector: 'app-users-list-ft',
-  templateUrl: './list-ft.html',
+  selector: 'app-users-list-feat',
+  templateUrl: './list-feat.html',
   imports: [
     MatTableModule,
     MatButtonModule,
@@ -26,7 +26,7 @@ import { UserData } from './services/user-data'
     UserListTable,
   ],
 })
-export class ListFeature {
+export class ListFeat {
   private readonly _data = inject(UserData)
   private readonly _dialog = inject(MatDialog)
   private readonly _snack = inject(MatSnackBar)
@@ -66,7 +66,7 @@ export class ListFeature {
   }
 
   async onEditUser(user: User) {
-    const dialogRef = this._dialog.open(UpdateFeature, {
+    const dialogRef = this._dialog.open(UpdateFeat, {
       width: '420px',
       data: user,
     })
@@ -92,7 +92,7 @@ export class ListFeature {
   }
 
   async onDeleteUser(user: User) {
-    const dialogRef = this._dialog.open(DeleteFeature, {
+    const dialogRef = this._dialog.open(DeleteFeat, {
       width: '400px',
       data: { name: `${user.name} ${user.surname}` },
     })

@@ -1,0 +1,37 @@
+<div class="grid h-full place-content-center">
+  <form
+    [formGroup]="form"
+    (ngSubmit)="onSubmit()"
+    class="flex flex-col gap-5 text-center">
+    <mat-form-field appearance="outline">
+      <mat-label>Email</mat-label>
+      <input
+        matInput
+        type="email"
+        formControlName="email"
+        placeholder="Ex. test@test.com"
+        required />
+      @if (form.get('email')?.invalid) {
+      <mat-error> {{ getErrorMessage('email') }} </mat-error>
+      }
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Password</mat-label>
+      <input
+        matInput
+        type="password"
+        formControlName="password"
+        placeholder="******"
+        required />
+      @if (form.get('password')?.invalid) {
+      <mat-error> {{ getErrorMessage('password') }} </mat-error>
+      }
+    </mat-form-field>
+    @if (showFormError) {
+    <p class="text-error">Login credentials invalid</p>
+    }
+    <button mat-flat-button type="submit" [disabled]="!form.valid">
+      Login
+    </button>
+  </form>
+</div>

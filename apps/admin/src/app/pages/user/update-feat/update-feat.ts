@@ -13,8 +13,8 @@ import { MatInputModule } from '@angular/material/input'
 import { User } from '@/admin/shared/interfaces/user'
 
 @Component({
-  selector: 'app-update-ft',
-  templateUrl: './update-ft.html',
+  selector: 'app-update-feat',
+  templateUrl: './update-feat.html',
   imports: [
     ReactiveFormsModule,
     MatDialogModule,
@@ -24,9 +24,9 @@ import { User } from '@/admin/shared/interfaces/user'
     MatIconModule,
   ],
 })
-export class UpdateFeature {
+export class UpdateFeat {
   private readonly _fb = inject(FormBuilder)
-  private readonly _dialogRef = inject(MatDialogRef<UpdateFeature>)
+  private readonly _dialogRef = inject(MatDialogRef<UpdateFeat>)
   public readonly data = inject<User>(MAT_DIALOG_DATA)
 
   form = this._fb.nonNullable.group({

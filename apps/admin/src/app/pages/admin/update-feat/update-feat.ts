@@ -11,10 +11,10 @@ import { AdminUpdateDto } from './interfaces/admin-update-dto'
 import { AdminUpdate } from './services/update-admin'
 
 @Component({
-  selector: 'ja-admin-update-ft',
+  selector: 'ja-admin-update-feat',
   template: '',
 })
-export class UpdateFeature {
+export class UpdateFeat {
   private readonly _dialog = inject(MatDialog)
   private readonly _adminUpdate = inject(AdminUpdate)
   private readonly _snackBar = inject(MatSnackBar)

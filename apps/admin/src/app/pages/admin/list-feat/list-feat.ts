@@ -12,16 +12,16 @@ import { AdminPageState } from '../admin-page-state'
 import { AdminData } from './services/admin-data'
 
 @Component({
-  selector: 'ja-admin-list-ft',
+  selector: 'ja-admin-list-feat',
   imports: [
     MatButtonModule,
     MatIconModule,
     MatTableModule,
     MatProgressSpinnerModule,
   ],
-  templateUrl: './list-ft.html',
+  templateUrl: './list-feat.html',
 })
-export class ListFeature {
+export class ListFeat {
   private readonly _state = inject(AdminPageState)
   private readonly _adminData = inject(AdminData)
   private readonly _snackBar = inject(MatSnackBar)

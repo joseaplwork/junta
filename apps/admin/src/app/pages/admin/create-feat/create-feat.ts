@@ -11,11 +11,11 @@ import { AdminCreateDTO } from './interfaces/admin-create-dto'
 import { AdminCreate } from './services/admin-create'
 
 @Component({
-  selector: 'ja-admin-create-ft',
+  selector: 'ja-admin-create-feat',
   imports: [MatFabButton, MatIcon],
-  templateUrl: './create-ft.html',
+  templateUrl: './create-feat.html',
 })
-export class CreateFeature {
+export class CreateFeat {
   private readonly _dialog = inject(MatDialog)
   private readonly _adminCreate = inject(AdminCreate)
   private readonly _state = inject(AdminPageState)

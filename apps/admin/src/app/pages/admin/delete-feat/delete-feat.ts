@@ -10,10 +10,10 @@ import { DeleteAdminDialog } from './components/delete-admin-dialog'
 import { AdminDelete } from './services/admin-delete'
 
 @Component({
-  selector: 'ja-admin-delete-ft',
+  selector: 'ja-admin-delete-feat',
   template: '',
 })
-export class DeleteFeature {
+export class DeleteFeat {
   private readonly _dialog = inject(MatDialog)
   private readonly _adminDelete = inject(AdminDelete)
   private readonly _snackBar = inject(MatSnackBar)

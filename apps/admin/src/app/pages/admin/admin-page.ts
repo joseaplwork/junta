@@ -1,13 +1,13 @@
 import { Component } from '@angular/core'
 
 import { AdminPageState } from './admin-page-state'
-import { CreateFeature } from './create-ft/create-ft'
-import { DeleteFeature } from './delete-ft/delete-ft'
-import { ListFeature } from './list-ft/list-ft'
+import { CreateFeat } from './create-feat/create-feat'
+import { DeleteFeat } from './delete-feat/delete-feat'
+import { ListFeat } from './list-feat/list-feat'
 
 @Component({
   templateUrl: './admin-page.html',
-  imports: [ListFeature, CreateFeature, DeleteFeature],
+  imports: [ListFeat, CreateFeat, DeleteFeat],
   providers: [AdminPageState],
 })
 export class AdminPage {}
