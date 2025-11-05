@@ -15,7 +15,7 @@ import { UserListTable } from './components/user-list-table'
 import { UserData } from './services/user-data'
 
 @Component({
-  selector: 'app-users-list-feat',
+  selector: 'ja-users-list-feat',
   templateUrl: './list-feat.html',
   imports: [
     MatTableModule,

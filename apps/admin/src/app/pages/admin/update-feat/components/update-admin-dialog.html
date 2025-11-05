@@ -21,7 +21,7 @@
 
     <div class="space-y-2">
       <label class="block text-sm font-medium text-gray-700">Roles</label>
-      @for (role of availableRoles; track role) {
+      @for (role of availableRoles; track role || $index) {
       <mat-checkbox
         [checked]="isRoleSelected(role)"
         (change)="toggleRole(role)"

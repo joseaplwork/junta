@@ -12,7 +12,7 @@
   <ng-container matColumnDef="roles">
     <mat-header-cell *matHeaderCellDef>Roles</mat-header-cell>
     <mat-cell *matCellDef="let admin">
-      @for (role of admin.roles; track role.id) {
+      @for (role of admin.roles; track role.id || role.name || $index) {
       <span class="mr-1 rounded bg-gray-200 px-2 py-1 text-xs">
         {{ role.name }}
       </span>
@@ -48,6 +48,6 @@
   </ng-container>
 
   <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-  <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+  <mat-row *matRowDef="let admin; columns: displayedColumns"></mat-row>
 </mat-table>
 }

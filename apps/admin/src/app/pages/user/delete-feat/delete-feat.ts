@@ -12,7 +12,7 @@ interface DeleteDialogData {
 }
 
 @Component({
-  selector: 'app-delete-feat',
+  selector: 'ja-delete-feat',
   templateUrl: './delete-feat.html',
   imports: [MatDialogModule, MatButtonModule, MatIconModule],
 })

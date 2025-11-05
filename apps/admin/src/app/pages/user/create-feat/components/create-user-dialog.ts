@@ -9,7 +9,7 @@ import { MatInputModule } from '@angular/material/input'
 import { UserCreatePayload } from '../interfaces/user-create-payload'
 
 @Component({
-  selector: 'app-create-user-dialog',
+  selector: 'ja-create-user-dialog',
   templateUrl: './create-user-dialog.html',
   imports: [
     ReactiveFormsModule,

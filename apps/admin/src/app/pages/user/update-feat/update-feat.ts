@@ -13,7 +13,7 @@ import { MatInputModule } from '@angular/material/input'
 import { User } from '@/admin/shared/interfaces/user'
 
 @Component({
-  selector: 'app-update-feat',
+  selector: 'ja-update-feat',
   templateUrl: './update-feat.html',
   imports: [
     ReactiveFormsModule,

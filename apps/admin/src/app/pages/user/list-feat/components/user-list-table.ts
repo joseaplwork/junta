@@ -6,7 +6,7 @@ import { MatTableModule } from '@angular/material/table'
 import { User } from '@/admin/shared/interfaces/user'
 
 @Component({
-  selector: 'app-user-list-table',
+  selector: 'ja-user-list-table',
   templateUrl: './user-list-table.html',
   imports: [MatTableModule, MatButtonModule, MatIconModule],
 })

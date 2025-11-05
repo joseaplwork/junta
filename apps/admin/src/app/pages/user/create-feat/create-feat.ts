@@ -10,7 +10,7 @@ import { UserCreatePayload } from './interfaces/user-create-payload'
 import { CreateUser } from './services/create-user'
 
 @Component({
-  selector: 'app-users-create-feat',
+  selector: 'ja-users-create-feat',
   templateUrl: './create-feat.html',
   imports: [MatButtonModule, MatIconModule, MatDialogModule],
 })

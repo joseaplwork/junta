@@ -5,7 +5,7 @@ import { ListFeat } from './list-feat/list-feat'
 import { UserState } from './user-page-state'
 
 @Component({
-  templateUrl: './users-page.html',
+  templateUrl: './user-page.html',
   imports: [ListFeat, CreateFeat],
   providers: [UserState],
 })
