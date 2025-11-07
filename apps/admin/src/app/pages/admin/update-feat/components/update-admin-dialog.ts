@@ -91,8 +91,6 @@ export class UpdateAdminDialog {
 
       await this.data.handleUpdate(this.data.admin.id, updateData)
       this._dialogRef.close(true)
-    } catch {
-      // Error handling is done in the parent component
     } finally {
       this.submitting.set(false)
     }

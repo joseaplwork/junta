@@ -27,7 +27,7 @@ export class AdminPageState {
     this._adminCreated.set(admin)
   }
 
-  emitUpdateAdmin(admin: Admin): void {
+  emitUpdateAdmin(admin: Admin | null): void {
     this._updateAdmin.set(admin)
   }
 

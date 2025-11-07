@@ -26,6 +26,7 @@ export class UpdateFeat {
 
       if (admin) {
         this.openUpdateDialog(admin)
+        this._state.emitUpdateAdmin(null)
       }
     })
   }
