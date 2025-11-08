@@ -11,7 +11,6 @@ import {
 })
 export class Dialog {
   private readonly _dialog = inject(MatDialog)
-  private readonly _dialogRef = inject(MatDialogRef)
 
   private readonly _sizeConfig: MatDialogConfig = {
     minWidth: '320px',
@@ -33,7 +32,7 @@ export class Dialog {
     return this._dialog.open(component, config)
   }
 
-  close<D>(data?: D): void {
-    this._dialogRef.close(data)
+  close<C>(component: ComponentType<C>, data?: unknown): void {
+    inject(MatDialogRef<typeof component>).close(data)
   }
 }

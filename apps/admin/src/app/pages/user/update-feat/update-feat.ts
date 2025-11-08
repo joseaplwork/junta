@@ -57,10 +57,10 @@ export class UpdateFeat {
       ...this.form.value,
     } as User
 
-    this._dialog.close(updatedUser)
+    this._dialog.close(UpdateFeat, updatedUser)
   }
 
   cancel() {
-    this._dialog.close()
+    this._dialog.close(UpdateFeat)
   }
 }

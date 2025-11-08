@@ -15,7 +15,7 @@ export class AdminPageState {
   readonly updateAdmin = this._updateAdmin.asReadonly()
   readonly adminUpdated = this._adminUpdated.asReadonly()
 
-  emitDeleteAdmin(admin: Admin): void {
+  emitDeleteAdmin(admin: Admin | null): void {
     this._deleteAdmin.set(admin)
   }
 

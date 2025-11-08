@@ -19,10 +19,10 @@ export class DeleteFeat {
   public data = inject<DeleteDialogData>(MAT_DIALOG_DATA)
 
   confirmDelete() {
-    this._dialog.close(true)
+    this._dialog.close(DeleteFeat, true)
   }
 
   cancel() {
-    this._dialog.close(false)
+    this._dialog.close(DeleteFeat, false)
   }
 }

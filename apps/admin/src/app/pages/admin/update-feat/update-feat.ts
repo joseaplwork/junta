@@ -21,14 +21,16 @@ export class UpdateFeat {
   private readonly _state = inject(AdminPageState)
 
   constructor() {
-    effect(() => {
-      const admin = this._state.updateAdmin()
+    effect(this._listerForAdminUpdate)
+  }
 
-      if (admin) {
-        this.openUpdateDialog(admin)
-        this._state.emitUpdateAdmin(null)
-      }
-    })
+  private _listerForAdminUpdate = () => {
+    const admin = this._state.updateAdmin()
+
+    if (admin) {
+      this.openUpdateDialog(admin)
+      this._state.emitUpdateAdmin(null)
+    }
   }
 
   private async openUpdateDialog(admin: Admin): Promise<void> {

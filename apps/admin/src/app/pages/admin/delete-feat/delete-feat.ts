@@ -20,13 +20,16 @@ export class DeleteFeat {
   private readonly _state = inject(AdminPageState)
 
   constructor() {
-    effect(() => {
-      const admin = this._state.deleteAdmin()
+    effect(this.listenForAdminDelete)
+  }
 
-      if (admin) {
-        this.openDeleteDialog(admin)
-      }
-    })
+  private listenForAdminDelete = () => {
+    const admin = this._state.deleteAdmin()
+
+    if (admin) {
+      this.openDeleteDialog(admin)
+      this._state.emitDeleteAdmin(null)
+    }
   }
 
   private async openDeleteDialog(admin: Admin): Promise<void> {

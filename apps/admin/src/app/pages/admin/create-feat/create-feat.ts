@@ -23,10 +23,7 @@ export class CreateFeat {
   private readonly _snackbar = inject(Snackbar)
 
   handleClick(): void {
-    this._dialog.open(CreateAdminDialog, {
-      data: { handleSubmit: this._handleSubmit },
-      size: 'medium',
-    })
+    this._dialog.open(CreateAdminDialog, { handleSubmit: this._handleSubmit })
   }
 
   private _handleSubmit = async (formData: AdminCreateDTO): Promise<void> => {
