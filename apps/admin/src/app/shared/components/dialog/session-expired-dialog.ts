@@ -16,6 +16,7 @@ import { Dialog } from './dialog'
 @Component({
   selector: 'ja-session-expired-dialog',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  template: '',
 })
 export class SessionExpiredDialog implements OnInit, OnDestroy {
   private readonly _auth = inject(AccessTokenManager)
