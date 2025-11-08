@@ -2,7 +2,8 @@ import { Component, inject } from '@angular/core'
 import { MatFabButton } from '@angular/material/button'
 import { MatDialog } from '@angular/material/dialog'
 import { MatIcon } from '@angular/material/icon'
-import { MatSnackBar } from '@angular/material/snack-bar'
+
+import { SnackbarService } from '@/admin/shared/services/snackbar.service'
 
 import { AdminPageState } from '../admin-page-state'
 
@@ -19,7 +20,7 @@ export class CreateFeat {
   private readonly _dialog = inject(MatDialog)
   private readonly _adminCreate = inject(AdminCreate)
   private readonly _state = inject(AdminPageState)
-  private readonly _snackBar = inject(MatSnackBar)
+  private readonly _snackbar = inject(SnackbarService)
 
   handleClick(): void {
     this._dialog.open(CreateAdminDialog, {
@@ -33,13 +34,9 @@ export class CreateFeat {
       const admin = await this._adminCreate.create(formData)
 
       this._state.emitAdminCreated(admin)
-      this._snackBar.open('Admin created successfully', 'Close', {
-        duration: 3000,
-      })
+      this._snackbar.success('Admin created successfully')
     } catch {
-      this._snackBar.open('Failed to create admin', 'Close', {
-        duration: 3000,
-      })
+      this._snackbar.error('Failed to create admin')
     }
   }
 }

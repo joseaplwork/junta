@@ -2,10 +2,10 @@ import { Component, effect, inject, signal } from '@angular/core'
 import { MatButtonModule } from '@angular/material/button'
 import { MatIconModule } from '@angular/material/icon'
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
-import { MatSnackBar } from '@angular/material/snack-bar'
 import { MatTableModule } from '@angular/material/table'
 
 import { Admin } from '@/admin/shared/interfaces/admin'
+import { SnackbarService } from '@/admin/shared/services/snackbar.service'
 
 import { AdminPageState } from '../admin-page-state'
 
@@ -24,7 +24,7 @@ import { AdminData } from './services/admin-data'
 export class ListFeat {
   private readonly _state = inject(AdminPageState)
   private readonly _adminData = inject(AdminData)
-  private readonly _snackBar = inject(MatSnackBar)
+  private readonly _snackbar = inject(SnackbarService)
 
   displayedColumns = ['email', 'roles', 'name', 'actions']
   admins = signal<Admin[]>([])
@@ -49,9 +49,7 @@ export class ListFeat {
       this.admins.set(admins)
     } catch {
       this.error.set('Failed to load admins')
-      this._snackBar.open('Failed to load admins', 'Close', {
-        duration: 3000,
-      })
+      this._snackbar.error('Failed to load admins')
     } finally {
       this.loading.set(false)
     }

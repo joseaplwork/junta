@@ -1,8 +1,8 @@
 import { Component, effect, inject } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
-import { MatSnackBar } from '@angular/material/snack-bar'
 
 import { Admin } from '@/admin/shared/interfaces/admin'
+import { SnackbarService } from '@/admin/shared/services/snackbar.service'
 
 import { AdminPageState } from '../admin-page-state'
 
@@ -16,7 +16,7 @@ import { AdminDelete } from './services/admin-delete'
 export class DeleteFeat {
   private readonly _dialog = inject(MatDialog)
   private readonly _adminDelete = inject(AdminDelete)
-  private readonly _snackBar = inject(MatSnackBar)
+  private readonly _snackbar = inject(SnackbarService)
   private readonly _state = inject(AdminPageState)
 
   constructor() {
@@ -44,13 +44,9 @@ export class DeleteFeat {
       await this._adminDelete.delete(admin.id)
 
       this._state.emitAdminDeleted(admin)
-      this._snackBar.open('Admin deleted successfully', 'Close', {
-        duration: 3000,
-      })
+      this._snackbar.success('Admin deleted successfully')
     } catch {
-      this._snackBar.open('Failed to delete admin', 'Close', {
-        duration: 3000,
-      })
+      this._snackbar.error('Failed to delete admin')
     }
   }
 }

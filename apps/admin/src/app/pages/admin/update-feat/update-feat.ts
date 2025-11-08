@@ -1,8 +1,8 @@
 import { Component, effect, inject } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
-import { MatSnackBar } from '@angular/material/snack-bar'
 
 import { Admin } from '@/admin/shared/interfaces/admin'
+import { SnackbarService } from '@/admin/shared/services/snackbar.service'
 
 import { AdminPageState } from '../admin-page-state'
 
@@ -17,7 +17,7 @@ import { AdminUpdate } from './services/update-admin'
 export class UpdateFeat {
   private readonly _dialog = inject(MatDialog)
   private readonly _adminUpdate = inject(AdminUpdate)
-  private readonly _snackBar = inject(MatSnackBar)
+  private readonly _snackbar = inject(SnackbarService)
   private readonly _state = inject(AdminPageState)
 
   constructor() {
@@ -49,13 +49,9 @@ export class UpdateFeat {
       const updatedAdmin = await this._adminUpdate.update(id, updateData)
 
       this._state.emitAdminUpdated(updatedAdmin)
-      this._snackBar.open('Admin updated successfully', 'Close', {
-        duration: 3000,
-      })
+      this._snackbar.success('Admin updated successfully')
     } catch {
-      this._snackBar.open('Failed to update admin', 'Close', {
-        duration: 3000,
-      })
+      this._snackbar.error('Failed to update admin')
     }
   }
 }
