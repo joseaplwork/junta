@@ -21,7 +21,6 @@ import { MatInputModule } from '@angular/material/input'
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
 
 @Component({
-  selector: 'ja-create-admin-dialog',
   imports: [
     TitleCasePipe,
     ReactiveFormsModule,

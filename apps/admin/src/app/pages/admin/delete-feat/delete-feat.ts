@@ -11,7 +11,6 @@ import { AdminDelete } from './services/admin-delete'
 
 @Component({
   selector: 'ja-admin-delete-feat',
-  template: '',
 })
 export class DeleteFeat {
   private readonly _dialog = inject(Dialog)

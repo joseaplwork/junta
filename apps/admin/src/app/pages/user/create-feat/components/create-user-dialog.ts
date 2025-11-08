@@ -9,8 +9,6 @@ import { MatInputModule } from '@angular/material/input'
 import { UserCreatePayload } from '../interfaces/user-create-payload'
 
 @Component({
-  selector: 'ja-create-user-dialog',
-  templateUrl: './create-user-dialog.html',
   imports: [
     ReactiveFormsModule,
     MatDialogModule,
@@ -19,6 +17,7 @@ import { UserCreatePayload } from '../interfaces/user-create-payload'
     MatButtonModule,
     MatIconModule,
   ],
+  templateUrl: './create-user-dialog.html',
 })
 export class CreateUserDialog {
   private readonly _dialogRef = inject(MatDialogRef<CreateUserDialog>)

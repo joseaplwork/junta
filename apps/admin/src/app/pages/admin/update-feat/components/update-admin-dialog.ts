@@ -23,7 +23,6 @@ import { Admin } from '@/admin/shared/interfaces/admin'
 import { AdminUpdateDto } from '../interfaces/admin-update-dto'
 
 @Component({
-  selector: 'ja-update-admin-dialog',
   imports: [
     TitleCasePipe,
     ReactiveFormsModule,

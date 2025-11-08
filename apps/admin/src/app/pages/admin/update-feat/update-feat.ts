@@ -12,7 +12,6 @@ import { AdminUpdate } from './services/update-admin'
 
 @Component({
   selector: 'ja-admin-update-feat',
-  template: '',
 })
 export class UpdateFeat {
   private readonly _dialog = inject(Dialog)

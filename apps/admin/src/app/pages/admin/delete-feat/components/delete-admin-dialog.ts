@@ -13,8 +13,6 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner'
 import { Admin } from '@/admin/shared/interfaces/admin'
 
 @Component({
-  selector: 'ja-delete-admin-dialog',
-
   imports: [
     MatButtonModule,
     MatDialogTitle,
