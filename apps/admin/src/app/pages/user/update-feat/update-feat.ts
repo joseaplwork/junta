@@ -1,23 +1,19 @@
 import { Component, inject } from '@angular/core'
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
 import { MatButtonModule } from '@angular/material/button'
-import {
-  MAT_DIALOG_DATA,
-  MatDialogModule,
-  MatDialogRef,
-} from '@angular/material/dialog'
+import { MAT_DIALOG_DATA } from '@angular/material/dialog'
 import { MatFormFieldModule } from '@angular/material/form-field'
 import { MatIconModule } from '@angular/material/icon'
 import { MatInputModule } from '@angular/material/input'
 
 import { User } from '@/admin/shared/interfaces/user'
+import { Dialog } from '@/admin/shared/services/dialog'
 
 @Component({
-  selector: 'ja-update-feat',
+  selector: 'ja-user-update-feat',
   templateUrl: './update-feat.html',
   imports: [
     ReactiveFormsModule,
-    MatDialogModule,
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
@@ -26,7 +22,7 @@ import { User } from '@/admin/shared/interfaces/user'
 })
 export class UpdateFeat {
   private readonly _fb = inject(FormBuilder)
-  private readonly _dialogRef = inject(MatDialogRef<UpdateFeat>)
+  private readonly _dialog = inject(Dialog)
   public readonly data = inject<User>(MAT_DIALOG_DATA)
 
   form = this._fb.nonNullable.group({
@@ -61,10 +57,10 @@ export class UpdateFeat {
       ...this.form.value,
     } as User
 
-    this._dialogRef.close(updatedUser)
+    this._dialog.close(updatedUser)
   }
 
   cancel() {
-    this._dialogRef.close()
+    this._dialog.close()
   }
 }

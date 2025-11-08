@@ -5,7 +5,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
 import { MatTableModule } from '@angular/material/table'
 
 import { Admin } from '@/admin/shared/interfaces/admin'
-import { SnackbarService } from '@/admin/shared/services/snackbar.service'
+import { Snackbar } from '@/admin/shared/services/snackbar'
 
 import { AdminPageState } from '../admin-page-state'
 
@@ -24,7 +24,7 @@ import { AdminData } from './services/admin-data'
 export class ListFeat {
   private readonly _state = inject(AdminPageState)
   private readonly _adminData = inject(AdminData)
-  private readonly _snackbar = inject(SnackbarService)
+  private readonly _snackbar = inject(Snackbar)
 
   displayedColumns = ['email', 'roles', 'name', 'actions']
   admins = signal<Admin[]>([])

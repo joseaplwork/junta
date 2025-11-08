@@ -1,9 +1,9 @@
 import { Component, inject } from '@angular/core'
 import { MatFabButton } from '@angular/material/button'
-import { MatDialog } from '@angular/material/dialog'
 import { MatIcon } from '@angular/material/icon'
 
-import { SnackbarService } from '@/admin/shared/services/snackbar.service'
+import { Dialog } from '@/admin/shared/services/dialog'
+import { Snackbar } from '@/admin/shared/services/snackbar'
 
 import { AdminPageState } from '../admin-page-state'
 
@@ -17,15 +17,15 @@ import { AdminCreate } from './services/admin-create'
   templateUrl: './create-feat.html',
 })
 export class CreateFeat {
-  private readonly _dialog = inject(MatDialog)
+  private readonly _dialog = inject(Dialog)
   private readonly _adminCreate = inject(AdminCreate)
   private readonly _state = inject(AdminPageState)
-  private readonly _snackbar = inject(SnackbarService)
+  private readonly _snackbar = inject(Snackbar)
 
   handleClick(): void {
     this._dialog.open(CreateAdminDialog, {
-      width: '500px',
       data: { handleSubmit: this._handleSubmit },
+      size: 'medium',
     })
   }
 

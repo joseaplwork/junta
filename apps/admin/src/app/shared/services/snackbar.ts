@@ -10,7 +10,7 @@ export interface SnackbarConfig {
 @Injectable({
   providedIn: 'root',
 })
-export class SnackbarService {
+export class Snackbar {
   private readonly _snackBar = inject(MatSnackBar)
 
   private readonly _defaultConfig: Required<SnackbarConfig> = {
@@ -20,37 +20,24 @@ export class SnackbarService {
   }
 
   success(message: string, config?: SnackbarConfig): void {
-    this.show(message, {
-      ...config,
-      panelClass: ['success-snackbar', ...(config?.panelClass || [])],
-    })
+    this.show(message, config)
   }
 
   error(message: string, config?: SnackbarConfig): void {
-    this.show(message, {
-      ...config,
-      panelClass: ['error-snackbar', ...(config?.panelClass || [])],
-    })
+    this.show(message, config)
   }
 
   warning(message: string, config?: SnackbarConfig): void {
-    this.show(message, {
-      ...config,
-      panelClass: ['warning-snackbar', ...(config?.panelClass || [])],
-    })
+    this.show(message, config)
   }
 
   info(message: string, config?: SnackbarConfig): void {
-    this.show(message, {
-      ...config,
-      panelClass: ['info-snackbar', ...(config?.panelClass || [])],
-    })
+    this.show(message, config)
   }
 
   show(message: string, config?: SnackbarConfig): void {
     const finalConfig: MatSnackBarConfig = {
       duration: config?.duration ?? this._defaultConfig.duration,
-      panelClass: config?.panelClass ?? this._defaultConfig.panelClass,
     }
 
     this._snackBar.open(

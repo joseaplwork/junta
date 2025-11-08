@@ -1,8 +1,8 @@
 import { Component, effect, inject } from '@angular/core'
-import { MatDialog } from '@angular/material/dialog'
 
 import { Admin } from '@/admin/shared/interfaces/admin'
-import { SnackbarService } from '@/admin/shared/services/snackbar.service'
+import { Dialog } from '@/admin/shared/services/dialog'
+import { Snackbar } from '@/admin/shared/services/snackbar'
 
 import { AdminPageState } from '../admin-page-state'
 
@@ -14,9 +14,9 @@ import { AdminDelete } from './services/admin-delete'
   template: '',
 })
 export class DeleteFeat {
-  private readonly _dialog = inject(MatDialog)
+  private readonly _dialog = inject(Dialog)
   private readonly _adminDelete = inject(AdminDelete)
-  private readonly _snackbar = inject(SnackbarService)
+  private readonly _snackbar = inject(Snackbar)
   private readonly _state = inject(AdminPageState)
 
   constructor() {
@@ -31,11 +31,8 @@ export class DeleteFeat {
 
   private async openDeleteDialog(admin: Admin): Promise<void> {
     this._dialog.open(DeleteAdminDialog, {
-      width: '400px',
-      data: {
-        admin,
-        handleDelete: this._handleDelete,
-      },
+      admin,
+      handleDelete: this._handleDelete,
     })
   }
 

@@ -1,8 +1,8 @@
 import { Component, effect, inject } from '@angular/core'
-import { MatDialog } from '@angular/material/dialog'
 
 import { Admin } from '@/admin/shared/interfaces/admin'
-import { SnackbarService } from '@/admin/shared/services/snackbar.service'
+import { Dialog } from '@/admin/shared/services/dialog'
+import { Snackbar } from '@/admin/shared/services/snackbar'
 
 import { AdminPageState } from '../admin-page-state'
 
@@ -15,9 +15,9 @@ import { AdminUpdate } from './services/update-admin'
   template: '',
 })
 export class UpdateFeat {
-  private readonly _dialog = inject(MatDialog)
+  private readonly _dialog = inject(Dialog)
   private readonly _adminUpdate = inject(AdminUpdate)
-  private readonly _snackbar = inject(SnackbarService)
+  private readonly _snackbar = inject(Snackbar)
   private readonly _state = inject(AdminPageState)
 
   constructor() {
@@ -33,11 +33,8 @@ export class UpdateFeat {
 
   private async openUpdateDialog(admin: Admin): Promise<void> {
     this._dialog.open(UpdateAdminDialog, {
-      width: '500px',
-      data: {
-        admin,
-        handleUpdate: this._handleUpdate,
-      },
+      admin,
+      handleUpdate: this._handleUpdate,
     })
   }
 

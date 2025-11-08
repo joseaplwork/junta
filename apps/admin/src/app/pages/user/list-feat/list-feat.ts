@@ -1,11 +1,11 @@
 import { Component, effect, inject, signal } from '@angular/core'
 import { MatButtonModule } from '@angular/material/button'
-import { MatDialog, MatDialogModule } from '@angular/material/dialog'
 import { MatIconModule } from '@angular/material/icon'
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar'
 import { MatTableModule } from '@angular/material/table'
 
 import { User } from '@/admin/shared/interfaces/user'
+import { Dialog } from '@/admin/shared/services/dialog'
+import { Snackbar } from '@/admin/shared/services/snackbar'
 
 import { DeleteFeat } from '../delete-feat/delete-feat'
 import { UpdateFeat } from '../update-feat/update-feat'
@@ -15,22 +15,15 @@ import { UserListTable } from './components/user-list-table'
 import { UserData } from './services/user-data'
 
 @Component({
-  selector: 'ja-users-list-feat',
+  selector: 'ja-user-list-feat',
   templateUrl: './list-feat.html',
-  imports: [
-    MatTableModule,
-    MatButtonModule,
-    MatIconModule,
-    MatDialogModule,
-    MatSnackBarModule,
-    UserListTable,
-  ],
+  imports: [MatTableModule, MatButtonModule, MatIconModule, UserListTable],
 })
 export class ListFeat {
   private readonly _data = inject(UserData)
-  private readonly _dialog = inject(MatDialog)
-  private readonly _snack = inject(MatSnackBar)
-  private readonly _UserState = inject(UserState)
+  private readonly _dialog = inject(Dialog)
+  private readonly _snackbar = inject(Snackbar)
+  private readonly _userState = inject(UserState)
 
   readonly users = signal<User[]>([])
   readonly loading = signal(true)
@@ -40,12 +33,12 @@ export class ListFeat {
     this.loadUsers()
 
     effect(() => {
-      const newUser = this._UserState.newUser()
+      const newUser = this._userState.newUser()
 
       if (newUser) {
         this.users.update(arr => [...arr, newUser])
-        this._snack.open('User created', 'Close', { duration: 2500 })
-        this._UserState.clearNewUser()
+        this._snackbar.success('User created')
+        this._userState.clearNewUser()
       }
     })
   }
@@ -66,12 +59,9 @@ export class ListFeat {
   }
 
   async onEditUser(user: User) {
-    const dialogRef = this._dialog.open(UpdateFeat, {
-      width: '420px',
-      data: user,
-    })
+    const updateFeatDialog = this._dialog.open<User>(UpdateFeat, user)
 
-    dialogRef.afterClosed().subscribe(async (updated?: User) => {
+    updateFeatDialog.afterClosed().subscribe(async (updated?: User) => {
       if (!updated) return
 
       try {
@@ -84,29 +74,28 @@ export class ListFeat {
         this.users.update(arr =>
           arr.map(u => (u.id === user.id ? { ...u, ...result } : u)),
         )
-        this._snack.open('User updated', 'Close', { duration: 2500 })
+        this._snackbar.success('User updated')
       } catch {
-        this._snack.open('Update failed', 'Close', { duration: 3000 })
+        this._snackbar.error('Update failed')
       }
     })
   }
 
   async onDeleteUser(user: User) {
-    const dialogRef = this._dialog.open(DeleteFeat, {
-      width: '400px',
-      data: { name: `${user.name} ${user.surname}` },
+    const deleteFeatDialog = this._dialog.open<boolean>(DeleteFeat, {
+      name: `${user.name} ${user.surname}`,
     })
 
-    dialogRef.afterClosed().subscribe(async (confirmed: boolean) => {
+    deleteFeatDialog.afterClosed().subscribe(async (confirmed?: boolean) => {
       if (!confirmed) return
 
       try {
         await this._data.delete(user.id)
 
         this.users.update(arr => arr.filter(u => u.id !== user.id))
-        this._snack.open('User deleted', 'Close', { duration: 2500 })
+        this._snackbar.success('User deleted')
       } catch {
-        this._snack.open('Delete failed', 'Close', { duration: 3000 })
+        this._snackbar.error('Delete failed')
       }
     })
   }

@@ -1,30 +1,28 @@
 import { Component, inject } from '@angular/core'
 import { MatButtonModule } from '@angular/material/button'
-import {
-  MAT_DIALOG_DATA,
-  MatDialogModule,
-  MatDialogRef,
-} from '@angular/material/dialog'
+import { MAT_DIALOG_DATA } from '@angular/material/dialog'
 import { MatIconModule } from '@angular/material/icon'
+
+import { Dialog } from '@/admin/shared/services/dialog'
 
 interface DeleteDialogData {
   name: string
 }
 
 @Component({
-  selector: 'ja-delete-feat',
+  selector: 'ja-user-delete-feat',
   templateUrl: './delete-feat.html',
-  imports: [MatDialogModule, MatButtonModule, MatIconModule],
+  imports: [MatButtonModule, MatIconModule],
 })
 export class DeleteFeat {
-  private readonly _dialogRef = inject(MatDialogRef<DeleteFeat>)
+  private readonly _dialog = inject(Dialog)
   public data = inject<DeleteDialogData>(MAT_DIALOG_DATA)
 
   confirmDelete() {
-    this._dialogRef.close(true)
+    this._dialog.close(true)
   }
 
   cancel() {
-    this._dialogRef.close(false)
+    this._dialog.close(false)
   }
 }
