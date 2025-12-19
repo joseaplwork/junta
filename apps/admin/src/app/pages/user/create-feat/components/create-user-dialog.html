@@ -30,13 +30,23 @@
   </div>
 
   <div mat-dialog-actions align="end">
-    <button mat-stroked-button type="button" (click)="cancel()">Cancel</button>
+    <button
+      mat-stroked-button
+      type="button"
+      (click)="cancel()"
+      [disabled]="submitting()">
+      Cancel
+    </button>
     <button
       mat-flat-button
       color="primary"
       type="submit"
-      [disabled]="form.invalid">
-      Create
+      [disabled]="form.invalid || submitting()"
+      class="flex items-center justify-center">
+      @if (submitting()) {
+      <mat-icon><mat-spinner diameter="18"></mat-spinner></mat-icon>
+      }
+      <span>Create</span>
     </button>
   </div>
 </form>
