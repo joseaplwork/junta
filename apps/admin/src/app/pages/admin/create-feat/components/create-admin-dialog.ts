@@ -76,16 +76,18 @@ export class CreateAdminDialog {
 
     this.submitting.set(true)
 
-    const formValue = this.form.value
-    const formData = {
-      email: formValue.email!,
-      password: formValue.password!,
-      roles: formValue.roles!.filter(Boolean) as string[],
+    try {
+      const formValue = this.form.value
+      const formData = {
+        email: formValue.email!,
+        password: formValue.password!,
+        roles: formValue.roles!.filter(Boolean) as string[],
+      }
+
+      await this._data.handleSubmit(formData)
+    } finally {
+      this.submitting.set(false)
     }
-
-    await this._data.handleSubmit(formData)
-
-    this.submitting.set(false)
   }
 
   onCancel(): void {

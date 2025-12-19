@@ -49,7 +49,7 @@ export class UpdateAdminDialog {
   form = this._fb.group({
     email: [this.data.admin.email, [Validators.required, Validators.email]],
     roles: this._fb.array(
-      this.data.admin.roles.map(role => role),
+      this.data.admin.roles.map(role => this._fb.control(role)),
       [Validators.required],
     ),
   })
