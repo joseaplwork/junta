@@ -36,6 +36,48 @@
       }
     </mat-form-field>
 
+    <mat-form-field class="w-full">
+      <mat-label>Name</mat-label>
+      <input
+        matInput
+        type="text"
+        formControlName="name"
+        placeholder="Enter name"
+        required />
+      @if (form.get('name')?.hasError('required') &&
+      form.get('name')?.touched) {
+      <mat-error>Name is required</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field class="w-full">
+      <mat-label>Surname</mat-label>
+      <input
+        matInput
+        type="text"
+        formControlName="surname"
+        placeholder="Enter surname"
+        required />
+      @if (form.get('surname')?.hasError('required') &&
+      form.get('surname')?.touched) {
+      <mat-error>Surname is required</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field class="w-full">
+      <mat-label>Phone</mat-label>
+      <input
+        matInput
+        type="text"
+        formControlName="phone"
+        placeholder="Enter phone number"
+        required />
+      @if (form.get('phone')?.hasError('required') &&
+      form.get('phone')?.touched) {
+      <mat-error>Phone is required</mat-error>
+      }
+    </mat-form-field>
+
     <div class="space-y-2">
       <label class="block text-sm font-medium text-gray-700">Roles</label>
       @for (role of availableRoles; track role || $index) {

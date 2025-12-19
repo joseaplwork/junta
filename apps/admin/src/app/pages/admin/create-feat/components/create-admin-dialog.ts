@@ -47,6 +47,9 @@ export class CreateAdminDialog {
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]],
     roles: this._fb.array(['admin'], [Validators.required]),
+    name: ['', [Validators.required]],
+    surname: ['', [Validators.required]],
+    phone: ['', [Validators.required]],
   })
 
   get rolesFormArray(): FormArray {
@@ -82,6 +85,9 @@ export class CreateAdminDialog {
         email: formValue.email!,
         password: formValue.password!,
         roles: formValue.roles!.filter(Boolean) as string[],
+        name: formValue.name!,
+        surname: formValue.surname!,
+        phone: formValue.phone!,
       }
 
       await this._data.handleSubmit(formData)
