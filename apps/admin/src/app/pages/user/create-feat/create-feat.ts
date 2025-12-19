@@ -1,8 +1,9 @@
-import { Component, inject, signal } from '@angular/core'
+import { Component, inject } from '@angular/core'
 import { MatButtonModule } from '@angular/material/button'
 import { MatIconModule } from '@angular/material/icon'
 
 import { Dialog } from '@/admin/shared/services/dialog'
+import { Snackbar } from '@/admin/shared/services/snackbar'
 
 import { UserState } from '../user-page-state'
 
@@ -18,30 +19,23 @@ import { CreateUser } from './services/create-user'
 export class CreateFeat {
   private readonly _dialog = inject(Dialog)
   private readonly _createUser = inject(CreateUser)
-  private readonly _UserState = inject(UserState)
+  private readonly _state = inject(UserState)
+  private readonly _snackbar = inject(Snackbar)
 
-  readonly creating = signal(false)
+  handleClick(): void {
+    this._dialog.open(CreateUserDialog, { handleSubmit: this._handleSubmit })
+  }
 
-  handleClick() {
-    const createUserDialog =
-      this._dialog.open<UserCreatePayload>(CreateUserDialog)
+  private _handleSubmit = async (
+    formData: UserCreatePayload,
+  ): Promise<void> => {
+    try {
+      const user = await this._createUser.create(formData)
 
-    createUserDialog
-      .afterClosed()
-      .subscribe(async (result?: UserCreatePayload) => {
-        if (!result) return
-
-        this.creating.set(true)
-
-        try {
-          const user = await this._createUser.create(result)
-
-          this._UserState.addNewUser(user)
-        } catch (error) {
-          console.error('Failed to create user:', error)
-        } finally {
-          this.creating.set(false)
-        }
-      })
+      this._state.emitUserCreated(user)
+      this._snackbar.success('User created successfully')
+    } catch {
+      this._snackbar.error('Failed to create user')
+    }
   }
 }

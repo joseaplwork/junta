@@ -1,66 +1,56 @@
-import { Component, inject } from '@angular/core'
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
-import { MatButtonModule } from '@angular/material/button'
-import { MAT_DIALOG_DATA } from '@angular/material/dialog'
-import { MatFormFieldModule } from '@angular/material/form-field'
-import { MatIconModule } from '@angular/material/icon'
-import { MatInputModule } from '@angular/material/input'
+import { Component, effect, inject } from '@angular/core'
 
 import { User } from '@/admin/shared/interfaces/user'
 import { Dialog } from '@/admin/shared/services/dialog'
+import { Snackbar } from '@/admin/shared/services/snackbar'
+
+import { UserState } from '../user-page-state'
+
+import { UpdateUserDialog } from './components/update-user-dialog'
+import { UserUpdatePayload } from './interfaces/user-update-payload'
+import { UserUpdate } from './services/user-update'
 
 @Component({
   selector: 'ja-user-update-feat',
-  templateUrl: './update-feat.html',
-  imports: [
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatIconModule,
-  ],
+  template: '',
 })
 export class UpdateFeat {
-  private readonly _fb = inject(FormBuilder)
   private readonly _dialog = inject(Dialog)
-  public readonly data = inject<User>(MAT_DIALOG_DATA)
-
-  form = this._fb.nonNullable.group({
-    name: ['', Validators.required],
-    surname: ['', Validators.required],
-    phoneNumber: ['', Validators.required],
-  })
+  private readonly _userUpdate = inject(UserUpdate)
+  private readonly _snackbar = inject(Snackbar)
+  private readonly _state = inject(UserState)
 
   constructor() {
-    if (this.data) {
-      this.form.patchValue({
-        name: this.data.name,
-        surname: this.data.surname,
-        phoneNumber: this.data.phoneNumber,
-      })
+    effect(this._listenForUserUpdate)
+  }
+
+  private _listenForUserUpdate = () => {
+    const user = this._state.updateUser()
+
+    if (user) {
+      this.openUpdateDialog(user)
+      this._state.emitUpdateUser(null)
     }
   }
 
-  getError(control: string): string | null {
-    if (this.form.get(control)?.hasError('required')) {
-      return 'This field is required'
+  private async openUpdateDialog(user: User): Promise<void> {
+    this._dialog.open(UpdateUserDialog, {
+      user,
+      handleUpdate: this._handleUpdate,
+    })
+  }
+
+  private _handleUpdate = async (
+    id: string,
+    updateData: UserUpdatePayload,
+  ): Promise<void> => {
+    try {
+      const updatedUser = await this._userUpdate.update(id, updateData)
+
+      this._state.emitUserUpdated(updatedUser)
+      this._snackbar.success('User updated successfully')
+    } catch {
+      this._snackbar.error('Failed to update user')
     }
-
-    return null
-  }
-
-  save() {
-    if (this.form.invalid) return
-
-    const updatedUser: User = {
-      ...this.data,
-      ...this.form.value,
-    } as User
-
-    this._dialog.close(UpdateFeat, updatedUser)
-  }
-
-  cancel() {
-    this._dialog.close(UpdateFeat)
   }
 }

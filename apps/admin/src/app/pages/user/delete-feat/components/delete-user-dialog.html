@@ -1,0 +1,22 @@
+<mat-dialog-content>
+  <h2 mat-dialog-title>Delete User</h2>
+  
+  <p>
+    Are you sure you want to delete the user 
+    <strong>{{ data.user.name }} {{ data.user.surname }}</strong>?
+  </p>
+  
+  <p>This action cannot be undone.</p>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button type="button" (click)="handleCancel()">Cancel</button>
+  <button
+    mat-raised-button
+    color="warn"
+    type="button"
+    (click)="handleDelete()"
+  >
+    Delete
+  </button>
+</mat-dialog-actions>

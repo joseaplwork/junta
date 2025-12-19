@@ -1,0 +1,33 @@
+<mat-dialog-content>
+  <h2 mat-dialog-title>Update User</h2>
+
+  <form [formGroup]="form" (ngSubmit)="handleSubmit()">
+    <mat-form-field appearance="outline">
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name" placeholder="Enter name" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Surname</mat-label>
+      <input matInput formControlName="surname" placeholder="Enter surname" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Phone</mat-label>
+      <input matInput formControlName="phone" placeholder="Enter phone number" />
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button type="button" (click)="handleCancel()">Cancel</button>
+  <button
+    mat-raised-button
+    color="primary"
+    type="submit"
+    [disabled]="form.invalid"
+    (click)="handleSubmit()"
+  >
+    Update
+  </button>
+</mat-dialog-actions>
