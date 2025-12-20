@@ -46,7 +46,7 @@ export class CreateAdminDialog {
   form = this._fb.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]],
-    roles: this._fb.array(['admin'], [Validators.required]),
+    roles: this._fb.array([this._fb.control('admin')], [Validators.required]),
     name: ['', [Validators.required]],
     surname: ['', [Validators.required]],
     phone: ['', [Validators.required]],
