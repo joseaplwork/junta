@@ -8,7 +8,7 @@ import { Snackbar } from '@/admin/shared/services/snackbar'
 import { UserState } from '../user-page-state'
 
 import { CreateUserDialog } from './components/create-user-dialog'
-import { UserCreatePayload } from './interfaces/user-create-payload'
+import { UserCreatePayload } from './interfaces/create-payload'
 import { CreateUser } from './services/create-user'
 
 @Component({

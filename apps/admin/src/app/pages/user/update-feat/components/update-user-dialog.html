@@ -14,7 +14,10 @@
 
     <mat-form-field appearance="outline">
       <mat-label>Phone</mat-label>
-      <input matInput formControlName="phone" placeholder="Enter phone number" />
+      <input
+        matInput
+        formControlName="phoneNumber"
+        placeholder="Enter phone number" />
     </mat-form-field>
   </form>
 </mat-dialog-content>
@@ -26,8 +29,7 @@
     color="primary"
     type="submit"
     [disabled]="form.invalid"
-    (click)="handleSubmit()"
-  >
+    (click)="handleSubmit()">
     Update
   </button>
 </mat-dialog-actions>

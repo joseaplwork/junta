@@ -11,7 +11,7 @@ import { MatIconModule } from '@angular/material/icon'
 import { MatInputModule } from '@angular/material/input'
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
 
-import { UserCreatePayload } from '../interfaces/user-create-payload'
+import { UserCreatePayload } from '../interfaces/create-payload'
 
 interface CreateUserDialogData {
   handleSubmit: (formData: UserCreatePayload) => Promise<void>

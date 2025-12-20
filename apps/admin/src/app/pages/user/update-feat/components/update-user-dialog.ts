@@ -13,7 +13,7 @@ import { MatInputModule } from '@angular/material/input'
 
 import { User } from '@/admin/shared/interfaces/user'
 
-import { UserUpdatePayload } from '../interfaces/user-update-payload'
+import { UserUpdatePayload } from '../interfaces/update-payload'
 
 interface UpdateUserDialogData {
   user: User
@@ -41,7 +41,7 @@ export class UpdateUserDialog {
   form = this._fb.nonNullable.group({
     name: [this.data.user.name, Validators.required],
     surname: [this.data.user.surname, Validators.required],
-    phone: [this.data.user.phoneNumber, Validators.required],
+    phoneNumber: [this.data.user.phoneNumber, Validators.required],
   })
 
   async handleSubmit(): Promise<void> {

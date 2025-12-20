@@ -41,7 +41,7 @@ export class UserController {
     @Param('id') id: string,
     @Body('name') name?: string,
     @Body('surname') surname?: string,
-    @Body('phone') phoneNumber?: string,
+    @Body('phoneNumber') phoneNumber?: string,
   ) {
     const data: UserUpdatePayload = {}
     if (name !== undefined) data.name = name

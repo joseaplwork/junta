@@ -7,7 +7,7 @@ import { Snackbar } from '@/admin/shared/services/snackbar'
 import { UserState } from '../user-page-state'
 
 import { UpdateUserDialog } from './components/update-user-dialog'
-import { UserUpdatePayload } from './interfaces/user-update-payload'
+import { UserUpdatePayload } from './interfaces/update-payload'
 import { UserUpdate } from './services/user-update'
 
 @Component({

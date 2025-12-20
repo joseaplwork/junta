@@ -18,9 +18,11 @@ import {
 import { MatFormFieldModule } from '@angular/material/form-field'
 import { MatInputModule } from '@angular/material/input'
 
+import { Role } from '@junta/shared/enums/role'
+
 import { Admin } from '@/admin/shared/interfaces/admin'
 
-import { AdminUpdateDto } from '../interfaces/admin-update-dto'
+import { UpdatePayload } from '../interfaces/update-payload'
 
 @Component({
   imports: [
@@ -43,7 +45,7 @@ export class UpdateAdminDialog {
   readonly submitting = signal(false)
   readonly data = inject<{
     admin: Admin
-    handleUpdate: (id: string, updateData: AdminUpdateDto) => Promise<void>
+    handleUpdate: (id: string, payload: UpdatePayload) => Promise<void>
   }>(MAT_DIALOG_DATA)
 
   form = this._fb.group({
@@ -83,12 +85,12 @@ export class UpdateAdminDialog {
 
     try {
       const formValue = this.form.value
-      const updateData: AdminUpdateDto = {
+      const payload: UpdatePayload = {
         email: formValue.email!,
-        roles: formValue.roles!.filter(Boolean) as string[],
+        roles: formValue.roles!.filter(Boolean) as Role[],
       }
 
-      await this.data.handleUpdate(this.data.admin.id, updateData)
+      await this.data.handleUpdate(this.data.admin.id, payload)
       this._dialogRef.close(true)
     } finally {
       this.submitting.set(false)

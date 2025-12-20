@@ -8,7 +8,7 @@ import { Snackbar } from '@/admin/shared/services/snackbar'
 import { AdminPageState } from '../admin-page-state'
 
 import { CreateAdminDialog } from './components/create-admin-dialog'
-import { AdminCreateDTO } from './interfaces/admin-create-dto'
+import { AdminCreateDTO } from './interfaces/create-payload'
 import { AdminCreate } from './services/admin-create'
 
 @Component({

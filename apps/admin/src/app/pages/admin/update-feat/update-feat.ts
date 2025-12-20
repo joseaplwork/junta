@@ -7,7 +7,7 @@ import { Snackbar } from '@/admin/shared/services/snackbar'
 import { AdminPageState } from '../admin-page-state'
 
 import { UpdateAdminDialog } from './components/update-admin-dialog'
-import { AdminUpdateDto } from './interfaces/admin-update-dto'
+import { UpdatePayload } from './interfaces/update-payload'
 import { AdminUpdate } from './services/update-admin'
 
 @Component({
@@ -42,10 +42,10 @@ export class UpdateFeat {
 
   private _handleUpdate = async (
     id: string,
-    updateData: AdminUpdateDto,
+    payload: UpdatePayload,
   ): Promise<void> => {
     try {
-      const updatedAdmin = await this._adminUpdate.update(id, updateData)
+      const updatedAdmin = await this._adminUpdate.update(id, payload)
 
       this._state.emitAdminUpdated(updatedAdmin)
       this._snackbar.success('Admin updated successfully')
