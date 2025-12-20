@@ -1,0 +1,54 @@
+---
+description: Code formatting and style guidelines following Prettier and project conventions
+globs: 
+alwaysApply: true
+---
+
+# Code Style Guidelines
+
+## Formatting
+
+- Use 2 spaces for indentation (no tabs)
+- Maximum line length of 80 characters
+- Use single quotes for strings
+- Use trailing commas in multiline constructs
+- Omit semicolons
+- Use arrow functions with implicit return when possible
+- Arrow functions should omit parentheses for single parameters
+
+## Import Structure
+
+Group imports in this specific order with blank lines between groups:
+
+```typescript
+// 1. Third-party modules
+import { Component, inject } from '@angular/core'
+import { FormBuilder } from '@angular/forms'
+
+// 2. @junta modules (shared libs)
+import { Role } from '@junta/enums'
+
+// 3. @/admin or @/api modules (app-level aliases)
+import { Config } from '@/admin/shared/services/config'
+
+// 4. Relative parent imports
+import { UserState } from '../user-page-state'
+
+// 5. Local imports
+import { UserUpdate } from './services/user-update'
+```
+
+- Sort import specifiers alphabetically within each import statement
+
+## Code Structure
+
+- Always add blank lines between class fields and methods
+- Always add blank lines between different methods
+- Add blank lines after variable declarations (unless followed by another variable)
+
+## Naming Conventions
+
+- Use descriptive, self-documenting names
+- Prefer `payload` over `data` for API request bodies
+- Use consistent naming across similar patterns (e.g., `CreatePayload`, `UpdatePayload`)
+- Use descriptive names, and don't repeat context in the variable declaration, e.g.: prefer UpdatePayload, instead of UserListUpdatePayload depending of the file hierarchy context

@@ -1,0 +1,76 @@
+---
+description: Jest testing guidelines and patterns for the Junta project
+globs: '**/*.spec.ts'
+alwaysApply: false
+---
+
+# Testing Guidelines
+
+## Test Framework
+
+- Use Jest for all unit tests
+- Follow the zoneless testing setup configured in the project
+- Test components in isolation using mocks for dependencies
+
+## Test Structure
+
+```typescript
+describe('UserService', () => {
+  let service: UserService
+  let httpMock: jest.Mocked<HttpClient>
+
+  beforeEach(() => {
+    httpMock = {
+      get: jest.fn(),
+      post: jest.fn(),
+      patch: jest.fn(),
+      delete: jest.fn(),
+    } as unknown as jest.Mocked<HttpClient>
+
+    TestBed.configureTestingModule({
+      providers: [
+        UserService,
+        { provide: HttpClient, useValue: httpMock },
+      ],
+    })
+
+    service = TestBed.inject(UserService)
+  })
+
+  describe('getUsers', () => {
+    it('should return users from API', async () => {
+      const mockUsers = [{ id: '1', name: 'Test' }]
+      httpMock.get.mockReturnValue(of(mockUsers))
+
+      const result = await service.getUsers()
+
+      expect(result).toEqual(mockUsers)
+      expect(httpMock.get).toHaveBeenCalledWith('/api/users')
+    })
+  })
+})
+```
+
+## Mocking Best Practices
+
+- Mock external dependencies (HTTP, services)
+- Use `jest.fn()` for creating mock functions
+- Provide mock implementations that match real behavior
+
+## Component Testing
+
+- Use `TestBed` for component setup
+- Test component inputs and outputs
+- Verify template bindings work correctly
+
+## Async Testing
+
+- Use `async/await` for async tests
+- Handle promises properly with `firstValueFrom` mocks
+- Test error scenarios
+
+## Test File Location
+
+- Place test files next to the files they test
+- Use `.spec.ts` suffix for test files
+- Example: `user.service.ts` → `user.service.spec.ts`

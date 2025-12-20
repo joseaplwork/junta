@@ -15,7 +15,7 @@ export class LoginData {
     const options = {
       withCredentials: true,
     }
-    const data = {
+    const payload = {
       email,
       password,
     }
@@ -23,7 +23,7 @@ export class LoginData {
     return firstValueFrom(
       this._http.post<{ accessToken: string }>(
         `${this._config.api.auth}/login`,
-        data,
+        payload,
         options,
       ),
     )

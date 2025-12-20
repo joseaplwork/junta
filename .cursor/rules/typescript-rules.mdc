@@ -1,0 +1,67 @@
+---
+description: TypeScript coding standards and best practices
+globs: '**/*.ts'
+alwaysApply: false
+---
+
+# TypeScript Rules
+
+## Strict Mode
+
+- Use TypeScript strict mode as configured in tsconfig
+- Enable all strict type checking options
+- Avoid `any` type - use proper typing or `unknown`
+
+## Properties and Functions
+
+- Prefer `readonly` properties when values shouldn't change
+- Use explicit return types on functions
+- Prefer interfaces over types when possible
+
+## Best Practices
+
+```typescript
+// Good: Explicit return type
+async function fetchUsers(): Promise<User[]> {
+  return await api.get('/users')
+}
+
+// Good: Readonly property
+private readonly _http = inject(HttpClient)
+
+// Good: Interface over type
+interface UserPayload {
+  name: string
+  email: string
+}
+
+// Avoid: any type
+// Bad: const data: any = {}
+// Good: const data: Record<string, unknown> = {}
+```
+
+## Error Handling
+
+- Use try-catch-finally for async operations
+- Always reset state in finally blocks (e.g., loading indicators)
+- Use specific error handling, avoid empty catch blocks
+
+```typescript
+async onSubmit(): Promise<void> {
+  this.submitting.set(true)
+
+  try {
+    await this._service.submit(payload)
+  } catch {
+    this._snackbar.error('Operation failed')
+  } finally {
+    this.submitting.set(false)
+  }
+}
+```
+
+## Null Safety
+
+- Use optional chaining (`?.`) and nullish coalescing (`??`)
+- Prefer non-null assertions only when type is guaranteed
+- Use strict null checks

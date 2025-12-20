@@ -1,0 +1,86 @@
+---
+description: Admin app architecture patterns and feature structure guidelines
+globs: 'apps/admin/**/*'
+alwaysApply: false
+---
+
+# Admin App Architecture
+
+## Feature-Based Structure
+
+Organize code by features within pages:
+
+```
+src/
+├── pages/
+│   └── user/                         # User management page
+│       ├── create-feat/              # Create user feature
+│       │   ├── components/           # Presentational components
+│       │   │   ├── create-user-dialog.ts
+│       │   │   └── create-user-dialog.html
+│       │   ├── interfaces/           # Feature-specific interfaces
+│       │   │   └── create-payload.ts
+│       │   ├── services/             # Feature business logic
+│       │   │   └── create-user.ts
+│       │   ├── create-feat.html      # Feature entry template
+│       │   └── create-feat.ts        # Feature entry component
+│       ├── list-feat/                # List users feature
+│       ├── update-feat/              # Update user feature
+│       ├── delete-feat/              # Delete user feature
+│       ├── user-page-state.ts        # Shared state between features
+│       ├── user-page.html            # Page layout template
+│       └── user-page.ts              # Page component
+└── shared/                           # Reusable across admin app
+    ├── components/                   # Shared UI components
+    ├── interfaces/                   # Shared interfaces
+    └── services/                     # Shared services
+```
+
+## Feature Components
+
+### Entry Point (`*-feat.ts`)
+
+- Binds busines logic to presenstational components
+- Setups listeners for presensentational components
+
+### Services
+
+- Contain HTTP calls and business logic
+- Map between frontend and API data structures
+- Return promises for async operations
+- Contain logic outside presentation
+
+## State Management
+
+Use signal-based state services to communicate between features:
+
+```typescript
+@Injectable({ providedIn: 'root' })
+export class UserPageState {
+  private readonly _userCreated = new Subject<User>()
+  readonly userCreated$ = this._userCreated.asObservable()
+
+  emitUserCreated(user: User): void {
+    this._userCreated.next(user)
+  }
+}
+```
+
+## Interface Naming
+
+- Export type aliases for backward compatibility when needed
+- Keep interfaces in feature-specific `interfaces/` folders
+
+## Shared Code
+
+Place code used across multiple features in pages or apss in `shared/`:
+
+- `shared/components/` - Dialog, Snackbar components
+- `shared/interfaces/` - User, Admin interfaces
+- `shared/services/` - Config, Navigation, Session services
+
+Place code used that is reused between features in pages only in page top level folder:
+
+- `components/` - Presenstational components across a single page
+- `interfaces/` - Interfaces across a single page features
+- `services/` - Services across a single page features

@@ -1,0 +1,75 @@
+---
+description: NestJS API backend conventions and patterns
+globs: 'apps/api/**/*.ts'
+alwaysApply: false
+---
+
+# API Backend Rules
+
+## NestJS Conventions
+
+- Use decorators for routing (`@Get`, `@Post`, `@Patch`, `@Delete`)
+- Use guards for authentication and authorization
+- Use decorators for extracting request data (`@Body`, `@Param`, `@Query`)
+
+## Controller Structure
+
+```typescript
+@Controller('user')
+export class UserController {
+  constructor(private readonly userService: UserService) {}
+
+  @Get()
+  findAll(): Promise<User[]> {
+    return this.userService.findAll()
+  }
+
+  @Get(':id')
+  findOne(@Param('id') id: string): Promise<User> {
+    return this.userService.findOne(id)
+  }
+
+  @Post()
+  create(@Body() payload: CreateUserDto): Promise<User> {
+    return this.userService.create(payload)
+  }
+
+  @Patch(':id')
+  update(
+    @Param('id') id: string,
+    @Body() payload: UpdateUserDto,
+  ): Promise<User> {
+    return this.userService.update(id, payload)
+  }
+
+  @Delete(':id')
+  delete(@Param('id') id: string): Promise<void> {
+    return this.userService.delete(id)
+  }
+}
+```
+
+## HTTP Verb Usage
+
+- `GET` - Retrieve resources
+- `POST` - Create new resources
+- `PATCH` - Partial updates (preferred over PUT)
+- `DELETE` - Remove resources
+
+## Guards and Decorators
+
+- Use `@UseGuards()` for authentication/authorization
+- Create custom decorators for common patterns
+- Use `@IsPublic()` decorator for unauthenticated endpoints
+
+## Service Layer
+
+- Keep business logic in services
+- Services should be injectable and testable
+- Use TypeORM entities for database operations
+
+## Error Handling
+
+- Use NestJS built-in exceptions
+- Avoid console.log for debugging in production code
+- Return appropriate HTTP status codes

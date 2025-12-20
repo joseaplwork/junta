@@ -1,0 +1,51 @@
+---
+description: Core project principles and architecture guidelines for the Junta monorepo
+globs: 
+alwaysApply: true
+---
+
+# Project Overview
+
+This is the Junta project - an application for managing "La junta", including creating juntas, managing groups, and handling user participation.
+
+## Tech Stack
+
+- **Backend**: NestJS API (`apps/api/`)
+- **Frontend**: Angular Admin App (`apps/admin/`)
+- **Shared Code**: Reusable libraries (`libs/`)
+- **Monorepo**: Nx workspace with npm
+
+## Architecture Principles
+
+### Single Responsibility
+- Each component, service, or module should have one clear purpose
+- Separate business logic from presentation
+- Abstract logic into services, keep components focused on UI
+
+### KISS (Keep It Simple, Stupid)
+- Prefer simple solutions over complex ones
+- Avoid over-engineering
+- Only add complexity when truly necessary
+
+### DRY (Don't Repeat Yourself)
+- Identify and extract reusable patterns
+- Place shared code in `libs/` folder
+- Reuse existing abstractions before creating new ones
+
+### YAGNI (You Aren't Gonna Need It)
+- Don't add features until they're actually needed
+- Avoid speculative generalization
+- Focus on current requirements
+
+## Code Quality
+
+- Write readable, self-documenting code
+- Avoid comments - let the code speak for itself
+- Use descriptive names for variables, functions, and classes
+- Variable and function declaration are simple, they reflect intention, and rely context hierarchy
+
+## Shared Code Location
+
+Place reusable code across apps in the `libs/` folder:
+- `libs/shared/enums/` - Shared enumerations
+- `libs/shared/services/` - Shared services

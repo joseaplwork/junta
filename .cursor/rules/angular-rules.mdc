@@ -1,0 +1,122 @@
+---
+description: Angular component, service, and template best practices
+globs: 'apps/admin/**/*.ts'
+alwaysApply: false
+---
+
+# Angular Best Practices
+
+## Component Guidelines
+
+- Component selectors should use kebab-case
+- Component selectors should have prefix `ja`
+- Class suffixes (`Component`, `Service`) are optional
+- Use Angular Material components where applicable
+- Always create component templates in separate HTML files
+
+```typescript
+@Component({
+  selector: 'app-user-list',
+  templateUrl: './user-list.html',
+  imports: [CommonModule, MatTableModule],
+})
+export class UserList {
+  // Component code
+}
+```
+
+## Dependency Injection
+
+- Use `inject()` function instead of constructor injection
+- Prefix private injected services with underscore
+
+```typescript
+export class UserService {
+  private readonly _http = inject(HttpClient)
+  private readonly _config = inject(Config)
+}
+```
+
+## State Management
+
+- Use Angular signals for reactive state
+- Use `signal()` for local component state
+- Emit state changes through dedicated state services
+
+```typescript
+export class UserState {
+  private readonly _users = signal<User[]>([])
+  readonly users = this._users.asReadonly()
+
+  emitUserCreated(user: User): void {
+    this._users.update(users => [...users, user])
+  }
+}
+```
+
+## Reactive Forms
+
+- Use `FormBuilder` for creating forms
+- Wrap FormArray items in FormControl instances
+- Use `nonNullable` forms when appropriate
+
+```typescript
+// Good: FormArray with FormControl instances
+roles: this._fb.array(
+  this.data.admin.roles.map(role => this._fb.control(role)),
+  [Validators.required],
+)
+
+// Bad: Raw values in FormArray
+roles: this._fb.array(['admin'], [Validators.required])
+```
+
+## HTTP Requests
+
+- Use `firstValueFrom()` to convert observables to promises
+- Match HTTP verbs to backend endpoints (GET, POST, PATCH, DELETE)
+- Map frontend field names to API field names in services
+
+```typescript
+update(id: string, payload: UpdatePayload): Promise<User> {
+  const apiPayload = {
+    name: payload.name,
+    phoneNumber: payload.phoneNumber,
+  }
+  return firstValueFrom(
+    this._http.patch<User>(`${this._config.api.url}/user/${id}`, apiPayload),
+  )
+}
+```
+
+## Dialog Patterns
+
+- Inject `MAT_DIALOG_DATA` to receive dialog data
+- Pass `handleSubmit` callbacks through dialog data
+- Use try-finally to handle submitting state
+
+```typescript
+interface DialogData {
+  handleSubmit: (payload: Payload) => Promise<void>
+}
+
+export class CreateDialog {
+  readonly data = inject<DialogData>(MAT_DIALOG_DATA)
+  submitting = signal(false)
+
+  async onSubmit(): Promise<void> {
+    this.submitting.set(true)
+    try {
+      await this.data.handleSubmit(payload)
+    } finally {
+      this.submitting.set(false)
+    }
+  }
+}
+```
+
+## Template Best Practices
+
+- Avoid duplicate event handlers (e.g., both `ngSubmit` and button `click`)
+- Match `formControlName` to form control definitions exactly
+- Use `track` with unique values in `@for` loops
