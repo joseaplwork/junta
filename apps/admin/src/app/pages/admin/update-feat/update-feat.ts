@@ -21,10 +21,10 @@ export class UpdateFeat {
   private readonly _state = inject(AdminPageState)
 
   constructor() {
-    effect(this._listerForAdminUpdate)
+    effect(this._listenForAdminUpdate)
   }
 
-  private _listerForAdminUpdate = () => {
+  private _listenForAdminUpdate = () => {
     const admin = this._state.updateAdmin()
 
     if (admin) {
