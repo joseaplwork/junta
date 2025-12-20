@@ -30,7 +30,7 @@ export class UserController {
   createUser(
     @Body('name') name: string,
     @Body('surname') surname: string,
-    @Body('phone') phoneNumber: string,
+    @Body('phoneNumber') phoneNumber: string,
   ) {
     return this.app.createOne({ name, surname, phoneNumber })
   }

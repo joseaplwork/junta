@@ -41,7 +41,7 @@ export class AdminController {
     @Body('roles') roles: Role[],
     @Body('name') name: string,
     @Body('surname') surname: string,
-    @Body('phone') phoneNumber: string,
+    @Body('phoneNumber') phoneNumber: string,
   ): Promise<Admin> {
     const result = await this.admin.createOne({
       email,
