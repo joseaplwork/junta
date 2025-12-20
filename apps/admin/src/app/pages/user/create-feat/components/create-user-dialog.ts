@@ -11,10 +11,10 @@ import { MatIconModule } from '@angular/material/icon'
 import { MatInputModule } from '@angular/material/input'
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
 
-import { UserCreatePayload } from '../interfaces/create-payload'
+import { CreatePayload } from '../interfaces/create-payload'
 
 interface CreateUserDialogData {
-  handleSubmit: (formData: UserCreatePayload) => Promise<void>
+  handleSubmit: (payload: CreatePayload) => Promise<void>
 }
 
 @Component({
@@ -39,7 +39,7 @@ export class CreateUserDialog {
   form = this._fb.nonNullable.group({
     name: ['', Validators.required],
     surname: ['', Validators.required],
-    phone: ['', Validators.required],
+    phoneNumber: ['', Validators.required],
   })
 
   getError(control: string): string | null {
@@ -56,7 +56,12 @@ export class CreateUserDialog {
     this.submitting.set(true)
 
     try {
-      const payload: UserCreatePayload = this.form.value as UserCreatePayload
+      const formValue = this.form.value
+      const payload: CreatePayload = {
+        name: formValue.name!,
+        surname: formValue.surname!,
+        phoneNumber: formValue.phoneNumber!,
+      }
 
       await this._data.handleSubmit(payload)
       this._dialogRef.close()

@@ -44,8 +44,8 @@
         formControlName="name"
         placeholder="Enter name"
         required />
-      @if (form.get('name')?.hasError('required') &&
-      form.get('name')?.touched) {
+      @if (form.get('name')?.hasError('required') && form.get('name')?.touched)
+      {
       <mat-error>Name is required</mat-error>
       }
     </mat-form-field>
@@ -69,11 +69,11 @@
       <input
         matInput
         type="text"
-        formControlName="phone"
+        formControlName="phoneNumber"
         placeholder="Enter phone number"
         required />
-      @if (form.get('phone')?.hasError('required') &&
-      form.get('phone')?.touched) {
+      @if (form.get('phoneNumber')?.hasError('required') &&
+      form.get('phoneNumber')?.touched) {
       <mat-error>Phone is required</mat-error>
       }
     </mat-form-field>

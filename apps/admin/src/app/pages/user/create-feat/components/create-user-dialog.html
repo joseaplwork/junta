@@ -22,9 +22,10 @@
 
     <mat-form-field appearance="outline">
       <mat-label>Phone</mat-label>
-      <input matInput formControlName="phone" required />
-      @if (form.get('phone')?.invalid && form.get('phone')?.touched) {
-      <mat-error>{{ getError('phone') }}</mat-error>
+      <input matInput formControlName="phoneNumber" required />
+      @if (form.get('phoneNumber')?.invalid && form.get('phoneNumber')?.touched)
+      {
+      <mat-error>{{ getError('phoneNumber') }}</mat-error>
       }
     </mat-form-field>
   </div>

@@ -20,6 +20,10 @@ import { MatIconModule } from '@angular/material/icon'
 import { MatInputModule } from '@angular/material/input'
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
 
+import { Role } from '@junta/shared/enums/role'
+
+import { CreatePayload } from '../interfaces/create-payload'
+
 @Component({
   imports: [
     TitleCasePipe,
@@ -49,7 +53,7 @@ export class CreateAdminDialog {
     roles: this._fb.array([this._fb.control('admin')], [Validators.required]),
     name: ['', [Validators.required]],
     surname: ['', [Validators.required]],
-    phone: ['', [Validators.required]],
+    phoneNumber: ['', [Validators.required]],
   })
 
   get rolesFormArray(): FormArray {
@@ -81,16 +85,17 @@ export class CreateAdminDialog {
 
     try {
       const formValue = this.form.value
-      const formData = {
+      const payload: CreatePayload = {
         email: formValue.email!,
         password: formValue.password!,
-        roles: formValue.roles!.filter(Boolean) as string[],
+        roles: formValue.roles!.filter(Boolean) as Role[],
         name: formValue.name!,
         surname: formValue.surname!,
-        phone: formValue.phone!,
+        phoneNumber: formValue.phoneNumber!,
       }
 
-      await this._data.handleSubmit(formData)
+      await this._data.handleSubmit(payload)
+      this._dialogRef.close()
     } finally {
       this.submitting.set(false)
     }

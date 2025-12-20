@@ -8,7 +8,7 @@ import { Snackbar } from '@/admin/shared/services/snackbar'
 import { UserState } from '../user-page-state'
 
 import { CreateUserDialog } from './components/create-user-dialog'
-import { UserCreatePayload } from './interfaces/create-payload'
+import { CreatePayload } from './interfaces/create-payload'
 import { CreateUser } from './services/create-user'
 
 @Component({
@@ -26,11 +26,9 @@ export class CreateFeat {
     this._dialog.open(CreateUserDialog, { handleSubmit: this._handleSubmit })
   }
 
-  private _handleSubmit = async (
-    formData: UserCreatePayload,
-  ): Promise<void> => {
+  private _handleSubmit = async (payload: CreatePayload): Promise<void> => {
     try {
-      const user = await this._createUser.create(formData)
+      const user = await this._createUser.create(payload)
 
       this._state.emitUserCreated(user)
       this._snackbar.success('User created successfully')
