@@ -7,7 +7,7 @@ import { Snackbar } from '@/admin/shared/services/snackbar'
 import { UserState } from '../user-page-state'
 
 import { UpdateUserDialog } from './components/update-user-dialog'
-import { UserUpdatePayload } from './interfaces/update-payload'
+import { UpdatePayload } from './interfaces/update-payload'
 import { UserUpdate } from './services/user-update'
 
 @Component({
@@ -42,10 +42,10 @@ export class UpdateFeat {
 
   private _handleUpdate = async (
     id: string,
-    updateData: UserUpdatePayload,
+    payload: UpdatePayload,
   ): Promise<void> => {
     try {
-      const updatedUser = await this._userUpdate.update(id, updateData)
+      const updatedUser = await this._userUpdate.update(id, payload)
 
       this._state.emitUserUpdated(updatedUser)
       this._snackbar.success('User updated successfully')

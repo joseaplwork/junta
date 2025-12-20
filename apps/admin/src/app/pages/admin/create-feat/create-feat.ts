@@ -8,7 +8,7 @@ import { Snackbar } from '@/admin/shared/services/snackbar'
 import { AdminPageState } from '../admin-page-state'
 
 import { CreateAdminDialog } from './components/create-admin-dialog'
-import { AdminCreateDTO } from './interfaces/create-payload'
+import { CreatePayload } from './interfaces/create-payload'
 import { AdminCreate } from './services/admin-create'
 
 @Component({
@@ -26,9 +26,9 @@ export class CreateFeat {
     this._dialog.open(CreateAdminDialog, { handleSubmit: this._handleSubmit })
   }
 
-  private _handleSubmit = async (formData: AdminCreateDTO): Promise<void> => {
+  private _handleSubmit = async (payload: CreatePayload): Promise<void> => {
     try {
-      const admin = await this._adminCreate.create(formData)
+      const admin = await this._adminCreate.create(payload)
 
       this._state.emitAdminCreated(admin)
       this._snackbar.success('Admin created successfully')

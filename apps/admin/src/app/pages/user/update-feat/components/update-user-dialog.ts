@@ -12,12 +12,13 @@ import { MatFormFieldModule } from '@angular/material/form-field'
 import { MatInputModule } from '@angular/material/input'
 
 import { User } from '@/admin/shared/interfaces/user'
+import { Snackbar } from '@/admin/shared/services/snackbar'
 
-import { UserUpdatePayload } from '../interfaces/update-payload'
+import { UpdatePayload } from '../interfaces/update-payload'
 
 interface UpdateUserDialogData {
   user: User
-  handleUpdate: (id: string, updateData: UserUpdatePayload) => Promise<void>
+  handleUpdate: (id: string, payload: UpdatePayload) => Promise<void>
 }
 
 @Component({
@@ -37,6 +38,7 @@ export class UpdateUserDialog {
   private readonly _fb = inject(FormBuilder)
   private readonly _dialogRef = inject(MatDialogRef<UpdateUserDialog>)
   public readonly data = inject<UpdateUserDialogData>(MAT_DIALOG_DATA)
+  private readonly _snackbar = inject(Snackbar)
 
   form = this._fb.nonNullable.group({
     name: [this.data.user.name, Validators.required],
@@ -47,13 +49,18 @@ export class UpdateUserDialog {
   async handleSubmit(): Promise<void> {
     if (this.form.invalid) return
 
-    const formValue = this.form.getRawValue()
+    const formValue = this.form.value
+    const payload: UpdatePayload = {
+      name: formValue.name!,
+      surname: formValue.surname!,
+      phoneNumber: formValue.phoneNumber!,
+    }
 
     try {
-      await this.data.handleUpdate(this.data.user.id, formValue)
+      await this.data.handleUpdate(this.data.user.id, payload)
       this._dialogRef.close()
-    } catch (error) {
-      console.error('Update failed:', error)
+    } catch {
+      this._snackbar.error('Failed to update user')
     }
   }
 
