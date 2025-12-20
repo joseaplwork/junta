@@ -35,7 +35,7 @@ export class UserController {
     return this.app.createOne({ name, surname, phoneNumber })
   }
 
-  @Patch('/:id')
+  @Patch(':id')
   @Permissions(Permission.USER_UPDATE)
   updateUser(
     @Param('id') id: string,

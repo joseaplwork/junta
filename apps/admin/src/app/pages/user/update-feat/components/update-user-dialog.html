@@ -1,7 +1,7 @@
 <mat-dialog-content>
   <h2 mat-dialog-title>Update User</h2>
 
-  <form [formGroup]="form" (ngSubmit)="handleSubmit()">
+  <form [formGroup]="form">
     <mat-form-field appearance="outline">
       <mat-label>Name</mat-label>
       <input matInput formControlName="name" placeholder="Enter name" />
@@ -27,7 +27,7 @@
   <button
     mat-raised-button
     color="primary"
-    type="submit"
+    type="button"
     [disabled]="form.invalid"
     (click)="handleSubmit()">
     Update
