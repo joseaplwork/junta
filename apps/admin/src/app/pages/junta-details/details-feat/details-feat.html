@@ -1,0 +1,94 @@
+<div class="mb-6 flex items-center gap-4">
+  <button mat-icon-button (click)="goBack()">
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+  <h1 class="text-2xl font-bold">{{ junta.name }}</h1>
+  @if (junta.active) {
+  <mat-chip class="!bg-green-100 !text-green-800">Active</mat-chip>
+  } @else {
+  <mat-chip class="!bg-gray-100 !text-gray-800">Finished</mat-chip>
+  }
+</div>
+
+<div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Financial Details</mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="pt-4">
+      <div class="space-y-4">
+        <div>
+          <p class="text-sm text-gray-500">Total Amount</p>
+          <p class="text-2xl font-bold">{{ formatCurrency(junta.amount) }}</p>
+        </div>
+        <mat-divider />
+        <div>
+          <p class="text-sm text-gray-500">Per Slot Amount</p>
+          <p class="text-xl font-semibold">
+            {{ formatCurrency(junta.partialAmount) }}
+          </p>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Participation</mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="pt-4">
+      <div class="space-y-4">
+        <div>
+          <p class="text-sm text-gray-500">Total Slots</p>
+          <p class="text-2xl font-bold">{{ junta.slots }}</p>
+        </div>
+        <mat-divider />
+        <div>
+          <p class="text-sm text-gray-500">Groups</p>
+          <p class="text-xl font-semibold text-gray-400">Coming soon</p>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Period</mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="pt-4">
+      <div class="space-y-4">
+        <div>
+          <p class="text-sm text-gray-500">Start Date</p>
+          <p class="text-lg font-semibold">
+            {{ junta.startDate | date: 'MMMM d, y' }}
+          </p>
+        </div>
+        <mat-divider />
+        <div>
+          <p class="text-sm text-gray-500">End Date</p>
+          <p class="text-lg font-semibold">
+            {{ junta.endDate | date: 'MMMM d, y' }}
+          </p>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<div class="mt-8">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Groups & Members</mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="pt-4">
+      <div class="flex flex-col items-center justify-center py-8 text-gray-400">
+        <mat-icon class="!h-16 !w-16 !text-6xl">groups</mat-icon>
+        <p class="mt-4 text-lg">Group management coming soon</p>
+        <p class="text-sm">
+          You'll be able to create groups and assign members here
+        </p>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
+

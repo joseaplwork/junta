@@ -1,0 +1,15 @@
+<div class="p-6">
+  @if (loading()) {
+  <div class="flex justify-center p-8">
+    <p>Loading junta...</p>
+  </div>
+  } @else if (error()) {
+  <div
+    class="mb-4 rounded border border-red-400 bg-red-100 px-4 py-3 text-red-700">
+    {{ error() }}
+  </div>
+  } @else if (junta()) {
+  <ja-junta-details-feat [junta]="junta()!" />
+  }
+</div>
+

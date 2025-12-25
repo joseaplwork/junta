@@ -1,0 +1,91 @@
+<h2 mat-dialog-title>
+  <mat-icon>groups</mat-icon>
+  Create Junta
+</h2>
+<form [formGroup]="form" (ngSubmit)="save()">
+  <div mat-dialog-content class="grid gap-4">
+    <mat-form-field appearance="outline">
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name" required />
+      @if (form.get('name')?.invalid && form.get('name')?.touched) {
+      <mat-error>{{ getError('name') }}</mat-error>
+      }
+    </mat-form-field>
+
+    <div class="grid grid-cols-2 gap-4">
+      <mat-form-field appearance="outline">
+        <mat-label>Total Amount</mat-label>
+        <input matInput type="number" formControlName="amount" required />
+        <span matTextPrefix>$&nbsp;</span>
+        @if (form.get('amount')?.invalid && form.get('amount')?.touched) {
+        <mat-error>{{ getError('amount') }}</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Number of Slots</mat-label>
+        <input matInput type="number" formControlName="slots" required />
+        @if (form.get('slots')?.invalid && form.get('slots')?.touched) {
+        <mat-error>{{ getError('slots') }}</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+      <mat-form-field appearance="outline">
+        <mat-label>Start Date</mat-label>
+        <input
+          matInput
+          [matDatepicker]="startPicker"
+          formControlName="startDate"
+          required />
+        <mat-datepicker-toggle
+          matIconSuffix
+          [for]="startPicker"></mat-datepicker-toggle>
+        <mat-datepicker #startPicker></mat-datepicker>
+        @if (form.get('startDate')?.invalid && form.get('startDate')?.touched) {
+        <mat-error>{{ getError('startDate') }}</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>End Date</mat-label>
+        <input
+          matInput
+          [matDatepicker]="endPicker"
+          formControlName="endDate"
+          required />
+        <mat-datepicker-toggle
+          matIconSuffix
+          [for]="endPicker"></mat-datepicker-toggle>
+        <mat-datepicker #endPicker></mat-datepicker>
+        @if (form.get('endDate')?.invalid && form.get('endDate')?.touched) {
+        <mat-error>{{ getError('endDate') }}</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <mat-checkbox formControlName="active">Active</mat-checkbox>
+  </div>
+
+  <div mat-dialog-actions align="end">
+    <button
+      mat-stroked-button
+      type="button"
+      (click)="cancel()"
+      [disabled]="submitting()">
+      Cancel
+    </button>
+    <button
+      mat-flat-button
+      color="primary"
+      type="submit"
+      [disabled]="form.invalid || submitting()"
+      class="flex items-center justify-center">
+      @if (submitting()) {
+      <mat-icon><mat-spinner diameter="18"></mat-spinner></mat-icon>
+      }
+      <span>Create</span>
+    </button>
+  </div>
+</form>

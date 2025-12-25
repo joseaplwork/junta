@@ -14,4 +14,12 @@ export class Navigation {
   goToDashboardPage() {
     return this._route.navigate(['dashboard'])
   }
+
+  goToJuntaList() {
+    return this._route.navigate(['dashboard', 'junta'])
+  }
+
+  goToJuntaDetails(id: string) {
+    return this._route.navigate(['dashboard', 'junta', id])
+  }
 }

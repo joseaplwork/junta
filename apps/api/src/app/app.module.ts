@@ -6,6 +6,8 @@ import { AdminModule } from './admins/admin.module'
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
 import { AuthModule } from './auth/auth.module'
+import { Junta } from './juntas/junta.entity'
+import { JuntaModule } from './juntas/junta.module'
 import { User } from './users/user.entity'
 import { UserModule } from './users/user.module'
 
@@ -18,7 +20,7 @@ import { UserModule } from './users/user.module'
       username: 'joseparedes',
       password: 'admin',
       database: 'juntas',
-      entities: [User, Admin],
+      entities: [User, Admin, Junta],
       synchronize: true,
       logging: true,
       logger: 'advanced-console',
@@ -26,6 +28,7 @@ import { UserModule } from './users/user.module'
     AuthModule,
     UserModule,
     AdminModule,
+    JuntaModule,
   ],
   controllers: [AppController],
   providers: [AppService],

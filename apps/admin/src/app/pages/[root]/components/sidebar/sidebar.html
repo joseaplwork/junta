@@ -40,6 +40,16 @@
             <mat-icon>person_add</mat-icon>
             <span class="ml-2">Users</span>
           </a>
+
+          <a
+            mat-list-item
+            routerLink="/dashboard/junta"
+            routerLinkActive="bg-slate-100 text-primary"
+            *hasPermission="'JUNTA_READ'"
+            class="mb-2 rounded-md">
+            <mat-icon>savings</mat-icon>
+            <span class="ml-2">Juntas</span>
+          </a>
         </mat-nav-list>
       </div>
 

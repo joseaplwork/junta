@@ -1,7 +1,7 @@
 {
   "name": "@junta/shared/enums",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/access/enums/src",
+  "sourceRoot": "libs/shared/enums/src",
   "projectType": "library",
   "tags": [],
   "targets": {}
