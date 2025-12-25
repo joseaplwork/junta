@@ -30,6 +30,7 @@ export class DeleteFeat {
 
     if (junta) {
       this._openDeleteDialog(junta)
+      this._state.emitDeleteJunta(null)
     }
   }
 
@@ -53,9 +54,6 @@ export class DeleteFeat {
       this._snackbar.success('Junta deleted successfully')
     } catch {
       this._snackbar.error('Failed to delete junta')
-      throw new Error('Delete failed')
-    } finally {
-      this._state.emitDeleteJunta(null)
     }
   }
 }

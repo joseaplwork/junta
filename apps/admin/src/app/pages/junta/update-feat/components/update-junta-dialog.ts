@@ -42,7 +42,7 @@ export class UpdateJuntaDialog {
   form = this._fb.nonNullable.group({
     name: [this.data.junta.name, Validators.required],
     amount: [this.data.junta.amount, [Validators.required, Validators.min(1)]],
-    slots: [this.data.junta.slots, [Validators.required, Validators.min(1)]],
+    slots: [this.data.junta.slots, [Validators.required, Validators.min(2)]],
     startDate: [new Date(this.data.junta.startDate), Validators.required],
     endDate: [new Date(this.data.junta.endDate), Validators.required],
     active: [this.data.junta.active],
@@ -77,4 +77,3 @@ export class UpdateJuntaDialog {
     this._dialogRef.close()
   }
 }
-

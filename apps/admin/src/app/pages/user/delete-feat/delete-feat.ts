@@ -30,6 +30,7 @@ export class DeleteFeat {
 
     if (user) {
       this._openDeleteDialog(user)
+      this._state.emitDeleteUser(null)
     }
   }
 
@@ -53,9 +54,6 @@ export class DeleteFeat {
       this._snackbar.success('User deleted successfully')
     } catch {
       this._snackbar.error('Failed to delete user')
-      throw new Error('Delete failed')
-    } finally {
-      this._state.emitDeleteUser(null)
     }
   }
 }

@@ -30,6 +30,7 @@ export class DeleteFeat {
 
     if (admin) {
       this._openDeleteDialog(admin)
+      this._state.emitDeleteAdmin(null)
     }
   }
 
@@ -53,9 +54,6 @@ export class DeleteFeat {
       this._snackbar.success('Admin deleted successfully')
     } catch {
       this._snackbar.error('Failed to delete admin')
-      throw new Error('Delete failed')
-    } finally {
-      this._state.emitDeleteAdmin(null)
     }
   }
 }
