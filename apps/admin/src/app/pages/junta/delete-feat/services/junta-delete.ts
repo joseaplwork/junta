@@ -1,20 +1,12 @@
-import { HttpClient } from '@angular/common/http'
 import { Injectable, inject } from '@angular/core'
-import { firstValueFrom } from 'rxjs'
 
-import { Config } from '@/admin/shared/services/config'
+import { Api } from '@/admin/shared/services/api'
 
 @Injectable({ providedIn: 'root' })
 export class JuntaDelete {
-  private readonly _http = inject(HttpClient)
-  private readonly _config = inject(Config)
+  private readonly _api = inject(Api)
 
-  delete(id: string): Promise<{ success: boolean }> {
-    return firstValueFrom(
-      this._http.delete<{ success: boolean }>(
-        `${this._config.api.url}/junta/${id}`,
-      ),
-    )
+  delete(id: string): Promise<void> {
+    return this._api.delete<void>(`/junta/${id}`)
   }
 }
-

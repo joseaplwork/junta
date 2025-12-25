@@ -1,32 +1,27 @@
-import { HttpClient } from '@angular/common/http'
 import { Injectable, inject } from '@angular/core'
-import { firstValueFrom } from 'rxjs'
 
 import { Junta, JuntaDTO } from '@/admin/shared/interfaces/junta'
-import { Config } from '@/admin/shared/services/config'
+import { Api } from '@/admin/shared/services/api'
 
 @Injectable({ providedIn: 'root' })
 export class JuntaData {
-  private readonly _http = inject(HttpClient)
-  private readonly _config = inject(Config)
+  private readonly _api = inject(Api)
 
   async fetchAll(): Promise<Junta[]> {
-    const response = await firstValueFrom(
-      this._http.get<JuntaDTO[]>(`${this._config.api.url}/junta`),
-    )
+    const response = await this._api.get<JuntaDTO[]>('/junta')
 
-    return response.map(this._mapToJunta)
+    return response.map(this._transform)
   }
 
-  private _mapToJunta = (response: JuntaDTO): Junta => ({
-    id: response.id,
-    name: response.name,
-    amount: response.amount,
-    slots: response.slots,
-    partialAmount: response.partial_amount,
-    startDate: response.start_date,
-    endDate: response.end_date,
-    active: response.active,
-    adminId: response.admin_id,
+  private _transform = (dto: JuntaDTO): Junta => ({
+    id: dto.id,
+    name: dto.name,
+    amount: dto.amount,
+    slots: dto.slots,
+    partialAmount: dto.partial_amount,
+    startDate: dto.start_date,
+    endDate: dto.end_date,
+    active: dto.active,
+    adminId: dto.admin_id,
   })
 }

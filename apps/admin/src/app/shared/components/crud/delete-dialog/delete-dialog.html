@@ -1,0 +1,35 @@
+<h2 mat-dialog-title class="flex items-center gap-2">
+  <mat-icon color="warn">delete</mat-icon>
+  Delete {{ data.entityName }}
+</h2>
+
+<mat-dialog-content>
+  <p>
+    Are you sure you want to delete
+    <strong>{{ data.displayName }}</strong>?
+  </p>
+  <p class="mt-2 text-sm text-gray-500">This action cannot be undone.</p>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button
+    mat-stroked-button
+    type="button"
+    (click)="onCancel()"
+    [disabled]="deleting()">
+    Cancel
+  </button>
+  <button
+    mat-flat-button
+    color="warn"
+    type="button"
+    (click)="onDelete()"
+    [disabled]="deleting()"
+    class="flex items-center justify-center">
+    @if (deleting()) {
+    <mat-icon><mat-spinner diameter="18"></mat-spinner></mat-icon>
+    }
+    <span>Delete</span>
+  </button>
+</mat-dialog-actions>
+

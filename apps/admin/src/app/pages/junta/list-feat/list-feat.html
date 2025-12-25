@@ -1,7 +1,11 @@
-<ja-junta-list-table
-  [juntas]="juntas()"
+<ja-crud-data-table
+  [data]="juntas()"
+  [columns]="columns"
+  [actions]="actions"
   [loading]="loading()"
   [error]="error()"
-  (editJunta)="editJunta($event)"
-  (deleteJunta)="deleteJunta($event)" />
-
+  emptyMessage="No juntas found. Click the + button to create one."
+  loadingMessage="Loading juntas..."
+  (view)="viewJunta($event)"
+  (edit)="editJunta($event)"
+  (delete)="deleteJunta($event)" />

@@ -1,9 +1,10 @@
 import { Component, effect, inject, signal } from '@angular/core'
-import { MatButtonModule } from '@angular/material/button'
-import { MatIconModule } from '@angular/material/icon'
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
-import { MatTableModule } from '@angular/material/table'
 
+import {
+  ActionConfig,
+  ColumnConfig,
+  CrudDataTable,
+} from '@/admin/shared/components/crud'
 import { Admin } from '@/admin/shared/interfaces/admin'
 import { Snackbar } from '@/admin/shared/services/snackbar'
 
@@ -13,12 +14,7 @@ import { AdminData } from './services/admin-data'
 
 @Component({
   selector: 'ja-admin-list-feat',
-  imports: [
-    MatButtonModule,
-    MatIconModule,
-    MatTableModule,
-    MatProgressSpinnerModule,
-  ],
+  imports: [CrudDataTable],
   templateUrl: './list-feat.html',
 })
 export class ListFeat {
@@ -26,20 +22,44 @@ export class ListFeat {
   private readonly _adminData = inject(AdminData)
   private readonly _snackbar = inject(Snackbar)
 
-  displayedColumns = ['email', 'roles', 'name', 'actions']
+  columns: ColumnConfig[] = [
+    { key: 'email', header: 'Email', type: 'text' },
+    { key: 'roles', header: 'Roles', type: 'tags' },
+    {
+      key: 'name',
+      header: 'Name',
+      type: 'text',
+      getValue: (row: unknown) => {
+        const admin = row as Admin
+
+        return `${admin.user.name} ${admin.user.surname}`
+      },
+    },
+  ]
+
+  actions: ActionConfig = { edit: true, delete: true }
+
   admins = signal<Admin[]>([])
   loading = signal(false)
   error = signal<string | null>(null)
 
   constructor() {
-    this.loadAdmins()
+    this._loadAdmins()
 
     effect(this._listenForNewAdmin)
     effect(this._listenForDeletedAdmin)
     effect(this._listenForUpdatedAdmin)
   }
 
-  async loadAdmins(): Promise<void> {
+  editAdmin(admin: Admin): void {
+    this._state.emitUpdateAdmin(admin)
+  }
+
+  deleteAdmin(admin: Admin): void {
+    this._state.emitDeleteAdmin(admin)
+  }
+
+  private async _loadAdmins(): Promise<void> {
     this.loading.set(true)
     this.error.set(null)
 
@@ -53,14 +73,6 @@ export class ListFeat {
     } finally {
       this.loading.set(false)
     }
-  }
-
-  editAdmin(admin: Admin): void {
-    this._state.emitUpdateAdmin(admin)
-  }
-
-  deleteAdmin(admin: Admin): void {
-    this._state.emitDeleteAdmin(admin)
   }
 
   private _listenForNewAdmin = () => {

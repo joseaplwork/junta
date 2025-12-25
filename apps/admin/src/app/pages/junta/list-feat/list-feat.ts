@@ -1,46 +1,71 @@
 import { Component, effect, inject, signal } from '@angular/core'
-import { MatButtonModule } from '@angular/material/button'
-import { MatIconModule } from '@angular/material/icon'
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
-import { MatTableModule } from '@angular/material/table'
 
+import {
+  ActionConfig,
+  ColumnConfig,
+  CrudDataTable,
+} from '@/admin/shared/components/crud'
 import { Junta } from '@/admin/shared/interfaces/junta'
+import { Navigation } from '@/admin/shared/services/navigation'
 import { Snackbar } from '@/admin/shared/services/snackbar'
 
 import { JuntaState } from '../junta-page-state'
 
-import { JuntaListTable } from './components/junta-list-table'
 import { JuntaData } from './services/junta-data'
 
 @Component({
   selector: 'ja-junta-list-feat',
-  imports: [
-    MatButtonModule,
-    MatIconModule,
-    MatTableModule,
-    MatProgressSpinnerModule,
-    JuntaListTable,
-  ],
+  imports: [CrudDataTable],
   templateUrl: './list-feat.html',
 })
 export class ListFeat {
   private readonly _state = inject(JuntaState)
   private readonly _juntaData = inject(JuntaData)
   private readonly _snackbar = inject(Snackbar)
+  private readonly _navigation = inject(Navigation)
+
+  columns: ColumnConfig[] = [
+    { key: 'name', header: 'Name', type: 'text' },
+    { key: 'amount', header: 'Amount', type: 'currency' },
+    { key: 'slots', header: 'Slots', type: 'text' },
+    { key: 'startDate', header: 'Start Date', type: 'date' },
+    { key: 'endDate', header: 'End Date', type: 'date' },
+    {
+      key: 'active',
+      header: 'Status',
+      type: 'chip',
+      chipColor: (value: unknown) => (value ? 'green' : 'gray'),
+      chipLabel: (value: unknown) => (value ? 'Active' : 'Finished'),
+    },
+  ]
+
+  actions: ActionConfig = { view: true, edit: true, delete: true }
 
   juntas = signal<Junta[]>([])
   loading = signal(false)
   error = signal<string | null>(null)
 
   constructor() {
-    this.loadJuntas()
+    this._loadJuntas()
 
     effect(this._listenForNewJunta)
     effect(this._listenForDeletedJunta)
     effect(this._listenForUpdatedJunta)
   }
 
-  async loadJuntas(): Promise<void> {
+  viewJunta(junta: Junta): void {
+    this._navigation.goToJuntaDetails(junta.id)
+  }
+
+  editJunta(junta: Junta): void {
+    this._state.emitUpdateJunta(junta)
+  }
+
+  deleteJunta(junta: Junta): void {
+    this._state.emitDeleteJunta(junta)
+  }
+
+  private async _loadJuntas(): Promise<void> {
     this.loading.set(true)
     this.error.set(null)
 
@@ -54,14 +79,6 @@ export class ListFeat {
     } finally {
       this.loading.set(false)
     }
-  }
-
-  editJunta(junta: Junta): void {
-    this._state.emitUpdateJunta(junta)
-  }
-
-  deleteJunta(junta: Junta): void {
-    this._state.emitDeleteJunta(junta)
   }
 
   private _listenForNewJunta = () => {

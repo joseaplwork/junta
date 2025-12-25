@@ -1,16 +1,10 @@
-import { Component, inject } from '@angular/core'
+import { Component, inject, signal } from '@angular/core'
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
-import { MatButtonModule } from '@angular/material/button'
-import {
-  MAT_DIALOG_DATA,
-  MatDialogActions,
-  MatDialogContent,
-  MatDialogRef,
-  MatDialogTitle,
-} from '@angular/material/dialog'
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog'
 import { MatFormFieldModule } from '@angular/material/form-field'
 import { MatInputModule } from '@angular/material/input'
 
+import { CrudDialogShell } from '@/admin/shared/components/crud'
 import { User } from '@/admin/shared/interfaces/user'
 import { Snackbar } from '@/admin/shared/services/snackbar'
 
@@ -27,18 +21,17 @@ interface UpdateUserDialogData {
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatButtonModule,
-    MatDialogTitle,
-    MatDialogContent,
-    MatDialogActions,
+    CrudDialogShell,
   ],
   templateUrl: './update-user-dialog.html',
 })
 export class UpdateUserDialog {
   private readonly _fb = inject(FormBuilder)
   private readonly _dialogRef = inject(MatDialogRef<UpdateUserDialog>)
-  public readonly data = inject<UpdateUserDialogData>(MAT_DIALOG_DATA)
+  readonly data = inject<UpdateUserDialogData>(MAT_DIALOG_DATA)
   private readonly _snackbar = inject(Snackbar)
+
+  readonly submitting = signal(false)
 
   form = this._fb.nonNullable.group({
     name: [this.data.user.name, Validators.required],
@@ -46,25 +39,29 @@ export class UpdateUserDialog {
     phoneNumber: [this.data.user.phoneNumber, Validators.required],
   })
 
-  async handleSubmit(): Promise<void> {
-    if (this.form.invalid) return
+  async onSubmit(): Promise<void> {
+    if (this.form.invalid || this.submitting()) return
 
-    const formValue = this.form.value
-    const payload: UpdatePayload = {
-      name: formValue.name!,
-      surname: formValue.surname!,
-      phoneNumber: formValue.phoneNumber!,
-    }
+    this.submitting.set(true)
 
     try {
+      const formValue = this.form.value
+      const payload: UpdatePayload = {
+        name: formValue.name!,
+        surname: formValue.surname!,
+        phoneNumber: formValue.phoneNumber!,
+      }
+
       await this.data.handleUpdate(this.data.user.id, payload)
       this._dialogRef.close()
     } catch {
       this._snackbar.error('Failed to update user')
+    } finally {
+      this.submitting.set(false)
     }
   }
 
-  handleCancel(): void {
+  onCancel(): void {
     this._dialogRef.close()
   }
 }

@@ -1,12 +1,12 @@
 import { Component, effect, inject } from '@angular/core'
 
+import { CrudDeleteDialog } from '@/admin/shared/components/crud'
 import { User } from '@/admin/shared/interfaces/user'
 import { Dialog } from '@/admin/shared/services/dialog'
 import { Snackbar } from '@/admin/shared/services/snackbar'
 
 import { UserState } from '../user-page-state'
 
-import { DeleteUserDialog } from './components/delete-user-dialog'
 import { UserDelete } from './services/user-delete'
 
 @Component({
@@ -19,34 +19,43 @@ export class DeleteFeat {
   private readonly _snackbar = inject(Snackbar)
   private readonly _state = inject(UserState)
 
+  private _currentUser: User | null = null
+
   constructor() {
-    effect(this.listenForUserDelete)
+    effect(this._listenForUserDelete)
   }
 
-  private listenForUserDelete = () => {
+  private _listenForUserDelete = () => {
     const user = this._state.deleteUser()
 
     if (user) {
-      this.openDeleteDialog(user)
-      this._state.emitDeleteUser(null)
+      this._openDeleteDialog(user)
     }
   }
 
-  private async openDeleteDialog(user: User): Promise<void> {
-    this._dialog.open(DeleteUserDialog, {
-      user,
+  private _openDeleteDialog(user: User): void {
+    this._currentUser = user
+
+    this._dialog.open(CrudDeleteDialog, {
+      entityName: 'User',
+      displayName: `${user.name} ${user.surname}`,
       handleDelete: this._handleDelete,
     })
   }
 
-  private _handleDelete = async (user: User): Promise<void> => {
-    try {
-      await this._userDelete.delete(user.id)
+  private _handleDelete = async (): Promise<void> => {
+    if (!this._currentUser) return
 
-      this._state.emitUserDeleted(user)
+    try {
+      await this._userDelete.delete(this._currentUser.id)
+
+      this._state.emitUserDeleted(this._currentUser)
       this._snackbar.success('User deleted successfully')
     } catch {
       this._snackbar.error('Failed to delete user')
+      throw new Error('Delete failed')
+    } finally {
+      this._state.emitDeleteUser(null)
     }
   }
 }

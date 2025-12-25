@@ -1,8 +1,13 @@
-<h2 mat-dialog-title>Update Admin</h2>
-
-<form [formGroup]="form" (ngSubmit)="onSubmit()">
-  <mat-dialog-content class="space-y-4">
-    <mat-form-field class="w-full">
+<ja-crud-dialog-shell
+  title="Update Admin"
+  icon="edit"
+  submitLabel="Update Admin"
+  [submitting]="submitting()"
+  [formValid]="form.valid"
+  (submitAction)="onSubmit()"
+  (cancelAction)="onCancel()">
+  <form [formGroup]="form" class="grid gap-4">
+    <mat-form-field class="w-full" appearance="outline">
       <mat-label>Email</mat-label>
       <input
         matInput
@@ -30,22 +35,5 @@
       </mat-checkbox>
       }
     </div>
-  </mat-dialog-content>
-
-  <mat-dialog-actions align="end">
-    <button
-      type="button"
-      mat-button
-      (click)="onCancel()"
-      [disabled]="submitting()">
-      Cancel
-    </button>
-    <button
-      type="submit"
-      mat-raised-button
-      color="primary"
-      [disabled]="form.invalid || submitting()">
-      @if (submitting()) { Updating... } @else { Update Admin }
-    </button>
-  </mat-dialog-actions>
-</form>
+  </form>
+</ja-crud-dialog-shell>

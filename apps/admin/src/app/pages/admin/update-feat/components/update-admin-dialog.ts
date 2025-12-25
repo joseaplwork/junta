@@ -6,20 +6,14 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms'
-import { MatButtonModule } from '@angular/material/button'
 import { MatCheckboxModule } from '@angular/material/checkbox'
-import {
-  MAT_DIALOG_DATA,
-  MatDialogActions,
-  MatDialogContent,
-  MatDialogRef,
-  MatDialogTitle,
-} from '@angular/material/dialog'
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog'
 import { MatFormFieldModule } from '@angular/material/form-field'
 import { MatInputModule } from '@angular/material/input'
 
 import { Role } from '@junta/shared/enums/role'
 
+import { CrudDialogShell } from '@/admin/shared/components/crud'
 import { Admin } from '@/admin/shared/interfaces/admin'
 
 import { UpdatePayload } from '../interfaces/update-payload'
@@ -28,13 +22,10 @@ import { UpdatePayload } from '../interfaces/update-payload'
   imports: [
     TitleCasePipe,
     ReactiveFormsModule,
-    MatButtonModule,
     MatCheckboxModule,
-    MatDialogTitle,
-    MatDialogContent,
-    MatDialogActions,
     MatFormFieldModule,
     MatInputModule,
+    CrudDialogShell,
   ],
   templateUrl: './update-admin-dialog.html',
 })
@@ -79,7 +70,7 @@ export class UpdateAdminDialog {
   }
 
   async onSubmit(): Promise<void> {
-    if (this.form.invalid) return
+    if (this.form.invalid || this.submitting()) return
 
     this.submitting.set(true)
 

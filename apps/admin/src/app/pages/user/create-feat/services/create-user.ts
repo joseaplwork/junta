@@ -1,20 +1,15 @@
-import { HttpClient } from '@angular/common/http'
 import { Injectable, inject } from '@angular/core'
-import { firstValueFrom } from 'rxjs'
 
 import { User } from '@/admin/shared/interfaces/user'
-import { Config } from '@/admin/shared/services/config'
+import { Api } from '@/admin/shared/services/api'
 
 import { CreatePayload } from '../interfaces/create-payload'
 
 @Injectable({ providedIn: 'root' })
 export class CreateUser {
-  private readonly _http = inject(HttpClient)
-  private readonly _config = inject(Config)
+  private readonly _api = inject(Api)
 
   create(payload: CreatePayload): Promise<User> {
-    return firstValueFrom(
-      this._http.post<User>(`${this._config.api.url}/user`, payload),
-    )
+    return this._api.post<User>('/user', payload)
   }
 }

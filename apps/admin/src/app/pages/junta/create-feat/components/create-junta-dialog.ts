@@ -1,18 +1,13 @@
 import { Component, inject, signal } from '@angular/core'
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
-import { MatButtonModule } from '@angular/material/button'
 import { MatCheckboxModule } from '@angular/material/checkbox'
 import { MatNativeDateModule } from '@angular/material/core'
 import { MatDatepickerModule } from '@angular/material/datepicker'
-import {
-  MAT_DIALOG_DATA,
-  MatDialogModule,
-  MatDialogRef,
-} from '@angular/material/dialog'
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog'
 import { MatFormFieldModule } from '@angular/material/form-field'
-import { MatIconModule } from '@angular/material/icon'
 import { MatInputModule } from '@angular/material/input'
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
+
+import { CrudDialogShell } from '@/admin/shared/components/crud'
 
 import { CreatePayload } from '../interfaces/create-payload'
 
@@ -23,15 +18,12 @@ interface CreateJuntaDialogData {
 @Component({
   imports: [
     ReactiveFormsModule,
-    MatDialogModule,
     MatFormFieldModule,
     MatInputModule,
-    MatButtonModule,
-    MatIconModule,
-    MatProgressSpinnerModule,
     MatDatepickerModule,
     MatNativeDateModule,
     MatCheckboxModule,
+    CrudDialogShell,
   ],
   templateUrl: './create-junta-dialog.html',
 })
@@ -66,7 +58,7 @@ export class CreateJuntaDialog {
     return null
   }
 
-  async save(): Promise<void> {
+  async onSubmit(): Promise<void> {
     if (this.form.invalid || this.submitting()) return
 
     this.submitting.set(true)
@@ -89,7 +81,7 @@ export class CreateJuntaDialog {
     }
   }
 
-  cancel() {
+  onCancel(): void {
     this._dialogRef.close()
   }
 }

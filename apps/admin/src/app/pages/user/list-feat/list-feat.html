@@ -1,6 +1,10 @@
-<ja-user-list-table
-  [users]="users()"
+<ja-crud-data-table
+  [data]="users()"
+  [columns]="columns"
+  [actions]="actions"
   [loading]="loading()"
   [error]="error()"
-  (editUser)="editUser($event)"
-  (deleteUser)="deleteUser($event)" />
+  emptyMessage="No users found. Click the + button to create one."
+  loadingMessage="Loading users..."
+  (edit)="editUser($event)"
+  (delete)="deleteUser($event)" />

@@ -1,12 +1,12 @@
 import { Component, effect, inject } from '@angular/core'
 
+import { CrudDeleteDialog } from '@/admin/shared/components/crud'
 import { Junta } from '@/admin/shared/interfaces/junta'
 import { Dialog } from '@/admin/shared/services/dialog'
 import { Snackbar } from '@/admin/shared/services/snackbar'
 
 import { JuntaState } from '../junta-page-state'
 
-import { DeleteJuntaDialog } from './components/delete-junta-dialog'
 import { JuntaDelete } from './services/junta-delete'
 
 @Component({
@@ -19,6 +19,8 @@ export class DeleteFeat {
   private readonly _snackbar = inject(Snackbar)
   private readonly _state = inject(JuntaState)
 
+  private _currentJunta: Junta | null = null
+
   constructor() {
     effect(this._listenForJuntaDelete)
   }
@@ -28,26 +30,32 @@ export class DeleteFeat {
 
     if (junta) {
       this._openDeleteDialog(junta)
-      this._state.emitDeleteJunta(null)
     }
   }
 
-  private async _openDeleteDialog(junta: Junta): Promise<void> {
-    this._dialog.open(DeleteJuntaDialog, {
-      junta,
+  private _openDeleteDialog(junta: Junta): void {
+    this._currentJunta = junta
+
+    this._dialog.open(CrudDeleteDialog, {
+      entityName: 'Junta',
+      displayName: junta.name,
       handleDelete: this._handleDelete,
     })
   }
 
-  private _handleDelete = async (junta: Junta): Promise<void> => {
-    try {
-      await this._juntaDelete.delete(junta.id)
+  private _handleDelete = async (): Promise<void> => {
+    if (!this._currentJunta) return
 
-      this._state.emitJuntaDeleted(junta)
+    try {
+      await this._juntaDelete.delete(this._currentJunta.id)
+
+      this._state.emitJuntaDeleted(this._currentJunta)
       this._snackbar.success('Junta deleted successfully')
     } catch {
       this._snackbar.error('Failed to delete junta')
+      throw new Error('Delete failed')
+    } finally {
+      this._state.emitDeleteJunta(null)
     }
   }
 }
-

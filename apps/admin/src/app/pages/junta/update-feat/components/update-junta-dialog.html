@@ -1,7 +1,12 @@
-<mat-dialog-content>
-  <h2 mat-dialog-title>Update Junta</h2>
-
-  <form [formGroup]="form" class="flex flex-col gap-4">
+<ja-crud-dialog-shell
+  title="Update Junta"
+  icon="edit"
+  submitLabel="Update"
+  [submitting]="submitting()"
+  [formValid]="form.valid"
+  (submitAction)="onSubmit()"
+  (cancelAction)="onCancel()">
+  <form [formGroup]="form" class="grid gap-4">
     <mat-form-field appearance="outline">
       <mat-label>Name</mat-label>
       <input matInput formControlName="name" placeholder="Enter junta name" />
@@ -31,14 +36,20 @@
     <div class="grid grid-cols-2 gap-4">
       <mat-form-field appearance="outline">
         <mat-label>Start Date</mat-label>
-        <input matInput [matDatepicker]="startPicker" formControlName="startDate" />
+        <input
+          matInput
+          [matDatepicker]="startPicker"
+          formControlName="startDate" />
         <mat-datepicker-toggle matIconSuffix [for]="startPicker" />
         <mat-datepicker #startPicker />
       </mat-form-field>
 
       <mat-form-field appearance="outline">
         <mat-label>End Date</mat-label>
-        <input matInput [matDatepicker]="endPicker" formControlName="endDate" />
+        <input
+          matInput
+          [matDatepicker]="endPicker"
+          formControlName="endDate" />
         <mat-datepicker-toggle matIconSuffix [for]="endPicker" />
         <mat-datepicker #endPicker />
       </mat-form-field>
@@ -46,17 +57,4 @@
 
     <mat-checkbox formControlName="active">Active</mat-checkbox>
   </form>
-</mat-dialog-content>
-
-<mat-dialog-actions align="end">
-  <button mat-button type="button" (click)="handleCancel()">Cancel</button>
-  <button
-    mat-raised-button
-    color="primary"
-    type="button"
-    [disabled]="form.invalid"
-    (click)="handleSubmit()">
-    Update
-  </button>
-</mat-dialog-actions>
-
+</ja-crud-dialog-shell>

@@ -1,12 +1,12 @@
 import { Component, effect, inject } from '@angular/core'
 
+import { CrudDeleteDialog } from '@/admin/shared/components/crud'
 import { Admin } from '@/admin/shared/interfaces/admin'
 import { Dialog } from '@/admin/shared/services/dialog'
 import { Snackbar } from '@/admin/shared/services/snackbar'
 
 import { AdminPageState } from '../admin-page-state'
 
-import { DeleteAdminDialog } from './components/delete-admin-dialog'
 import { AdminDelete } from './services/admin-delete'
 
 @Component({
@@ -19,34 +19,43 @@ export class DeleteFeat {
   private readonly _snackbar = inject(Snackbar)
   private readonly _state = inject(AdminPageState)
 
+  private _currentAdmin: Admin | null = null
+
   constructor() {
-    effect(this.listenForAdminDelete)
+    effect(this._listenForAdminDelete)
   }
 
-  private listenForAdminDelete = () => {
+  private _listenForAdminDelete = () => {
     const admin = this._state.deleteAdmin()
 
     if (admin) {
-      this.openDeleteDialog(admin)
-      this._state.emitDeleteAdmin(null)
+      this._openDeleteDialog(admin)
     }
   }
 
-  private async openDeleteDialog(admin: Admin): Promise<void> {
-    this._dialog.open(DeleteAdminDialog, {
-      admin,
+  private _openDeleteDialog(admin: Admin): void {
+    this._currentAdmin = admin
+
+    this._dialog.open(CrudDeleteDialog, {
+      entityName: 'Admin',
+      displayName: admin.email,
       handleDelete: this._handleDelete,
     })
   }
 
-  private _handleDelete = async (admin: Admin): Promise<void> => {
-    try {
-      await this._adminDelete.delete(admin.id)
+  private _handleDelete = async (): Promise<void> => {
+    if (!this._currentAdmin) return
 
-      this._state.emitAdminDeleted(admin)
+    try {
+      await this._adminDelete.delete(this._currentAdmin.id)
+
+      this._state.emitAdminDeleted(this._currentAdmin)
       this._snackbar.success('Admin deleted successfully')
     } catch {
       this._snackbar.error('Failed to delete admin')
+      throw new Error('Delete failed')
+    } finally {
+      this._state.emitDeleteAdmin(null)
     }
   }
 }

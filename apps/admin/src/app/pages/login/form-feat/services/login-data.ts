@@ -1,31 +1,16 @@
-import { HttpClient } from '@angular/common/http'
 import { Injectable, inject } from '@angular/core'
-import { firstValueFrom } from 'rxjs'
 
-import { Config } from '@/admin/shared/services/config'
+import { Api } from '@/admin/shared/services/api'
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class LoginData {
-  private readonly _http = inject(HttpClient)
-  private readonly _config = inject(Config)
+  private readonly _api = inject(Api)
 
   signIn(email: string, password: string): Promise<{ accessToken: string }> {
-    const options = {
-      withCredentials: true,
-    }
-    const payload = {
-      email,
-      password,
-    }
-
-    return firstValueFrom(
-      this._http.post<{ accessToken: string }>(
-        `${this._config.api.auth}/login`,
-        payload,
-        options,
-      ),
+    return this._api.auth<{ accessToken: string }>(
+      '/login',
+      { email, password },
+      { withCredentials: true },
     )
   }
 }

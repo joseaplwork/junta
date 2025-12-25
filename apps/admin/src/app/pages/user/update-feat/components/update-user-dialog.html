@@ -1,7 +1,12 @@
-<mat-dialog-content>
-  <h2 mat-dialog-title>Update User</h2>
-
-  <form [formGroup]="form">
+<ja-crud-dialog-shell
+  title="Update User"
+  icon="edit"
+  submitLabel="Update"
+  [submitting]="submitting()"
+  [formValid]="form.valid"
+  (submitAction)="onSubmit()"
+  (cancelAction)="onCancel()">
+  <form [formGroup]="form" class="grid gap-4">
     <mat-form-field appearance="outline">
       <mat-label>Name</mat-label>
       <input matInput formControlName="name" placeholder="Enter name" />
@@ -20,16 +25,4 @@
         placeholder="Enter phone number" />
     </mat-form-field>
   </form>
-</mat-dialog-content>
-
-<mat-dialog-actions align="end">
-  <button mat-button type="button" (click)="handleCancel()">Cancel</button>
-  <button
-    mat-raised-button
-    color="primary"
-    type="button"
-    [disabled]="form.invalid"
-    (click)="handleSubmit()">
-    Update
-  </button>
-</mat-dialog-actions>
+</ja-crud-dialog-shell>

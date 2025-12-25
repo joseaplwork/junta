@@ -1,26 +1,20 @@
 import { Component, effect, inject, signal } from '@angular/core'
-import { MatButtonModule } from '@angular/material/button'
-import { MatIconModule } from '@angular/material/icon'
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
-import { MatTableModule } from '@angular/material/table'
 
+import {
+  ActionConfig,
+  ColumnConfig,
+  CrudDataTable,
+} from '@/admin/shared/components/crud'
 import { User } from '@/admin/shared/interfaces/user'
 import { Snackbar } from '@/admin/shared/services/snackbar'
 
 import { UserState } from '../user-page-state'
 
-import { UserListTable } from './components/user-list-table'
 import { UserData } from './services/user-data'
 
 @Component({
   selector: 'ja-user-list-feat',
-  imports: [
-    MatButtonModule,
-    MatIconModule,
-    MatTableModule,
-    MatProgressSpinnerModule,
-    UserListTable,
-  ],
+  imports: [CrudDataTable],
   templateUrl: './list-feat.html',
 })
 export class ListFeat {
@@ -28,20 +22,34 @@ export class ListFeat {
   private readonly _userData = inject(UserData)
   private readonly _snackbar = inject(Snackbar)
 
-  displayedColumns = ['name', 'surname', 'phoneNumber', 'actions']
+  columns: ColumnConfig[] = [
+    { key: 'name', header: 'Name', type: 'combined', combineWith: 'surname' },
+    { key: 'phoneNumber', header: 'Phone', type: 'text' },
+  ]
+
+  actions: ActionConfig = { edit: true, delete: true }
+
   users = signal<User[]>([])
   loading = signal(false)
   error = signal<string | null>(null)
 
   constructor() {
-    this.loadUsers()
+    this._loadUsers()
 
     effect(this._listenForNewUser)
     effect(this._listenForDeletedUser)
     effect(this._listenForUpdatedUser)
   }
 
-  async loadUsers(): Promise<void> {
+  editUser(user: User): void {
+    this._state.emitUpdateUser(user)
+  }
+
+  deleteUser(user: User): void {
+    this._state.emitDeleteUser(user)
+  }
+
+  private async _loadUsers(): Promise<void> {
     this.loading.set(true)
     this.error.set(null)
 
@@ -55,14 +63,6 @@ export class ListFeat {
     } finally {
       this.loading.set(false)
     }
-  }
-
-  editUser(user: User): void {
-    this._state.emitUpdateUser(user)
-  }
-
-  deleteUser(user: User): void {
-    this._state.emitDeleteUser(user)
   }
 
   private _listenForNewUser = () => {

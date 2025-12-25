@@ -6,21 +6,14 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms'
-import { MatButtonModule } from '@angular/material/button'
 import { MatCheckboxModule } from '@angular/material/checkbox'
-import {
-  MAT_DIALOG_DATA,
-  MatDialogActions,
-  MatDialogContent,
-  MatDialogRef,
-  MatDialogTitle,
-} from '@angular/material/dialog'
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog'
 import { MatFormFieldModule } from '@angular/material/form-field'
-import { MatIconModule } from '@angular/material/icon'
 import { MatInputModule } from '@angular/material/input'
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
 
 import { Role } from '@junta/shared/enums/role'
+
+import { CrudDialogShell } from '@/admin/shared/components/crud'
 
 import { CreatePayload } from '../interfaces/create-payload'
 
@@ -28,15 +21,10 @@ import { CreatePayload } from '../interfaces/create-payload'
   imports: [
     TitleCasePipe,
     ReactiveFormsModule,
-    MatButtonModule,
     MatCheckboxModule,
-    MatDialogTitle,
-    MatDialogContent,
-    MatDialogActions,
     MatFormFieldModule,
     MatInputModule,
-    MatProgressSpinnerModule,
-    MatIconModule,
+    CrudDialogShell,
   ],
   templateUrl: './create-admin-dialog.html',
 })

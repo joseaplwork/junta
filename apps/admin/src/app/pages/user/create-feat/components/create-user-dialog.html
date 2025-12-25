@@ -1,9 +1,12 @@
-<h2 mat-dialog-title>
-  <mat-icon>person_add</mat-icon>
-  Create user
-</h2>
-<form [formGroup]="form" (ngSubmit)="save()">
-  <div mat-dialog-content class="grid gap-4">
+<ja-crud-dialog-shell
+  title="Create User"
+  icon="person_add"
+  submitLabel="Create"
+  [submitting]="submitting()"
+  [formValid]="form.valid"
+  (submitAction)="onSubmit()"
+  (cancelAction)="onCancel()">
+  <form [formGroup]="form" class="grid gap-4">
     <mat-form-field appearance="outline">
       <mat-label>Name</mat-label>
       <input matInput formControlName="name" required />
@@ -28,26 +31,5 @@
       <mat-error>{{ getError('phoneNumber') }}</mat-error>
       }
     </mat-form-field>
-  </div>
-
-  <div mat-dialog-actions align="end">
-    <button
-      mat-stroked-button
-      type="button"
-      (click)="cancel()"
-      [disabled]="submitting()">
-      Cancel
-    </button>
-    <button
-      mat-flat-button
-      color="primary"
-      type="submit"
-      [disabled]="form.invalid || submitting()"
-      class="flex items-center justify-center">
-      @if (submitting()) {
-      <mat-icon><mat-spinner diameter="18"></mat-spinner></mat-icon>
-      }
-      <span>Create</span>
-    </button>
-  </div>
-</form>
+  </form>
+</ja-crud-dialog-shell>
