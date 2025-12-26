@@ -1,0 +1,51 @@
+<div class="h-screen w-screen">
+  <mat-sidenav-container class="h-full w-full">
+    <mat-sidenav
+      mode="side"
+      opened
+      class="flex h-full w-64 flex-col border-r border-slate-200 bg-slate-50">
+      <div
+        class="flex items-center justify-center border-b border-slate-200 p-4">
+        <h2 class="text-primary text-xl font-semibold">Logo</h2>
+      </div>
+      <mat-divider></mat-divider>
+      <div class="flex-grow p-4">
+        <mat-nav-list>
+          @for (item of menuItems; track item.route) {
+          <a
+            mat-list-item
+            [routerLink]="item.route"
+            routerLinkActive="bg-slate-100 text-primary"
+            [routerLinkActiveOptions]="{ exact: item.exact ?? false }"
+            [attr.data-permission]="item.permission"
+            *hasPermission="item.permission ?? null"
+            class="mb-2 rounded-md">
+            <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+            <span matListItemTitle>{{ item.label }}</span>
+          </a>
+          }
+        </mat-nav-list>
+      </div>
+
+      <div class="mt-auto border-t border-slate-200">
+        <div class="p-4">
+          <div class="mb-4">
+            <p class="font-semibold">{{ profile.username() }}</p>
+          </div>
+          <button
+            mat-flat-button
+            color="warn"
+            (click)="logout()"
+            class="flex w-full items-center justify-center gap-2">
+            <mat-icon>logout</mat-icon>
+            <span>Logout</span>
+          </button>
+        </div>
+      </div>
+    </mat-sidenav>
+
+    <mat-sidenav-content class="h-full overflow-auto p-5">
+      <ng-content></ng-content>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>

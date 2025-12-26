@@ -16,7 +16,7 @@ import { Sidebar } from './components/sidebar/sidebar'
     <ja-session-expired-dialog></ja-session-expired-dialog>
   `,
 })
-export class RootLayout implements OnInit {
+export class MainLayout implements OnInit {
   private readonly _appState = inject(AppState)
   private readonly _profile = inject(AdminProfile)
 

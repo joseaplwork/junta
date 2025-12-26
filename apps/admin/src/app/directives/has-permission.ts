@@ -18,8 +18,8 @@ export class HasPermission {
   private readonly _viewContainer = inject(ViewContainerRef)
   private readonly _templateRef = inject(TemplateRef)
 
-  private _checkPermission = (permission: keyof typeof Permission) => {
-    if (this._profile.hasPermission(permission)) {
+  private _checkPermission = (permission: Permission | null) => {
+    if (permission === null || this._profile.hasPermission(permission)) {
       this._viewContainer.createEmbeddedView(this._templateRef)
     } else {
       this._viewContainer.clear()

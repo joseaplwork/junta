@@ -2,7 +2,7 @@ import { Routes } from '@angular/router'
 
 import { RouteAuthProtection } from './guards/route-auth-protection'
 import { RouteSessionRedirection } from './guards/route-session-redirection'
-import { RootLayout } from './pages/[root]/layout'
+import { MainLayout } from './layouts/main-layout/main-layout'
 import { AdminPage } from './pages/admin/admin-page'
 import { DashboardPage } from './pages/dashboard/dashboard-page'
 import { JuntaDetailsPage } from './pages/junta-details/junta-details-page'
@@ -19,7 +19,7 @@ export const routes: Routes = [
   },
   {
     path: 'dashboard',
-    component: RootLayout,
+    component: MainLayout,
     canActivate: [RouteAuthProtection],
     children: [
       { path: '', component: DashboardPage },

@@ -42,8 +42,8 @@ export class AdminProfile implements Profile {
     return this._roles.asReadonly()
   }
 
-  hasPermission(requiredPermission: keyof typeof Permission): boolean {
-    return this.permissions().includes(Permission[requiredPermission])
+  hasPermission(requiredPermission: Permission): boolean {
+    return this.permissions().includes(requiredPermission)
   }
 
   private _decodeProfile() {
