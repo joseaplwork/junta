@@ -1,51 +1,70 @@
-<div class="h-screen w-screen">
-  <mat-sidenav-container class="h-full w-full">
-    <mat-sidenav
-      mode="side"
-      opened
-      class="flex h-full w-64 flex-col border-r border-slate-200 bg-slate-50">
-      <div
-        class="flex items-center justify-center border-b border-slate-200 p-4">
-        <h2 class="text-primary text-xl font-semibold">Logo</h2>
-      </div>
-      <mat-divider></mat-divider>
-      <div class="flex-grow p-4">
-        <mat-nav-list>
-          @for (item of menuItems; track item.route) {
-          <a
-            mat-list-item
-            [routerLink]="item.route"
-            routerLinkActive="bg-slate-100 text-primary"
-            [routerLinkActiveOptions]="{ exact: item.exact ?? false }"
-            [attr.data-permission]="item.permission"
-            *hasPermission="item.permission ?? null"
-            class="mb-2 rounded-md">
-            <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
-            <span matListItemTitle>{{ item.label }}</span>
-          </a>
+<div class="flex h-screen w-screen bg-neutral-950">
+  <aside
+    [style.width]="collapsed() ? '64px' : '256px'"
+    class="flex h-full flex-shrink-0 flex-col overflow-hidden border-r border-neutral-800 bg-neutral-900 transition-[width] duration-300 ease-in-out">
+    <div
+      class="flex items-center border-b border-neutral-800 p-2"
+      [class.justify-center]="collapsed()"
+      [class.justify-between]="!collapsed()">
+      @if (!collapsed()) {
+      <h2 class="text-primary pl-2 text-xl font-semibold">Logo</h2>
+      }
+      <button mat-icon-button (click)="toggle()" class="text-neutral-400">
+        <mat-icon>{{ collapsed() ? 'menu' : 'menu_open' }}</mat-icon>
+      </button>
+    </div>
+
+    <div class="flex-grow overflow-y-auto overflow-x-hidden">
+      <nav class="flex flex-col gap-1 p-2">
+        @for (item of menuItems; track item.route) {
+        <a
+          [routerLink]="item.route"
+          routerLinkActive="bg-primary/20 text-primary"
+          [routerLinkActiveOptions]="{ exact: item.exact ?? false }"
+          *hasPermission="item.permission ?? null"
+          [matTooltip]="collapsed() ? item.label : ''"
+          matTooltipPosition="right"
+          class="flex items-center gap-3 rounded-lg px-3 py-2 text-neutral-300 transition-colors hover:bg-neutral-800"
+          [class.justify-center]="collapsed()"
+          [class.px-2]="collapsed()">
+          <mat-icon class="flex-shrink-0">{{ item.icon }}</mat-icon>
+          @if (!collapsed()) {
+          <span class="whitespace-nowrap">{{ item.label }}</span>
           }
-        </mat-nav-list>
-      </div>
+        </a>
+        }
+      </nav>
+    </div>
 
-      <div class="mt-auto border-t border-slate-200">
-        <div class="p-4">
-          <div class="mb-4">
-            <p class="font-semibold">{{ profile.username() }}</p>
-          </div>
-          <button
-            mat-flat-button
-            color="warn"
-            (click)="logout()"
-            class="flex w-full items-center justify-center gap-2">
-            <mat-icon>logout</mat-icon>
-            <span>Logout</span>
-          </button>
-        </div>
+    <div class="mt-auto border-t border-neutral-800 p-2">
+      @if (!collapsed()) {
+      <p class="mb-2 truncate px-3 text-center text-neutral-400">
+        {{ profile.username() }}
+      </p>
+      <button
+        mat-flat-button
+        color="warn"
+        (click)="logout()"
+        class="flex w-full items-center justify-center gap-2">
+        <mat-icon>logout</mat-icon>
+        <span>Logout</span>
+      </button>
+      } @else {
+      <div class="flex justify-center">
+        <button
+          mat-icon-button
+          color="warn"
+          (click)="logout()"
+          matTooltip="Logout"
+          matTooltipPosition="right">
+          <mat-icon>logout</mat-icon>
+        </button>
       </div>
-    </mat-sidenav>
+      }
+    </div>
+  </aside>
 
-    <mat-sidenav-content class="h-full overflow-auto p-5">
-      <ng-content></ng-content>
-    </mat-sidenav-content>
-  </mat-sidenav-container>
+  <main class="h-full flex-1 overflow-auto p-5">
+    <ng-content></ng-content>
+  </main>
 </div>

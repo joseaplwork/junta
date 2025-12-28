@@ -8,13 +8,14 @@
 html {
   height: 100%;
   color-scheme: light dark;
+
   @include mat.theme(
     (
       color: (
         primary: theme.$primary-palette,
         tertiary: theme.$tertiary-palette,
       ),
-      typography: 'Figtree',
+      typography: Figtree,
       density: 0,
     )
   );

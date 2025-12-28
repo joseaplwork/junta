@@ -1,9 +1,7 @@
-import { Component, inject } from '@angular/core'
+import { Component, inject, signal } from '@angular/core'
 import { MatButtonModule } from '@angular/material/button'
-import { MatDividerModule } from '@angular/material/divider'
 import { MatIconModule } from '@angular/material/icon'
-import { MatListModule } from '@angular/material/list'
-import { MatSidenavModule } from '@angular/material/sidenav'
+import { MatTooltipModule } from '@angular/material/tooltip'
 import { RouterModule } from '@angular/router'
 
 import { Permission } from '@junta/shared/enums/permission'
@@ -18,11 +16,9 @@ import { MenuItem } from '../../interfaces/menu-item'
   selector: 'ja-sidebar',
   imports: [
     RouterModule,
-    MatSidenavModule,
-    MatListModule,
     MatIconModule,
     MatButtonModule,
-    MatDividerModule,
+    MatTooltipModule,
     HasPermission,
   ],
   templateUrl: './sidebar.html',
@@ -30,6 +26,8 @@ import { MenuItem } from '../../interfaces/menu-item'
 export class Sidebar {
   private readonly _logout = inject(Logout)
   readonly profile = inject(AdminProfile)
+
+  readonly collapsed = signal(true)
 
   readonly menuItems: MenuItem[] = [
     {
@@ -57,6 +55,10 @@ export class Sidebar {
       permission: Permission.JUNTA_READ,
     },
   ]
+
+  toggle(): void {
+    this.collapsed.update(v => !v)
+  }
 
   logout(): void {
     this._logout.endSession()
