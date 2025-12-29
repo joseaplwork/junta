@@ -1,16 +1,18 @@
 <h1 class="mb-5 text-2xl">Welcome</h1>
 <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-  <div class="rounded-lg bg-neutral-900 p-6">
+  <div class="rounded-lg border border-outline-variant bg-surface-container p-6">
     <h2 class="text-primary mb-4 text-lg font-medium">Admin Management</h2>
-    <p class="mb-4">View and manage admin users with different permissions.</p>
+    <p class="text-muted mb-4">
+      View and manage admin users with different permissions.
+    </p>
     <a routerLink="/dashboard/admin" mat-raised-button color="primary">
       View Admins
     </a>
   </div>
 
-  <div class="rounded-lg bg-neutral-900 p-6">
+  <div class="rounded-lg border border-outline-variant bg-surface-container p-6">
     <h2 class="text-primary mb-4 text-lg font-medium">User Management</h2>
-    <p class="mb-4">View and manage regular users.</p>
+    <p class="text-muted mb-4">View and manage regular users.</p>
     <a routerLink="/dashboard/user" mat-raised-button color="primary">
       View Users
     </a>

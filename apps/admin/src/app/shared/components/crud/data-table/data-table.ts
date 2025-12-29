@@ -1,4 +1,4 @@
-import { DatePipe } from '@angular/common'
+import { DatePipe, TitleCasePipe } from '@angular/common'
 import { Component, EventEmitter, Input, Output } from '@angular/core'
 import { MatButtonModule } from '@angular/material/button'
 import { MatChipsModule } from '@angular/material/chips'
@@ -16,7 +16,26 @@ import { ActionConfig, ColumnConfig } from '../interfaces'
     MatIconModule,
     MatChipsModule,
     DatePipe,
+    TitleCasePipe,
   ],
+  styles: `
+    .chip-success {
+      --mat-chip-label-text-color: var(--app-success);
+      --mat-chip-outline-color: var(--app-success);
+    }
+    .chip-error {
+      --mat-chip-label-text-color: var(--mat-sys-error);
+      --mat-chip-outline-color: var(--mat-sys-error);
+    }
+    .chip-warning {
+      --mat-chip-label-text-color: var(--app-warning);
+      --mat-chip-outline-color: var(--app-warning);
+    }
+    .chip-default {
+      --mat-chip-label-text-color: var(--mat-sys-outline);
+      --mat-chip-outline-color: var(--mat-sys-outline);
+    }
+  `,
 })
 export class CrudDataTable<T extends { id: string }> {
   @Input() data: T[] = []
@@ -99,18 +118,20 @@ export class CrudDataTable<T extends { id: string }> {
     }).format(num)
   }
 
-  getChipColor(value: unknown, column: ColumnConfig): string {
-    if (!column.chipColor) return ''
+  getChipClass(value: unknown, column: ColumnConfig): string {
+    if (!column.chipColor) return 'chip-default'
 
     const color = column.chipColor(value)
 
     switch (color) {
       case 'green':
-        return '!bg-green-100 !text-green-800'
+        return 'chip-success'
       case 'red':
-        return '!bg-red-100 !text-red-800'
+        return 'chip-error'
+      case 'yellow':
+        return 'chip-warning'
       default:
-        return '!bg-gray-100 !text-gray-800'
+        return 'chip-default'
     }
   }
 

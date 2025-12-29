@@ -1,9 +1,21 @@
+@use 'sass:map';
 @use '@angular/material' as mat;
 @use './theme.scss' as theme;
 
 @tailwind base;
 @tailwind utilities;
 @tailwind components;
+
+:root {
+  // Export custom semantic colors from theme as CSS variables
+  --app-success: #{map.get(theme.$success, default)};
+  --app-success-container: #{map.get(theme.$success, container)};
+  --app-on-success-container: #{map.get(theme.$success, on-container)};
+
+  --app-warning: #{map.get(theme.$warning, default)};
+  --app-warning-container: #{map.get(theme.$warning, container)};
+  --app-on-warning-container: #{map.get(theme.$warning, on-container)};
+}
 
 html {
   height: 100%;

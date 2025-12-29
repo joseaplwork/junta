@@ -12,7 +12,7 @@ export interface ColumnConfig {
   type: ColumnType
   combineWith?: string
   combineFormat?: string
-  chipColor?: (value: unknown) => 'green' | 'gray' | 'red'
+  chipColor?: (value: unknown) => 'green' | 'gray' | 'red' | 'yellow'
   chipLabel?: (value: unknown) => string
   currencyLocale?: string
   currencyCode?: string

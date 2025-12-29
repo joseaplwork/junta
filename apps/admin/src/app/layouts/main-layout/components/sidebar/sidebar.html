@@ -1,15 +1,15 @@
-<div class="flex h-screen w-screen bg-neutral-950">
+<div class="flex h-screen w-screen bg-surface-dim">
   <aside
     [style.width]="collapsed() ? '64px' : '256px'"
-    class="flex h-full flex-shrink-0 flex-col overflow-hidden border-r border-neutral-800 bg-neutral-900 transition-[width] duration-300 ease-in-out">
+    class="flex h-full flex-shrink-0 flex-col overflow-hidden border-r border-outline-variant bg-surface-container transition-[width] duration-300 ease-in-out">
     <div
-      class="flex items-center border-b border-neutral-800 p-2"
+      class="flex items-center border-b border-outline-variant p-2"
       [class.justify-center]="collapsed()"
       [class.justify-between]="!collapsed()">
       @if (!collapsed()) {
       <h2 class="text-primary pl-2 text-xl font-semibold">Logo</h2>
       }
-      <button mat-icon-button (click)="toggle()" class="text-neutral-400">
+      <button mat-icon-button (click)="toggle()" class="text-muted">
         <mat-icon>{{ collapsed() ? 'menu' : 'menu_open' }}</mat-icon>
       </button>
     </div>
@@ -24,7 +24,7 @@
           *hasPermission="item.permission ?? null"
           [matTooltip]="collapsed() ? item.label : ''"
           matTooltipPosition="right"
-          class="flex items-center gap-3 rounded-lg px-3 py-2 text-neutral-300 transition-colors hover:bg-neutral-800"
+          class="flex items-center gap-3 rounded-lg px-3 py-2 transition-colors hover:bg-surface"
           [class.justify-center]="collapsed()"
           [class.px-2]="collapsed()">
           <mat-icon class="flex-shrink-0">{{ item.icon }}</mat-icon>
@@ -36,9 +36,9 @@
       </nav>
     </div>
 
-    <div class="mt-auto border-t border-neutral-800 p-2">
+    <div class="mt-auto border-t border-outline-variant p-2">
       @if (!collapsed()) {
-      <p class="mb-2 truncate px-3 text-center text-neutral-400">
+      <p class="mb-2 truncate px-3 text-center text-muted">
         {{ profile.username() }}
       </p>
       <button

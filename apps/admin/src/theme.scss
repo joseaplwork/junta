@@ -135,3 +135,18 @@ $_rest: (
 
 $primary-palette: map.merge(map.get($_palettes, primary), $_rest);
 $tertiary-palette: map.merge(map.get($_palettes, tertiary), $_rest);
+
+// Custom semantic colors (not in Material M3)
+// Success - Emerald green tones
+$success: (
+  default: #10b981,
+  container: #d1fae5,
+  on-container: #065f46,
+);
+
+// Warning - Amber tones
+$warning: (
+  default: #f59e0b,
+  container: #fef3c7,
+  on-container: #92400e,
+);
