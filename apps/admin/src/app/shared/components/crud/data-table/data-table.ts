@@ -130,6 +130,7 @@ export class CrudDataTable<T extends { id: string }> {
         return 'chip-error'
       case 'yellow':
         return 'chip-warning'
+      case 'gray':
       default:
         return 'chip-default'
     }
