@@ -1,8 +1,9 @@
 <h1 class="mb-5 text-2xl">Welcome</h1>
 <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-  <div class="rounded-lg border border-outline-variant bg-surface-container p-6">
+  <div
+    class="flex flex-col rounded-lg border border-outline-variant bg-surface-container p-6">
     <h2 class="text-primary mb-4 text-lg font-medium">Admin Management</h2>
-    <p class="text-muted mb-4">
+    <p class="text-muted mb-4 flex-grow">
       View and manage admin users with different permissions.
     </p>
     <a routerLink="/dashboard/admin" mat-raised-button color="primary">
@@ -10,11 +11,25 @@
     </a>
   </div>
 
-  <div class="rounded-lg border border-outline-variant bg-surface-container p-6">
+  <div
+    class="flex flex-col rounded-lg border border-outline-variant bg-surface-container p-6">
     <h2 class="text-primary mb-4 text-lg font-medium">User Management</h2>
-    <p class="text-muted mb-4">View and manage regular users.</p>
+    <p class="text-muted mb-4 flex-grow">
+      View and manage regular users.
+    </p>
     <a routerLink="/dashboard/user" mat-raised-button color="primary">
       View Users
+    </a>
+  </div>
+
+  <div
+    class="flex flex-col rounded-lg border border-outline-variant bg-surface-container p-6">
+    <h2 class="text-primary mb-4 text-lg font-medium">Junta Management</h2>
+    <p class="text-muted mb-4 flex-grow">
+      View and manage juntas, slots, and member participation.
+    </p>
+    <a routerLink="/dashboard/junta" mat-raised-button color="primary">
+      View Juntas
     </a>
   </div>
 </div>
