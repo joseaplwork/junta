@@ -7,14 +7,10 @@ import { Api } from '@/admin/shared/services/api'
 export class JuntaDetailsData {
   private readonly _api = inject(Api)
 
-  async fetchById(id: string): Promise<Junta | null> {
-    try {
-      const response = await this._api.get<JuntaDTO>(`/junta/${id}`)
+  async fetchById(id: string): Promise<Junta> {
+    const response = await this._api.get<JuntaDTO>(`/junta/${id}`)
 
-      return this._transform(response)
-    } catch {
-      return null
-    }
+    return this._transform(response)
   }
 
   private _transform = (dto: JuntaDTO): Junta => ({

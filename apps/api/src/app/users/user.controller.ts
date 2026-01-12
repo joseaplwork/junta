@@ -25,6 +25,12 @@ export class UserController {
     return this.app.findAll()
   }
 
+  @Get(':id')
+  @Permissions(Permission.USER_READ)
+  getUserById(@Param('id') id: string) {
+    return this.app.findOneById(id)
+  }
+
   @Post()
   @Permissions(Permission.USER_CREATE)
   createUser(

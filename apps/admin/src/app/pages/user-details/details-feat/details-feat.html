@@ -1,0 +1,55 @@
+@if (loading()) {
+<div class="flex justify-center p-8">
+  <p>Loading user...</p>
+</div>
+} @else if (error()) {
+<div
+  class="border-error bg-error-container text-error-on mb-4 rounded border px-4 py-3">
+  {{ error() }}
+</div>
+} @else if (user()) {
+<div class="mb-6 flex items-center gap-4">
+  <button mat-icon-button (click)="goBack()">
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+  <h1 class="text-2xl font-bold">{{ user()!.name }} {{ user()!.surname }}</h1>
+</div>
+
+<div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Personal Information</mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="pt-4">
+      <div class="space-y-4">
+        <div>
+          <p class="text-muted text-sm">Name</p>
+          <p class="text-lg font-semibold">{{ user()!.name }}</p>
+        </div>
+        <mat-divider />
+        <div>
+          <p class="text-muted text-sm">Surname</p>
+          <p class="text-lg font-semibold">{{ user()!.surname }}</p>
+        </div>
+        <mat-divider />
+        <div>
+          <p class="text-muted text-sm">Phone Number</p>
+          <p class="text-lg font-semibold">{{ user()!.phoneNumber }}</p>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>User ID</mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="pt-4">
+      <div>
+        <p class="text-muted text-sm">Unique Identifier</p>
+        <p class="font-mono text-lg font-semibold">{{ user()!.id }}</p>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
+}

@@ -22,4 +22,12 @@ export class Navigation {
   goToJuntaDetails(id: string) {
     return this._route.navigate(['dashboard', 'junta', id])
   }
+
+  goToUserList() {
+    return this._route.navigate(['dashboard', 'user'])
+  }
+
+  goToUserDetails(id: string) {
+    return this._route.navigate(['dashboard', 'user', id])
+  }
 }

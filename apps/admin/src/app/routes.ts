@@ -8,6 +8,7 @@ import { DashboardPage } from './pages/dashboard/dashboard-page'
 import { JuntaDetailsPage } from './pages/junta-details/junta-details-page'
 import { JuntaPage } from './pages/junta/junta-page'
 import { LoginPage } from './pages/login/login-page'
+import { UserDetailsPage } from './pages/user-details/user-details-page'
 import { UserPage } from './pages/user/user-page'
 
 export const routes: Routes = [
@@ -30,6 +31,10 @@ export const routes: Routes = [
       {
         path: 'user',
         component: UserPage,
+      },
+      {
+        path: 'user/:id',
+        component: UserDetailsPage,
       },
       {
         path: 'junta',

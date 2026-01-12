@@ -1,9 +1,19 @@
+@if (loading()) {
+<div class="flex justify-center p-8">
+  <p>Loading junta...</p>
+</div>
+} @else if (error()) {
+<div
+  class="border-error bg-error-container text-error-on mb-4 rounded border px-4 py-3">
+  {{ error() }}
+</div>
+} @else if (junta()) {
 <div class="mb-6 flex items-center gap-4">
   <button mat-icon-button (click)="goBack()">
     <mat-icon>arrow_back</mat-icon>
   </button>
-  <h1 class="text-2xl font-bold">{{ junta.name }}</h1>
-  @if (junta.active) {
+  <h1 class="text-2xl font-bold">{{ junta()!.name }}</h1>
+  @if (junta()!.active) {
   <mat-chip>Active</mat-chip>
   } @else {
   <mat-chip>Finished</mat-chip>
@@ -19,13 +29,15 @@
       <div class="space-y-4">
         <div>
           <p class="text-muted text-sm">Total Amount</p>
-          <p class="text-2xl font-bold">{{ formatCurrency(junta.amount) }}</p>
+          <p class="text-2xl font-bold">
+            {{ formatCurrency(junta()!.amount) }}
+          </p>
         </div>
         <mat-divider />
         <div>
           <p class="text-muted text-sm">Per Slot Amount</p>
           <p class="text-xl font-semibold">
-            {{ formatCurrency(junta.partialAmount) }}
+            {{ formatCurrency(junta()!.partialAmount) }}
           </p>
         </div>
       </div>
@@ -40,7 +52,7 @@
       <div class="space-y-4">
         <div>
           <p class="text-muted text-sm">Total Slots</p>
-          <p class="text-2xl font-bold">{{ junta.slots }}</p>
+          <p class="text-2xl font-bold">{{ junta()!.slots }}</p>
         </div>
         <mat-divider />
         <div>
@@ -60,14 +72,14 @@
         <div>
           <p class="text-muted text-sm">Start Date</p>
           <p class="text-lg font-semibold">
-            {{ junta.startDate | date: 'MMMM d, y' }}
+            {{ junta()!.startDate | date: 'MMMM d, y' }}
           </p>
         </div>
         <mat-divider />
         <div>
           <p class="text-muted text-sm">End Date</p>
           <p class="text-lg font-semibold">
-            {{ junta.endDate | date: 'MMMM d, y' }}
+            {{ junta()!.endDate | date: 'MMMM d, y' }}
           </p>
         </div>
       </div>
@@ -91,3 +103,4 @@
     </mat-card-content>
   </mat-card>
 </div>
+}
