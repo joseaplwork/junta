@@ -35,7 +35,7 @@ export class JuntaController {
   @Post()
   @Permissions(Permission.JUNTA_CREATE)
   createJunta(
-    @Req() req: { user: { userId: string } },
+    @Req() req: { participant: { participantId: string } },
     @Body('name') name: string,
     @Body('amount') amount: number,
     @Body('slots') slots: number,
@@ -45,7 +45,7 @@ export class JuntaController {
   ) {
     return this.app.createOne(
       { name, amount, slots, startDate, endDate, active },
-      req.user.userId,
+      req.participant.participantId,
     )
   }
 

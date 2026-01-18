@@ -17,13 +17,13 @@ export class PermissionsGuard implements CanActivate {
     )
     if (!requiredPermissions) return true
 
-    const { user } = context.switchToHttp().getRequest()
-    const userPermissions = new Set(
-      user.roles.flatMap((role: Role) => RolePermissionMapping[role] || []),
+    const { admin } = context.switchToHttp().getRequest()
+    const adminPermissions = new Set(
+      admin.roles.flatMap((role: Role) => RolePermissionMapping[role] || []),
     )
 
     return requiredPermissions.every(permission =>
-      userPermissions.has(permission),
+      adminPermissions.has(permission),
     )
   }
 }

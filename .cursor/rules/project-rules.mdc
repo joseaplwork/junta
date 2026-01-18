@@ -6,7 +6,7 @@ alwaysApply: true
 
 # Project Overview
 
-This is the Junta project - an application for managing "La junta", including creating juntas, managing groups, and handling user participation.
+This is the Junta project - an application for managing "La junta", including creating juntas, managing groups, and handling participant participation.
 
 ## Tech Stack
 

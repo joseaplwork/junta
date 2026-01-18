@@ -8,7 +8,7 @@ import {
 
 import { Role } from '@junta/shared/enums/role'
 
-import { User } from '@/api/users/user.entity'
+import { Participant } from '@/api/participants/participant.entity'
 
 @Entity('Administrators')
 export class Admin {
@@ -21,10 +21,10 @@ export class Admin {
   @Column({ type: 'varchar' })
   password: string
 
-  @Column({ type: 'simple-array', default: Role.USER })
+  @Column({ type: 'simple-array', default: Role.PARTICIPANT })
   roles: Role[]
 
-  @OneToOne(() => User)
-  @JoinColumn()
-  user: User
+  @OneToOne(() => Participant)
+  @JoinColumn({ name: 'participant_id' })
+  participant: Participant
 }

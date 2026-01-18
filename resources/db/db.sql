@@ -129,10 +129,10 @@ ALTER TABLE public."JuntasPartialAmount" OWNER TO postgres;
 
 --
 -- TOC entry 215 (class 1259 OID 32769)
--- Name: Users; Type: TABLE; Schema: public; Owner: postgres
+-- Name: Participants; Type: TABLE; Schema: public; Owner: postgres
 --
 
-CREATE TABLE public."Users" (
+CREATE TABLE public."Participants" (
     id uuid NOT NULL,
     group_id uuid,
     name character varying NOT NULL,
@@ -141,7 +141,7 @@ CREATE TABLE public."Users" (
 );
 
 
-ALTER TABLE public."Users" OWNER TO postgres;
+ALTER TABLE public."Participants" OWNER TO postgres;
 
 --
 -- TOC entry 3647 (class 0 OID 32783)
@@ -196,10 +196,10 @@ COPY public."JuntasPartialAmount" (id, junta_group_id, date, paid, partial_amoun
 --
 -- TOC entry 3645 (class 0 OID 32769)
 -- Dependencies: 215
--- Data for Name: Users; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: Participants; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public."Users" (id, group_id, name, surname, phone_number) FROM stdin;
+COPY public."Participants" (id, group_id, name, surname, phone_number) FROM stdin;
 \.
 
 
@@ -250,11 +250,11 @@ ALTER TABLE ONLY public."Juntas"
 
 --
 -- TOC entry 3485 (class 2606 OID 32775)
--- Name: Users Users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: Participants Participants_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public."Users"
-    ADD CONSTRAINT "Users_pkey" PRIMARY KEY (id);
+ALTER TABLE ONLY public."Participants"
+    ADD CONSTRAINT "Participants_pkey" PRIMARY KEY (id);
 
 
 --
@@ -263,7 +263,7 @@ ALTER TABLE ONLY public."Users"
 --
 
 ALTER TABLE ONLY public."Administrators"
-    ADD CONSTRAINT "Administrators_user_id_fkey" FOREIGN KEY (user_id) REFERENCES public."Users"(id) NOT VALID;
+    ADD CONSTRAINT "Administrators_user_id_fkey" FOREIGN KEY (user_id) REFERENCES public."Participants"(id) NOT VALID;
 
 
 --
@@ -304,11 +304,11 @@ ALTER TABLE ONLY public."Juntas"
 
 --
 -- TOC entry 3496 (class 2606 OID 32807)
--- Name: Users Users_group_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: Participants Participants_group_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public."Users"
-    ADD CONSTRAINT "Users_group_id_fkey" FOREIGN KEY (group_id) REFERENCES public."Groups"(id) NOT VALID;
+ALTER TABLE ONLY public."Participants"
+    ADD CONSTRAINT "Participants_group_id_fkey" FOREIGN KEY (group_id) REFERENCES public."Groups"(id) NOT VALID;
 
 
 -- Completed on 2024-01-04 04:20:46 CET

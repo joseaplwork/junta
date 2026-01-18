@@ -23,11 +23,11 @@ export class Navigation {
     return this._route.navigate(['dashboard', 'junta', id])
   }
 
-  goToUserList() {
-    return this._route.navigate(['dashboard', 'user'])
+  goToParticipantList() {
+    return this._route.navigate(['dashboard', 'participant'])
   }
 
-  goToUserDetails(id: string) {
-    return this._route.navigate(['dashboard', 'user', id])
+  goToParticipantDetails(id: string) {
+    return this._route.navigate(['dashboard', 'participant', id])
   }
 }

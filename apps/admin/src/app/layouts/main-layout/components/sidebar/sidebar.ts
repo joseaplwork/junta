@@ -43,10 +43,10 @@ export class Sidebar {
       permission: Permission.ADMIN_READ,
     },
     {
-      label: 'Users',
+      label: 'Participants',
       icon: 'person',
-      route: '/dashboard/user',
-      permission: Permission.USER_READ,
+      route: '/dashboard/participant',
+      permission: Permission.PARTICIPANT_READ,
     },
     {
       label: 'Juntas',

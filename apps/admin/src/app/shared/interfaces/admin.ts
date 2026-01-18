@@ -1,10 +1,10 @@
 import { Role } from '@junta/shared/enums/role'
 
-import { User } from './user'
+import { Participant } from './participant'
 
 export interface Admin {
   id: string
   email: string
   roles: Role[]
-  user: User
+  participant: Participant
 }

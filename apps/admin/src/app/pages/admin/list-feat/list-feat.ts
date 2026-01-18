@@ -32,7 +32,7 @@ export class ListFeat {
       getValue: (row: unknown) => {
         const admin = row as Admin
 
-        return `${admin.user.name} ${admin.user.surname}`
+        return `${admin.participant.name} ${admin.participant.surname}`
       },
     },
   ]

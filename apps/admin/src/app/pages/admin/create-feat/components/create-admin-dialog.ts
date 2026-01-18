@@ -48,7 +48,7 @@ export class CreateAdminDialog {
     return this.form.get('roles') as FormArray
   }
 
-  availableRoles = ['superAdmin', 'admin', 'user']
+  availableRoles = [Role.SUPER_ADMIN, Role.ADMIN, Role.PARTICIPANT]
 
   isRoleSelected(role: string): boolean {
     return this.rolesFormArray.value.includes(role)

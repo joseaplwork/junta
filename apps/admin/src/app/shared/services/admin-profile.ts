@@ -13,15 +13,15 @@ import { AccessTokenManager } from './access-token-manager'
 export class AdminProfile implements Profile {
   private readonly _auth = inject(AccessTokenManager)
   private _id = signal<string>('')
-  private _username = signal<string>('')
+  private _email = signal<string>('')
   private _permissions = signal<string[]>([])
   private _roles = signal<string[]>([])
 
   set() {
-    const { sub, username, permissions, roles } = this._decodeProfile()
+    const { sub, email, permissions, roles } = this._decodeProfile()
 
     this._id.set(sub || '')
-    this._username.set(username)
+    this._email.set(email)
     this._permissions.set(permissions)
     this._roles.set(roles)
   }
@@ -30,8 +30,8 @@ export class AdminProfile implements Profile {
     return this._id.asReadonly()
   }
 
-  get username() {
-    return this._username.asReadonly()
+  get email() {
+    return this._email.asReadonly()
   }
 
   get permissions() {
@@ -48,7 +48,7 @@ export class AdminProfile implements Profile {
 
   private _decodeProfile() {
     type Payload = JwtPayload & {
-      username: string
+      email: string
       roles: string[]
       permissions: string[]
     }

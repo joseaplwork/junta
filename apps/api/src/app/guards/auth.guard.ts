@@ -27,10 +27,14 @@ export class AuthGuard extends PassportAuthGuard('jwt') {
     return super.canActivate(context)
   }
 
-  handleRequest(err, user) {
-    if (err || !user) {
+  handleRequest(err, admin, info, context) {
+    if (err || !admin) {
       throw err || new UnauthorizedException()
     }
-    return user
+
+    const request = context.switchToHttp().getRequest()
+    request.admin = admin
+
+    return admin
   }
 }

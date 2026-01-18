@@ -18,8 +18,8 @@ import { Roles } from '@/api/decorators/roles.decorator'
 import { AuthService } from './auth.service'
 import { LocalAuthGuard } from './local-auth.guard'
 
-interface RequestWithUser extends Request {
-  user: Admin
+interface RequestWithAdmin extends Request {
+  admin: Admin
 }
 
 @Controller('auth')
@@ -29,8 +29,8 @@ export class AuthController {
   @Public()
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  login(@Res() res: Response, @NestRequest() req: RequestWithUser) {
-    const { accessToken, refreshToken } = this.auth.login(req.user)
+  login(@Res() res: Response, @NestRequest() req: RequestWithAdmin) {
+    const { accessToken, refreshToken } = this.auth.login(req.admin)
 
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
@@ -45,9 +45,9 @@ export class AuthController {
   @Post('refresh')
   async refresh(@Res() res: Response, @Req() req: Request) {
     const actualRefreshToken = req.cookies.refreshToken
-    const user = await this.auth.decodeRefreshToken(actualRefreshToken)
-    const newAccessToken = this.auth.createAccessToken(user)
-    const newRefreshToken = this.auth.createRefreshToken(user)
+    const admin = await this.auth.decodeRefreshToken(actualRefreshToken)
+    const newAccessToken = this.auth.createAccessToken(admin)
+    const newRefreshToken = this.auth.createRefreshToken(admin)
 
     res.cookie('refreshToken', newRefreshToken, {
       httpOnly: true,
@@ -60,8 +60,8 @@ export class AuthController {
 
   @Get('profile')
   @Roles(Role.ADMIN)
-  getProfile(@NestRequest() req: RequestWithUser) {
-    return req.user
+  getProfile(@NestRequest() req: RequestWithAdmin) {
+    return req.admin
   }
 
   @Get('logout')

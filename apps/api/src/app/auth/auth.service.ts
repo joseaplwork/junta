@@ -21,17 +21,17 @@ export class AuthService {
     private jwt: JwtService,
   ) {}
 
-  async validateUser(username: string, password: string) {
-    const user = await this.admin.findOne(username)
+  async validateAdmin(email: string, password: string) {
+    const admin = await this.admin.findOne(email)
 
-    if (!user) {
-      throw new NotAcceptableException('could not find the user')
+    if (!admin) {
+      throw new NotAcceptableException('could not find the admin')
     }
 
-    const passwordValid = await bcrypt.compare(password, user.password)
+    const passwordValid = await bcrypt.compare(password, admin.password)
 
-    if (user && passwordValid) {
-      return user
+    if (admin && passwordValid) {
+      return admin
     }
 
     return null
@@ -39,10 +39,10 @@ export class AuthService {
 
   async decodeRefreshToken(token: string): Promise<AuthTokenPayload> {
     try {
-      const { username, sub, roles, permissions } = await this.jwt.verify(token)
+      const { email, sub, roles, permissions } = await this.jwt.verify(token)
 
       return {
-        username,
+        email,
         sub,
         roles,
         permissions,
@@ -58,7 +58,7 @@ export class AuthService {
     )
 
     const payload = {
-      username: admin.email,
+      email: admin.email,
       sub: admin.id,
       roles: admin.roles,
       permissions: [...permissions],

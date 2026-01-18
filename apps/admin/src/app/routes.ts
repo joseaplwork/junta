@@ -8,8 +8,8 @@ import { DashboardPage } from './pages/dashboard/dashboard-page'
 import { JuntaDetailsPage } from './pages/junta-details/junta-details-page'
 import { JuntaPage } from './pages/junta/junta-page'
 import { LoginPage } from './pages/login/login-page'
-import { UserDetailsPage } from './pages/user-details/user-details-page'
-import { UserPage } from './pages/user/user-page'
+import { ParticipantDetailsPage } from './pages/participant-details/participant-details-page'
+import { ParticipantPage } from './pages/participant/participant-page'
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -29,12 +29,12 @@ export const routes: Routes = [
         component: AdminPage,
       },
       {
-        path: 'user',
-        component: UserPage,
+        path: 'participant',
+        component: ParticipantPage,
       },
       {
-        path: 'user/:id',
-        component: UserDetailsPage,
+        path: 'participant/:id',
+        component: ParticipantDetailsPage,
       },
       {
         path: 'junta',

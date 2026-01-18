@@ -1,4 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
+
+import { Slot } from '@/api/slots/slot.entity'
 
 @Entity('Juntas')
 export class Junta {
@@ -28,4 +30,7 @@ export class Junta {
 
   @Column({ type: 'uuid' })
   admin_id: string
+
+  @OneToMany(() => Slot, slot => slot.junta)
+  slotList: Slot[]
 }

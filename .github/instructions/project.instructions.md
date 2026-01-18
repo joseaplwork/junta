@@ -5,7 +5,7 @@ applyTo: '**'
 ## Functionality
 
 You can find the main functionality of the project in the #file:../../resources/db/design.md file.
-The app contains a set of features to manage "La junta", including creating juntas, managing groups, and handling user participation.
+The app contains a set of features to manage "La junta", including creating juntas, managing groups, and handling participant participation.
 This project contains a backend API built with NestJS and a frontend application using Angular.
 
 ## Code Style
@@ -22,7 +22,7 @@ When generating code, please follow these guidelines:
 
 ## Project structure
 
-- The app is split into two apps, the admin app which is the UI interface to create and manage juntas, users, and the API app which is the backend service for juntas, admin, and users.
+- The app is split into two apps, the admin app which is the UI interface to create and manage juntas, participants, and the API app which is the backend service for juntas, admin, and participants.
 - When generating code bare in mind that there is #file:../../libs folder which contains shared code between the two apps.
 
 ## Architecture

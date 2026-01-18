@@ -22,15 +22,15 @@ alwaysApply: false
 
 ```typescript
 // Good: Explicit return type
-async function fetchUsers(): Promise<User[]> {
-  return await api.get('/users')
+async function fetchParticipants(): Promise<Participant[]> {
+  return await api.get('/participants')
 }
 
 // Good: Readonly property
 private readonly _http = inject(HttpClient)
 
 // Good: Interface over type
-interface UserPayload {
+interface ParticipantPayload {
   name: string
   email: string
 }

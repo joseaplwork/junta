@@ -15,36 +15,36 @@ alwaysApply: false
 ## Controller Structure
 
 ```typescript
-@Controller('user')
-export class UserController {
-  constructor(private readonly userService: UserService) {}
+@Controller('participant')
+export class ParticipantController {
+  constructor(private readonly participantService: ParticipantService) {}
 
   @Get()
-  findAll(): Promise<User[]> {
-    return this.userService.findAll()
+  findAll(): Promise<Participant[]> {
+    return this.participantService.findAll()
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string): Promise<User> {
-    return this.userService.findOne(id)
+  findOne(@Param('id') id: string): Promise<Participant> {
+    return this.participantService.findOne(id)
   }
 
   @Post()
-  create(@Body() payload: CreateUserDto): Promise<User> {
-    return this.userService.create(payload)
+  create(@Body() payload: CreateParticipantDto): Promise<Participant> {
+    return this.participantService.create(payload)
   }
 
   @Patch(':id')
   update(
     @Param('id') id: string,
-    @Body() payload: UpdateUserDto,
-  ): Promise<User> {
-    return this.userService.update(id, payload)
+    @Body() payload: UpdateParticipantDto,
+  ): Promise<Participant> {
+    return this.participantService.update(id, payload)
   }
 
   @Delete(':id')
   delete(@Param('id') id: string): Promise<void> {
-    return this.userService.delete(id)
+    return this.participantService.delete(id)
   }
 }
 ```

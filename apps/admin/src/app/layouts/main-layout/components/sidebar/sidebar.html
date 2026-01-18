@@ -1,9 +1,9 @@
-<div class="flex h-screen w-screen bg-surface-dim">
+<div class="bg-surface-dim flex h-screen w-screen">
   <aside
     [style.width]="collapsed() ? '64px' : '256px'"
-    class="flex h-full flex-shrink-0 flex-col overflow-hidden border-r border-outline-variant bg-surface-container transition-[width] duration-300 ease-in-out">
+    class="border-outline-variant bg-surface-container flex h-full flex-shrink-0 flex-col overflow-hidden border-r transition-[width] duration-300 ease-in-out">
     <div
-      class="flex items-center border-b border-outline-variant p-2"
+      class="border-outline-variant flex items-center border-b p-2"
       [class.justify-center]="collapsed()"
       [class.justify-between]="!collapsed()">
       @if (!collapsed()) {
@@ -24,7 +24,7 @@
           *hasPermission="item.permission ?? null"
           [matTooltip]="collapsed() ? item.label : ''"
           matTooltipPosition="right"
-          class="flex items-center gap-3 rounded-lg px-3 py-2 transition-colors hover:bg-surface"
+          class="hover:bg-surface flex items-center gap-3 rounded-lg px-3 py-2 transition-colors"
           [class.justify-center]="collapsed()"
           [class.px-2]="collapsed()">
           <mat-icon class="flex-shrink-0">{{ item.icon }}</mat-icon>
@@ -36,10 +36,10 @@
       </nav>
     </div>
 
-    <div class="mt-auto border-t border-outline-variant p-2">
+    <div class="border-outline-variant mt-auto border-t p-2">
       @if (!collapsed()) {
-      <p class="mb-2 truncate px-3 text-center text-muted">
-        {{ profile.username() }}
+      <p class="text-muted mb-2 truncate px-3 text-center">
+        {{ profile.email() }}
       </p>
       <button
         mat-flat-button

@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm'
 import * as bcrypt from 'bcrypt'
 import { Repository } from 'typeorm'
 
-import { UserService } from '@/api/users/user.service'
+import { ParticipantService } from '@/api/participants/participant.service'
 
 import { Admin } from './admin.entity'
 import { AdminPayload, AdminUpdatePayload } from './admin.interface'
@@ -13,7 +13,7 @@ export class AdminService {
   constructor(
     @InjectRepository(Admin)
     private adminRepository: Repository<Admin>,
-    private user: UserService,
+    private participant: ParticipantService,
   ) {}
 
   async createOne({
@@ -24,7 +24,7 @@ export class AdminService {
     surname,
     phoneNumber,
   }: AdminPayload): Promise<Admin> {
-    const user = await this.user.createOne({
+    const participant = await this.participant.createOne({
       name,
       surname,
       phoneNumber,
@@ -34,7 +34,7 @@ export class AdminService {
       email,
       password,
       roles,
-      user,
+      participant,
     })
 
     await this.adminRepository.save(admin)
@@ -49,13 +49,13 @@ export class AdminService {
   findOneById(id: string): Promise<Admin> {
     return this.adminRepository.findOne({
       where: { id },
-      relations: ['user'],
+      relations: ['participant'],
     })
   }
 
   findAll(): Promise<Admin[]> {
     return this.adminRepository.find({
-      relations: ['user'],
+      relations: ['participant'],
     })
   }
 
@@ -74,22 +74,22 @@ export class AdminService {
       admin.roles = data.roles
     }
 
-    if (admin.user && (data.name || data.surname || data.phoneNumber)) {
-      const updatedUser = admin.user
+    if (admin.participant && (data.name || data.surname || data.phoneNumber)) {
+      const updatedParticipant = admin.participant
 
       if (data.name) {
-        updatedUser.name = data.name
+        updatedParticipant.name = data.name
       }
 
       if (data.surname) {
-        updatedUser.surname = data.surname
+        updatedParticipant.surname = data.surname
       }
 
       if (data.phoneNumber) {
-        updatedUser.phone_number = data.phoneNumber
+        updatedParticipant.phone_number = data.phoneNumber
       }
 
-      await this.user.save(updatedUser)
+      await this.participant.save(updatedParticipant)
     }
 
     return this.adminRepository.save(admin)

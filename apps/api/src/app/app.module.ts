@@ -8,8 +8,10 @@ import { AppService } from './app.service'
 import { AuthModule } from './auth/auth.module'
 import { Junta } from './juntas/junta.entity'
 import { JuntaModule } from './juntas/junta.module'
-import { User } from './users/user.entity'
-import { UserModule } from './users/user.module'
+import { ParticipantsSlots } from './participants-slots/participants-slots.entity'
+import { Participant } from './participants/participant.entity'
+import { ParticipantModule } from './participants/participant.module'
+import { Slot } from './slots/slot.entity'
 
 @Module({
   imports: [
@@ -20,13 +22,13 @@ import { UserModule } from './users/user.module'
       username: 'joseparedes',
       password: 'admin',
       database: 'juntas',
-      entities: [User, Admin, Junta],
+      entities: [Participant, Admin, Junta, Slot, ParticipantsSlots],
       synchronize: true,
       logging: true,
       logger: 'advanced-console',
     }),
     AuthModule,
-    UserModule,
+    ParticipantModule,
     AdminModule,
     JuntaModule,
   ],

@@ -13,27 +13,27 @@ Organize code by features within pages:
 ```
 src/
 ├── pages/
-│   └── user/                         # User management page
-│       ├── create-feat/              # Create user feature
-│       │   ├── components/           # Presentational components
-│       │   │   ├── create-user-dialog.ts
-│       │   │   └── create-user-dialog.html
-│       │   ├── interfaces/           # Feature-specific interfaces
+│   └── participant/                               # participant management page
+│       ├── create-feat/                           # Create participant feature
+│       │   ├── components/                        # Presentational components
+│       │   │   ├── create-participant-dialog.ts
+│       │   │   └── create-participant-dialog.html
+│       │   ├── interfaces/                        # Feature-specific interfaces
 │       │   │   └── create-payload.ts
-│       │   ├── services/             # Feature business logic
-│       │   │   └── create-user.ts
-│       │   ├── create-feat.html      # Feature entry template
-│       │   └── create-feat.ts        # Feature entry component
-│       ├── list-feat/                # List users feature
-│       ├── update-feat/              # Update user feature
-│       ├── delete-feat/              # Delete user feature
-│       ├── user-page-state.ts        # Shared state between features
-│       ├── user-page.html            # Page layout template
-│       └── user-page.ts              # Page component
-└── shared/                           # Reusable across admin app
-    ├── components/                   # Shared UI components
-    ├── interfaces/                   # Shared interfaces
-    └── services/                     # Shared services
+│       │   ├── services/                          # Feature business logic
+│       │   │   └── create-participant.ts
+│       │   ├── create-feat.html                   # Feature entry template
+│       │   └── create-feat.ts                     # Feature entry component
+│       ├── list-feat/                             # List participants feature
+│       ├── update-feat/                           # Update participant feature
+│       ├── delete-feat/                           # Delete participant feature
+│       ├── participant-page-state.ts              # Shared state between features
+│       ├── participant-page.html                  # Page layout template
+│       └── participant-page.ts                    # Page component
+└── shared/                                        # Reusable across admin app
+    ├── components/                                # Shared UI components
+    ├── interfaces/                                # Shared interfaces
+    └── services/                                  # Shared services
 ```
 
 ## Feature Components
@@ -56,12 +56,12 @@ Use signal-based state services to communicate between features:
 
 ```typescript
 @Injectable({ providedIn: 'root' })
-export class UserPageState {
-  private readonly _userCreated = new Subject<User>()
-  readonly userCreated$ = this._userCreated.asObservable()
+export class ParticipantPageState {
+  private readonly _participantCreated = new Subject<Participant>()
+  readonly participantCreated$ = this._participantCreated.asObservable()
 
-  emitUserCreated(user: User): void {
-    this._userCreated.next(user)
+  emitparticipantCreated(participant: Participant): void {
+    this._participantCreated.next(participant)
   }
 }
 ```
@@ -76,7 +76,7 @@ export class UserPageState {
 Place code used across multiple features in pages or apss in `shared/`:
 
 - `shared/components/` - Dialog, Snackbar components
-- `shared/interfaces/` - User, Admin interfaces
+- `shared/interfaces/` - Participant, Admin interfaces
 - `shared/services/` - Config, Navigation, Session services
 
 Place code used that is reused between features in pages only in page top level folder:

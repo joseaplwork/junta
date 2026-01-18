@@ -15,8 +15,8 @@ alwaysApply: false
 ## Test Structure
 
 ```typescript
-describe('UserService', () => {
-  let service: UserService
+describe('ParticipantService', () => {
+  let service: ParticipantService
   let httpMock: jest.Mocked<HttpClient>
 
   beforeEach(() => {
@@ -29,23 +29,23 @@ describe('UserService', () => {
 
     TestBed.configureTestingModule({
       providers: [
-        UserService,
+        ParticipantService,
         { provide: HttpClient, useValue: httpMock },
       ],
     })
 
-    service = TestBed.inject(UserService)
+    service = TestBed.inject(ParticipantService)
   })
 
-  describe('getUsers', () => {
-    it('should return users from API', async () => {
-      const mockUsers = [{ id: '1', name: 'Test' }]
-      httpMock.get.mockReturnValue(of(mockUsers))
+  describe('getParticipants', () => {
+    it('should return participants from API', async () => {
+      const mockParticipants = [{ id: '1', name: 'Test' }]
+      httpMock.get.mockReturnValue(of(mockParticipants))
 
-      const result = await service.getUsers()
+      const result = await service.getParticipants()
 
-      expect(result).toEqual(mockUsers)
-      expect(httpMock.get).toHaveBeenCalledWith('/api/users')
+      expect(result).toEqual(mockParticipants)
+      expect(httpMock.get).toHaveBeenCalledWith('/api/participants')
     })
   })
 })
@@ -73,4 +73,4 @@ describe('UserService', () => {
 
 - Place test files next to the files they test
 - Use `.spec.ts` suffix for test files
-- Example: `user.service.ts` → `user.service.spec.ts`
+- Example: `participant.service.ts` → `participant.service.spec.ts`
