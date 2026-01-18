@@ -114,7 +114,8 @@ All tracking is per junta, allowing participants to participate in multiple junt
 
 ### Slot Assignment
 
-- A Junta has a raffle to assign the order of money payout for slots (which slot receives money first)
+- A Junta's admin determines the order of money payout for slots (which slot receives money first)
+- The order can be assigned through a raffle (random assignment) or manually configured by the admin
 - A Junta's admin can modify the order of money payout for slots after creation
 - The order determines the sequence in which slots receive the total amount
 - Number of slots = number of months (automatically created)

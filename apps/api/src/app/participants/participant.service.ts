@@ -2,6 +2,8 @@ import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 
+import { Junta } from '@/api/juntas/junta.entity'
+
 import { Participant } from './participant.entity'
 import {
   ParticipantPayload,
@@ -13,6 +15,8 @@ export class ParticipantService {
   constructor(
     @InjectRepository(Participant)
     private readonly _participantsRepository: Repository<Participant>,
+    @InjectRepository(Junta)
+    private readonly _juntasRepository: Repository<Junta>,
   ) {}
 
   createOne({
@@ -60,5 +64,23 @@ export class ParticipantService {
 
   save(participant: Participant): Promise<Participant> {
     return this._participantsRepository.save(participant)
+  }
+
+  async findJuntasByParticipantId(participantId: string): Promise<Junta[]> {
+    const participant = await this.findOneById(participantId)
+    if (!participant) {
+      throw new NotFoundException('Participant not found')
+    }
+
+    const juntas = await this._juntasRepository
+      .createQueryBuilder('junta')
+      .innerJoin('junta.slotList', 'slot')
+      .innerJoin('slot.participantsSlots', 'participantsSlots')
+      .where('participantsSlots.participant_id = :participantId', {
+        participantId,
+      })
+      .getMany()
+
+    return juntas
   }
 }

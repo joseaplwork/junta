@@ -62,4 +62,10 @@ export class ParticipantController {
     await this._app.remove(id)
     return { success: true }
   }
+
+  @Get(':id/juntas')
+  @Permissions(Permission.PARTICIPANT_READ)
+  getParticipantJuntas(@Param('id') id: string) {
+    return this._app.findJuntasByParticipantId(id)
+  }
 }
