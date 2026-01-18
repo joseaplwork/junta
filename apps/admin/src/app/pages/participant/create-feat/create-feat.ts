@@ -23,7 +23,9 @@ export class CreateFeat {
   private readonly _snackbar = inject(Snackbar)
 
   handleClick(): void {
-    this._dialog.open(CreateParticipantDialog, { handleSubmit: this._handleSubmit })
+    this._dialog.open(CreateParticipantDialog, {
+      handleSubmit: this._handleSubmit,
+    })
   }
 
   private _handleSubmit = async (payload: CreatePayload): Promise<void> => {

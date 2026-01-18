@@ -1,6 +1,9 @@
 import { Injectable, inject } from '@angular/core'
 
-import { Participant } from '@/admin/shared/interfaces/participant'
+import {
+  Participant,
+  ParticipantDTO,
+} from '@/admin/shared/interfaces/participant'
 import { Api } from '@/admin/shared/services/api'
 
 import { CreatePayload } from '../interfaces/create-payload'
@@ -9,7 +12,19 @@ import { CreatePayload } from '../interfaces/create-payload'
 export class CreateParticipant {
   private readonly _api = inject(Api)
 
-  create(payload: CreatePayload): Promise<Participant> {
-    return this._api.post<Participant>('/participant', payload)
+  async create(payload: CreatePayload): Promise<Participant> {
+    const response = await this._api.post<ParticipantDTO>(
+      '/participant',
+      payload,
+    )
+
+    return this._transform(response)
   }
+
+  private _transform = (dto: ParticipantDTO): Participant => ({
+    id: dto.id,
+    name: dto.name,
+    surname: dto.surname,
+    phoneNumber: dto.phone_number,
+  })
 }

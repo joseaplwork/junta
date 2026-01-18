@@ -1,8 +1,8 @@
 <ja-crud-dialog-shell
   title="Create Participant"
   [submitting]="submitting()"
-  (submit)="onSubmit()"
-  (cancel)="onCancel()">
+  (submitAction)="onSubmit()"
+  (cancelAction)="onCancel()">
   <form [formGroup]="form" class="space-y-4">
     <mat-form-field class="w-full">
       <mat-label>Name</mat-label>
