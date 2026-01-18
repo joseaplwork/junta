@@ -33,11 +33,11 @@ export class ListFeat {
       tagColor: (tag: string) => {
         switch (tag) {
           case Role.SUPER_ADMIN:
-            return 'role-super-admin'
+            return 'purple'
           case Role.ADMIN:
-            return 'role-admin'
+            return 'green'
           case Role.PARTICIPANT:
-            return 'role-participant'
+            return 'blue'
           default:
             return 'primary'
         }

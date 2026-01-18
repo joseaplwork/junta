@@ -34,17 +34,17 @@ import { ActionConfig, ColumnConfig } from '../interfaces'
       --mat-chip-label-text-color: var(--mat-sys-outline);
       --mat-chip-outline-color: var(--mat-sys-outline);
     }
-    .tag-role-super-admin {
+    .tag-purple {
       border-color: #7c3aed;
       background-color: #ede9fe;
       color: #4c1d95;
     }
-    .tag-role-admin {
+    .tag-green {
       border-color: #059669;
       background-color: #d1fae5;
       color: #065f46;
     }
-    .tag-role-participant {
+    .tag-blue {
       border-color: #0284c7;
       background-color: #e0f2fe;
       color: #0c4a6e;
@@ -170,22 +170,12 @@ export class CrudDataTable<T extends { id: string }> {
     const color = column.tagColor(tag)
 
     switch (color) {
-      case 'role-super-admin':
-        return 'tag-role-super-admin'
-      case 'role-admin':
-        return 'tag-role-admin'
-      case 'role-participant':
-        return 'tag-role-participant'
-      case 'secondary':
-        return 'border-secondary bg-secondary-container text-secondary-on'
-      case 'tertiary':
-        return 'border-primary bg-primary-container text-primary'
-      case 'error':
-        return 'border-error bg-error-container text-error-on'
-      case 'success':
-        return 'border-success bg-success-container text-success-on'
-      case 'warning':
-        return 'border-warning bg-warning-container text-warning-on'
+      case 'purple':
+        return 'tag-purple'
+      case 'green':
+        return 'tag-green'
+      case 'blue':
+        return 'tag-blue'
       case 'primary':
       default:
         return 'border-primary bg-primary-container text-primary'
