@@ -19,18 +19,18 @@ import { AdminService } from './admin.service'
 
 @Controller('admin')
 export class AdminController {
-  constructor(private readonly admin: AdminService) {}
+  constructor(private readonly _admin: AdminService) {}
 
   @Get()
   @Permissions(Permission.ADMIN_READ)
   async getAdmins(): Promise<Admin[]> {
-    return this.admin.findAll()
+    return this._admin.findAll()
   }
 
   @Get(':id')
   @Permissions(Permission.ADMIN_READ)
   async getAdmin(@Param('id') id: string): Promise<Admin> {
-    return this.admin.findOneById(id)
+    return this._admin.findOneById(id)
   }
 
   @Post()
@@ -43,7 +43,7 @@ export class AdminController {
     @Body('surname') surname: string,
     @Body('phoneNumber') phoneNumber: string,
   ): Promise<Admin> {
-    const result = await this.admin.createOne({
+    const result = await this._admin.createOne({
       email,
       plainPassword,
       roles,
@@ -61,13 +61,13 @@ export class AdminController {
     @Param('id') id: string,
     @Body() updateData: AdminUpdatePayload,
   ): Promise<Admin> {
-    return this.admin.update(id, updateData)
+    return this._admin.update(id, updateData)
   }
 
   @Delete(':id')
   @Permissions(Permission.ADMIN_DELETE)
   async deleteAdmin(@Param('id') id: string): Promise<{ success: boolean }> {
-    await this.admin.delete(id)
+    await this._admin.delete(id)
 
     return { success: true }
   }

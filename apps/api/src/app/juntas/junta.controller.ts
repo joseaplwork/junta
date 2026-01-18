@@ -12,30 +12,31 @@ import {
 import { Permission } from '@junta/shared/enums/permission'
 
 import { Permissions } from '@/api/decorators/permissions.decorator'
+import { RequestWithAuthenticatedAdmin } from '@/api/interfaces/request.interface'
 
 import { JuntaUpdatePayload } from './junta.interface'
 import { JuntaService } from './junta.service'
 
 @Controller('junta')
 export class JuntaController {
-  constructor(private readonly app: JuntaService) {}
+  constructor(private readonly _app: JuntaService) {}
 
   @Get()
   @Permissions(Permission.JUNTA_READ)
   getAllJuntas() {
-    return this.app.findAll()
+    return this._app.findAll()
   }
 
   @Get(':id')
   @Permissions(Permission.JUNTA_READ)
   getJuntaById(@Param('id') id: string) {
-    return this.app.findOneById(id)
+    return this._app.findOneById(id)
   }
 
   @Post()
   @Permissions(Permission.JUNTA_CREATE)
   createJunta(
-    @Req() req: { participant: { participantId: string } },
+    @Req() req: RequestWithAuthenticatedAdmin,
     @Body('name') name: string,
     @Body('amount') amount: number,
     @Body('slots') slots: number,
@@ -43,9 +44,9 @@ export class JuntaController {
     @Body('endDate') endDate: string,
     @Body('active') active: boolean,
   ) {
-    return this.app.createOne(
+    return this._app.createOne(
       { name, amount, slots, startDate, endDate, active },
-      req.participant.participantId,
+      req.admin.id,
     )
   }
 
@@ -67,13 +68,13 @@ export class JuntaController {
     if (startDate !== undefined) data.startDate = startDate
     if (endDate !== undefined) data.endDate = endDate
     if (active !== undefined) data.active = active
-    return this.app.update(id, data)
+    return this._app.update(id, data)
   }
 
   @Delete(':id')
   @Permissions(Permission.JUNTA_DELETE)
   async deleteJunta(@Param('id') id: string) {
-    await this.app.remove(id)
+    await this._app.remove(id)
     return { success: true }
   }
 }

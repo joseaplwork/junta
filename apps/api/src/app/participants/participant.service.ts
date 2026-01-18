@@ -12,7 +12,7 @@ import {
 export class ParticipantService {
   constructor(
     @InjectRepository(Participant)
-    private participantsRepository: Repository<Participant>,
+    private readonly _participantsRepository: Repository<Participant>,
   ) {}
 
   createOne({
@@ -20,21 +20,21 @@ export class ParticipantService {
     surname,
     phoneNumber,
   }: ParticipantPayload): Promise<Participant> {
-    const participant = this.participantsRepository.create({
+    const participant = this._participantsRepository.create({
       name,
       surname,
       phone_number: phoneNumber,
     })
 
-    return this.participantsRepository.save(participant)
+    return this._participantsRepository.save(participant)
   }
 
   findOneById(id: string): Promise<Participant | null> {
-    return this.participantsRepository.findOne({ where: { id } })
+    return this._participantsRepository.findOne({ where: { id } })
   }
 
   findAll(): Promise<Participant[]> {
-    return this.participantsRepository.find()
+    return this._participantsRepository.find()
   }
 
   async update(
@@ -49,16 +49,16 @@ export class ParticipantService {
     if (data.phoneNumber !== undefined)
       participant.phone_number = data.phoneNumber
 
-    return this.participantsRepository.save(participant)
+    return this._participantsRepository.save(participant)
   }
 
   async remove(id: string): Promise<void> {
     const participant = await this.findOneById(id)
     if (!participant) throw new NotFoundException('Participant not found')
-    await this.participantsRepository.remove(participant)
+    await this._participantsRepository.remove(participant)
   }
 
   save(participant: Participant): Promise<Participant> {
-    return this.participantsRepository.save(participant)
+    return this._participantsRepository.save(participant)
   }
 }

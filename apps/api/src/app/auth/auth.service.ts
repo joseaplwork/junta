@@ -17,15 +17,15 @@ import { AuthTokenPayload } from './auth.interface'
 @Injectable()
 export class AuthService {
   constructor(
-    private admin: AdminService,
-    private jwt: JwtService,
+    private readonly _admin: AdminService,
+    private readonly _jwt: JwtService,
   ) {}
 
   async validateAdmin(email: string, password: string) {
-    const admin = await this.admin.findOne(email)
+    const admin = await this._admin.findOne(email)
 
     if (!admin) {
-      throw new NotAcceptableException('could not find the admin')
+      throw new UnauthorizedException('Invalid credentials')
     }
 
     const passwordValid = await bcrypt.compare(password, admin.password)
@@ -39,7 +39,7 @@ export class AuthService {
 
   async decodeRefreshToken(token: string): Promise<AuthTokenPayload> {
     try {
-      const { email, sub, roles, permissions } = await this.jwt.verify(token)
+      const { email, sub, roles, permissions } = await this._jwt.verify(token)
 
       return {
         email,
@@ -73,13 +73,13 @@ export class AuthService {
   createAccessToken(payload: AuthTokenPayload) {
     const { tokenId, iat } = this.getRandomTokenAndIat()
 
-    return this.jwt.sign({ ...payload, tokenId, iat })
+    return this._jwt.sign({ ...payload, tokenId, iat })
   }
 
   createRefreshToken(payload: AuthTokenPayload) {
     const { tokenId, iat } = this.getRandomTokenAndIat()
 
-    return this.jwt.sign({ ...payload, tokenId, iat }, { expiresIn: '7d' })
+    return this._jwt.sign({ ...payload, tokenId, iat }, { expiresIn: '7d' })
   }
 
   private getRandomTokenAndIat() {

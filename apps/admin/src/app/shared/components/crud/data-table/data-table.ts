@@ -35,6 +35,21 @@ import { ActionConfig, ColumnConfig } from '../interfaces'
       --mat-chip-label-text-color: var(--mat-sys-outline);
       --mat-chip-outline-color: var(--mat-sys-outline);
     }
+    .tag-role-super-admin {
+      border-color: #7c3aed;
+      background-color: #ede9fe;
+      color: #4c1d95;
+    }
+    .tag-role-admin {
+      border-color: #059669;
+      background-color: #d1fae5;
+      color: #065f46;
+    }
+    .tag-role-participant {
+      border-color: #0284c7;
+      background-color: #e0f2fe;
+      color: #0c4a6e;
+    }
   `,
 })
 export class CrudDataTable<T extends { id: string }> {
@@ -140,6 +155,42 @@ export class CrudDataTable<T extends { id: string }> {
     if (!column.chipLabel) return String(value)
 
     return column.chipLabel(value)
+  }
+
+  getTagLabel(tag: string, column: ColumnConfig): string {
+    if (!column.tagLabel) return tag
+
+    return column.tagLabel(tag)
+  }
+
+  getTagClass(tag: string, column: ColumnConfig): string {
+    if (!column.tagColor) {
+      return 'border-primary bg-primary-container text-primary'
+    }
+
+    const color = column.tagColor(tag)
+
+    switch (color) {
+      case 'role-super-admin':
+        return 'tag-role-super-admin'
+      case 'role-admin':
+        return 'tag-role-admin'
+      case 'role-participant':
+        return 'tag-role-participant'
+      case 'secondary':
+        return 'border-secondary bg-secondary-container text-secondary-on'
+      case 'tertiary':
+        return 'border-primary bg-primary-container text-primary'
+      case 'error':
+        return 'border-error bg-error-container text-error-on'
+      case 'success':
+        return 'border-success bg-success-container text-success-on'
+      case 'warning':
+        return 'border-warning bg-warning-container text-warning-on'
+      case 'primary':
+      default:
+        return 'border-primary bg-primary-container text-primary'
+    }
   }
 
   onView(row: T): void {

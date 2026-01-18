@@ -12,8 +12,8 @@ import { AdminPayload, AdminUpdatePayload } from './admin.interface'
 export class AdminService {
   constructor(
     @InjectRepository(Admin)
-    private adminRepository: Repository<Admin>,
-    private participant: ParticipantService,
+    private readonly _adminRepository: Repository<Admin>,
+    private readonly _participant: ParticipantService,
   ) {}
 
   async createOne({
@@ -24,37 +24,37 @@ export class AdminService {
     surname,
     phoneNumber,
   }: AdminPayload): Promise<Admin> {
-    const participant = await this.participant.createOne({
+    const participant = await this._participant.createOne({
       name,
       surname,
       phoneNumber,
     })
     const password = await bcrypt.hash(plainPassword, 10)
-    const admin = this.adminRepository.create({
+    const admin = this._adminRepository.create({
       email,
       password,
       roles,
       participant,
     })
 
-    await this.adminRepository.save(admin)
+    await this._adminRepository.save(admin)
 
     return admin
   }
 
   findOne(email: string): Promise<Admin> {
-    return this.adminRepository.findOne({ where: { email } })
+    return this._adminRepository.findOne({ where: { email } })
   }
 
   findOneById(id: string): Promise<Admin> {
-    return this.adminRepository.findOne({
+    return this._adminRepository.findOne({
       where: { id },
       relations: ['participant'],
     })
   }
 
   findAll(): Promise<Admin[]> {
-    return this.adminRepository.find({
+    return this._adminRepository.find({
       relations: ['participant'],
     })
   }
@@ -89,10 +89,10 @@ export class AdminService {
         updatedParticipant.phone_number = data.phoneNumber
       }
 
-      await this.participant.save(updatedParticipant)
+      await this._participant.save(updatedParticipant)
     }
 
-    return this.adminRepository.save(admin)
+    return this._adminRepository.save(admin)
   }
 
   async delete(id: string): Promise<void> {
@@ -102,6 +102,6 @@ export class AdminService {
       throw new NotFoundException(`Admin with ID "${id}" not found`)
     }
 
-    await this.adminRepository.remove(admin)
+    await this._adminRepository.remove(admin)
   }
 }

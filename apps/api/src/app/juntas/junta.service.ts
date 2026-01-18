@@ -9,7 +9,7 @@ import { JuntaPayload, JuntaUpdatePayload } from './junta.interface'
 export class JuntaService {
   constructor(
     @InjectRepository(Junta)
-    private juntasRepository: Repository<Junta>,
+    private readonly _juntasRepository: Repository<Junta>,
   ) {}
 
   createOne(
@@ -18,7 +18,7 @@ export class JuntaService {
   ): Promise<Junta> {
     const partialAmount = Math.floor(amount / slots)
 
-    const junta = this.juntasRepository.create({
+    const junta = this._juntasRepository.create({
       name,
       amount,
       slots,
@@ -29,19 +29,19 @@ export class JuntaService {
       admin_id: adminId,
     })
 
-    return this.juntasRepository.save(junta)
+    return this._juntasRepository.save(junta)
   }
 
   findOneById(id: string): Promise<Junta | null> {
-    return this.juntasRepository.findOne({ where: { id } })
+    return this._juntasRepository.findOne({ where: { id } })
   }
 
   findAll(): Promise<Junta[]> {
-    return this.juntasRepository.find()
+    return this._juntasRepository.find()
   }
 
   findByAdminId(adminId: string): Promise<Junta[]> {
-    return this.juntasRepository.find({ where: { admin_id: adminId } })
+    return this._juntasRepository.find({ where: { admin_id: adminId } })
   }
 
   async update(id: string, data: JuntaUpdatePayload): Promise<Junta> {
@@ -60,12 +60,12 @@ export class JuntaService {
       junta.partial_amount = Math.floor(junta.amount / junta.slots)
     }
 
-    return this.juntasRepository.save(junta)
+    return this._juntasRepository.save(junta)
   }
 
   async remove(id: string): Promise<void> {
     const junta = await this.findOneById(id)
     if (!junta) throw new NotFoundException('Junta not found')
-    await this.juntasRepository.remove(junta)
+    await this._juntasRepository.remove(junta)
   }
 }

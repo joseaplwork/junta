@@ -1,5 +1,7 @@
 import { Component, effect, inject, signal } from '@angular/core'
 
+import { Role } from '@junta/shared/enums/role'
+
 import {
   ActionConfig,
   ColumnConfig,
@@ -24,7 +26,35 @@ export class ListFeat {
 
   columns: ColumnConfig[] = [
     { key: 'email', header: 'Email', type: 'text' },
-    { key: 'roles', header: 'Roles', type: 'tags' },
+    {
+      key: 'roles',
+      header: 'Roles',
+      type: 'tags',
+      tagColor: (tag: string) => {
+        switch (tag) {
+          case Role.SUPER_ADMIN:
+            return 'role-super-admin'
+          case Role.ADMIN:
+            return 'role-admin'
+          case Role.PARTICIPANT:
+            return 'role-participant'
+          default:
+            return 'primary'
+        }
+      },
+      tagLabel: (tag: string) => {
+        switch (tag) {
+          case Role.SUPER_ADMIN:
+            return 'Super Admin'
+          case Role.ADMIN:
+            return 'Admin'
+          case Role.PARTICIPANT:
+            return 'Participant'
+          default:
+            return tag
+        }
+      },
+    },
     {
       key: 'name',
       header: 'Name',

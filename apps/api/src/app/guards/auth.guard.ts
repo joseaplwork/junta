@@ -10,12 +10,12 @@ import { IS_PUBLIC_KEY } from '@/api/decorators/is-public.decorator'
 
 @Injectable()
 export class AuthGuard extends PassportAuthGuard('jwt') {
-  constructor(private reflector: Reflector) {
+  constructor(private readonly _reflector: Reflector) {
     super()
   }
 
   canActivate(context: ExecutionContext) {
-    const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
+    const isPublic = this._reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
       context.getHandler(),
       context.getClass(),
     ])

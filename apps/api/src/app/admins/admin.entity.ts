@@ -21,7 +21,7 @@ export class Admin {
   @Column({ type: 'varchar' })
   password: string
 
-  @Column({ type: 'simple-array', default: Role.PARTICIPANT })
+  @Column({ type: 'simple-array', default: Role.ADMIN })
   roles: Role[]
 
   @OneToOne(() => Participant)

@@ -8,7 +8,7 @@ import { AuthService } from './auth.service'
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
-  constructor(private auth: AuthService) {
+  constructor(private readonly _auth: AuthService) {
     super({
       usernameField: 'email',
       passwordField: 'password',
@@ -16,7 +16,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(email: string, password: string): Promise<Partial<Admin>> {
-    const admin = await this.auth.validateAdmin(email, password)
+    const admin = await this._auth.validateAdmin(email, password)
 
     if (!admin) {
       throw new UnauthorizedException()

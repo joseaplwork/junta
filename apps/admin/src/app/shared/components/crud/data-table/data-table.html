@@ -30,8 +30,8 @@
         <div class="flex flex-wrap gap-2">
           @for (tag of getArrayValue(row, column); track tag) {
           <span
-            class="border-primary bg-primary-container text-primary rounded-full border px-3 py-1 text-xs font-medium">
-            {{ tag | titlecase }}
+            [class]="getTagClass(tag, column) + ' rounded-full border px-3 py-1 text-xs font-medium'">
+            {{ getTagLabel(tag, column) }}
           </span>
           }
         </div>

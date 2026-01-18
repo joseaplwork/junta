@@ -11,26 +11,25 @@ import { Request, Response } from 'express'
 
 import { Role } from '@junta/shared/enums/role'
 
-import { Admin } from '@/api/admins/admin.entity'
 import { Public } from '@/api/decorators/is-public.decorator'
 import { Roles } from '@/api/decorators/roles.decorator'
+import {
+  RequestWithAdmin,
+  RequestWithAuthenticatedAdmin,
+} from '@/api/interfaces/request.interface'
 
 import { AuthService } from './auth.service'
 import { LocalAuthGuard } from './local-auth.guard'
 
-interface RequestWithAdmin extends Request {
-  admin: Admin
-}
-
 @Controller('auth')
 export class AuthController {
-  constructor(private auth: AuthService) {}
+  constructor(private readonly _auth: AuthService) {}
 
   @Public()
   @UseGuards(LocalAuthGuard)
   @Post('login')
   login(@Res() res: Response, @NestRequest() req: RequestWithAdmin) {
-    const { accessToken, refreshToken } = this.auth.login(req.admin)
+    const { accessToken, refreshToken } = this._auth.login(req.admin)
 
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
@@ -45,9 +44,9 @@ export class AuthController {
   @Post('refresh')
   async refresh(@Res() res: Response, @Req() req: Request) {
     const actualRefreshToken = req.cookies.refreshToken
-    const admin = await this.auth.decodeRefreshToken(actualRefreshToken)
-    const newAccessToken = this.auth.createAccessToken(admin)
-    const newRefreshToken = this.auth.createRefreshToken(admin)
+    const admin = await this._auth.decodeRefreshToken(actualRefreshToken)
+    const newAccessToken = this._auth.createAccessToken(admin)
+    const newRefreshToken = this._auth.createRefreshToken(admin)
 
     res.cookie('refreshToken', newRefreshToken, {
       httpOnly: true,
@@ -60,7 +59,7 @@ export class AuthController {
 
   @Get('profile')
   @Roles(Role.ADMIN)
-  getProfile(@NestRequest() req: RequestWithAdmin) {
+  getProfile(@NestRequest() req: RequestWithAuthenticatedAdmin) {
     return req.admin
   }
 

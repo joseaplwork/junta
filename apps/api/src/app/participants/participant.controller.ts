@@ -17,18 +17,18 @@ import { ParticipantService } from './participant.service'
 
 @Controller('participant')
 export class ParticipantController {
-  constructor(private readonly app: ParticipantService) {}
+  constructor(private readonly _app: ParticipantService) {}
 
   @Get()
   @Permissions(Permission.PARTICIPANT_READ)
   getAllParticipants() {
-    return this.app.findAll()
+    return this._app.findAll()
   }
 
   @Get(':id')
   @Permissions(Permission.PARTICIPANT_READ)
   getParticipantById(@Param('id') id: string) {
-    return this.app.findOneById(id)
+    return this._app.findOneById(id)
   }
 
   @Post()
@@ -38,7 +38,7 @@ export class ParticipantController {
     @Body('surname') surname: string,
     @Body('phoneNumber') phoneNumber: string,
   ) {
-    return this.app.createOne({ name, surname, phoneNumber })
+    return this._app.createOne({ name, surname, phoneNumber })
   }
 
   @Patch(':id')
@@ -53,13 +53,13 @@ export class ParticipantController {
     if (name !== undefined) data.name = name
     if (surname !== undefined) data.surname = surname
     if (phoneNumber !== undefined) data.phoneNumber = phoneNumber
-    return this.app.update(id, data)
+    return this._app.update(id, data)
   }
 
   @Delete(':id')
   @Permissions(Permission.PARTICIPANT_DELETE)
   async deleteParticipant(@Param('id') id: string) {
-    await this.app.remove(id)
+    await this._app.remove(id)
     return { success: true }
   }
 }
