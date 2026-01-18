@@ -7,8 +7,10 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm'
 
+import { Contribution } from '@/api/contributions/contribution.entity'
 import { Junta } from '@/api/juntas/junta.entity'
 import { ParticipantsSlots } from '@/api/participants-slots/participants-slots.entity'
+import { Payout } from '@/api/payouts/payout.entity'
 
 @Entity('Slots')
 export class Slot {
@@ -33,4 +35,10 @@ export class Slot {
     participantsSlots => participantsSlots.slot,
   )
   participantsSlots: ParticipantsSlots[]
+
+  @OneToMany(() => Contribution, contribution => contribution.slot)
+  contributions: Contribution[]
+
+  @OneToMany(() => Payout, payout => payout.slot)
+  payouts: Payout[]
 }

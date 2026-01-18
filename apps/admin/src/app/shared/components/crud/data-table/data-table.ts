@@ -1,4 +1,4 @@
-import { DatePipe, TitleCasePipe } from '@angular/common'
+import { DatePipe } from '@angular/common'
 import { Component, EventEmitter, Input, Output } from '@angular/core'
 import { MatButtonModule } from '@angular/material/button'
 import { MatChipsModule } from '@angular/material/chips'
@@ -16,7 +16,6 @@ import { ActionConfig, ColumnConfig } from '../interfaces'
     MatIconModule,
     MatChipsModule,
     DatePipe,
-    TitleCasePipe,
   ],
   styles: `
     .chip-success {

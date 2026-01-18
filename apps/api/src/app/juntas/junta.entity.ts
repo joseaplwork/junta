@@ -1,5 +1,16 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm'
 
+import { Admin } from '@/api/admins/admin.entity'
+import { Contribution } from '@/api/contributions/contribution.entity'
+import { Distribution } from '@/api/distributions/distribution.entity'
+import { Payout } from '@/api/payouts/payout.entity'
 import { Slot } from '@/api/slots/slot.entity'
 
 @Entity('Juntas')
@@ -31,6 +42,19 @@ export class Junta {
   @Column({ type: 'uuid' })
   admin_id: string
 
+  @ManyToOne(() => Admin)
+  @JoinColumn({ name: 'admin_id' })
+  admin: Admin
+
   @OneToMany(() => Slot, slot => slot.junta)
   slotList: Slot[]
+
+  @OneToMany(() => Contribution, contribution => contribution.junta)
+  contributions: Contribution[]
+
+  @OneToMany(() => Payout, payout => payout.junta)
+  payouts: Payout[]
+
+  @OneToMany(() => Distribution, distribution => distribution.junta)
+  distributions: Distribution[]
 }

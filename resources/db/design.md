@@ -12,7 +12,7 @@ The system tracks:
 - Payment schedules and amounts
 - The order in which slots receive money (determined by raffle)
 - Slot organization and participant assignments
-- Payment, receipt, and distribution tracking per junta
+- Contribution, payout, and distribution tracking per junta
 - Administrative oversight
 
 ## Core Concepts
@@ -48,7 +48,7 @@ Slots are organizational units within a junta that handle money flow:
 **Money Flow Through Slots**:
 
 - **Collection**: Each slot collects money from its participants each month
-- **Receipt**: One slot receives the full total amount each month (in order)
+- **Payout**: One slot receives the full total amount each month (in order)
 - **Distribution**: When a slot receives money, it distributes equally among its participants
 
 ### Participants
@@ -62,7 +62,7 @@ People who participate in juntas:
 - A Participant must have at least a name, surname, and phone number
 - A Participant can also be an Administrator (one-to-one relationship)
 
-### Payment Collection
+### Contribution Collection
 
 **Key Concept**: Total amount is divided by number of **slots**, not participants.
 
@@ -88,14 +88,14 @@ When a slot receives money:
 - Example: Slot with order 1 has 3 participants, receives 2000€, distributes ~666.67€ to each participant
 - All participants continue paying every month through their slots, regardless of when their slot receives money
 
-**Money Flow**: Junta pool → pays to → Slot (receipt: full total_amount) → distributes to → Participants (equal split)
+**Money Flow**: Junta pool → pays out to → Slot (payout: full total_amount) → distributes to → Participants (equal split)
 
 ### Payment Tracking
 
 The system tracks all money transactions per junta:
 
-- **Payments**: Which participant has paid for each month in each junta
-- **Receipts**: When slots receive money and whether they've been fully paid for a given month
+- **Contributions**: Which participant has contributed for each month in each junta
+- **Payouts**: When slots receive money (payout from pool) and whether they've been fully paid for a given month
 - **Distributions**: How much each participant received when their slot got money
 
 All tracking is per junta, allowing participants to participate in multiple juntas simultaneously with independent tracking.
@@ -114,8 +114,8 @@ All tracking is per junta, allowing participants to participate in multiple junt
 
 ### Slot Assignment
 
-- A Junta has a raffle to assign the order of money receipt for slots (which slot receives money first)
-- A Junta's admin can modify the order of money receipt for slots after creation
+- A Junta has a raffle to assign the order of money payout for slots (which slot receives money first)
+- A Junta's admin can modify the order of money payout for slots after creation
 - The order determines the sequence in which slots receive the total amount
 - Number of slots = number of months (automatically created)
 - Slots are assigned to juntas (one-to-many relationship)
@@ -133,11 +133,11 @@ All tracking is per junta, allowing participants to participate in multiple junt
 
 ### Payment Tracking
 
-- Track participant payments per month per junta (which participant has paid, amount, status)
-- Track slot receipt status per month per junta (when slot received money, if fully paid)
+- Track participant contributions per month per junta (which participant has contributed, amount, status)
+- Track slot payout status per month per junta (when slot received money from pool, if fully paid)
 - Track participant distributions per junta (how much each participant received when their slot got money)
-- Admin can check payment status per participant per month per junta
-- System tracks slot payment completion status
+- Admin can check contribution status per participant per month per junta
+- System tracks slot payout completion status
 
 ### Administration
 
@@ -166,7 +166,7 @@ People who participate in juntas.
 - Can participate in multiple juntas (through slots)
 - Can be linked to an Administrator account (one-to-one relationship)
 - A Participant can also be an Administrator
-- Has many Payments (one-to-many, per junta)
+- Has many Contributions (one-to-many, per junta)
 - Has many Distributions (one-to-many, per junta)
 
 #### Administrators
@@ -221,7 +221,7 @@ Organizational units representing payment periods within a junta.
 - Belongs to one junta (many-to-one)
 - Contains multiple participants (many-to-many through ParticipantsSlots)
 - One slot is created per month of the junta
-- Has many Receipts (one-to-many, per month)
+- Has many Payouts (one-to-many, per month)
 
 **Purpose:**
 
@@ -244,9 +244,9 @@ Links participants to slots.
 - Establishes which participants belong to which slots
 - Ensures one participant can only belong to one slot per junta
 
-#### Payments
+#### Contributions
 
-Tracks participant payments per month per junta.
+Tracks participant contributions per month per junta.
 
 **Attributes:**
 
@@ -255,19 +255,19 @@ Tracks participant payments per month per junta.
 - junta_id (uuid, FK to Juntas)
 - slot_id (uuid, FK to Slots) - Which slot the participant belongs to
 - month (integer) - Which month of the junta (1, 2, 3, etc.)
-- amount (decimal) - Amount paid (calculated: (total_amount ÷ number_of_slots) ÷ number_of_participants_in_slot)
-- paid_date (timestamptz) - When payment was made
-- status (enum: 'pending', 'paid', 'overdue') - Payment status
+- amount (decimal) - Amount contributed (calculated: (total_amount ÷ number_of_slots) ÷ number_of_participants_in_slot)
+- paid_date (timestamptz) - When contribution was made
+- status (enum: 'pending', 'paid', 'overdue') - Contribution status
 
 **Purpose:**
 
-- Tracks which participant has paid for each month in each junta
+- Tracks which participant has contributed for each month in each junta
 - Amount is based on slot collection amount (total_amount ÷ number_of_slots) divided by participants in slot
-- Allows admin to check payment status per participant per month per junta
+- Allows admin to check contribution status per participant per month per junta
 
-#### Receipts
+#### Payouts
 
-Tracks when slots receive money per junta.
+Tracks when slots receive money (payout from junta pool) per junta.
 
 **Attributes:**
 
@@ -281,7 +281,7 @@ Tracks when slots receive money per junta.
 
 **Purpose:**
 
-- Tracks that a slot has been fully paid for the given month
+- Tracks that a slot has received its payout from the junta pool for the given month
 - Amount received is always the full total_amount
 - Links to Distributions to track how money was distributed
 
@@ -292,7 +292,7 @@ Tracks how much each participant received per junta.
 **Attributes:**
 
 - id (uuid, primary key)
-- receipt_id (uuid, FK to Receipts)
+- payout_id (uuid, FK to Payouts)
 - participant_id (uuid, FK to Participants)
 - junta_id (uuid, FK to Juntas)
 - amount_distributed (decimal) - Amount participant received (calculated: total_amount ÷ participants_in_slot)
@@ -302,7 +302,7 @@ Tracks how much each participant received per junta.
 
 - Tracks how much each participant has received when their slot got money
 - Amount is full total_amount divided by number of participants in slot
-- Links to Receipt to track which receipt this distribution came from
+- Links to Payout to track which payout this distribution came from
 
 ## Relationship Flow
 
@@ -329,39 +329,39 @@ Tracks how much each participant received per junta.
 - All slots collect money from their participants → Junta pool
 - Total collected each month = total_amount (sum of all slots' collections)
 
-### Money Receipt Flow
+### Money Payout Flow
 
-- Junta pool → pays to one Slot (full total_amount, in order)
+- Junta pool → pays out to one Slot (full total_amount, in order)
 - Slot receives money when it's their month (based on order)
 - Slot → distributes to its participants (equal split: total_amount ÷ participants_in_slot)
-- All participants continue paying every month, regardless of when their slot receives money
+- All participants continue contributing every month, regardless of when their slot receives money
 
 ### Payment Tracking Flow
 
-- **Payments**: Tracked per participant per month per junta
-  - Participant makes payment → recorded in Payments entity
+- **Contributions**: Tracked per participant per month per junta
+  - Participant makes contribution → recorded in Contributions entity
   - Amount calculated: (total_amount ÷ number_of_slots) ÷ number_of_participants_in_slot
   - Status: pending, paid, or overdue
-- **Receipts**: Tracked per slot per month per junta
-  - Slot receives money → recorded in Receipts entity
+- **Payouts**: Tracked per slot per month per junta
+  - Slot receives money from pool → recorded in Payouts entity
   - Amount: full total_amount
   - is_fully_paid: tracks if slot has been fully paid for the month
 - **Distributions**: Tracked per participant per junta
   - When slot receives money → Distributions created for each participant in slot
   - Amount: total_amount ÷ participants_in_slot
-  - Links to Receipt to track source
+  - Links to Payout to track source
 
 ## Key Business Rules
 
 1. **One slot per month**: When a junta is created, exactly one slot is created for each month
 2. **Total amount divided by slots**: Total amount is divided by number of slots (not participants)
-3. **Order is for receipt, not payment**: The order determines which slot gets money first, not payment order
+3. **Order is for payout, not contribution**: The order determines which slot gets money first, not contribution order
 4. **Participants can be in multiple juntas**: A participant can participate in different juntas simultaneously with different slot assignments
 5. **One slot per participant per junta**: A participant can only belong to one slot per junta
 6. **Raffle assignment**: Initial order is assigned randomly through a raffle when junta is created
 7. **Admin can modify**: Admins can change the order after creation
 8. **Equal splits**: All money distributions are equal splits (no weighted distributions)
-9. **All tracking per junta**: Payments, receipts, and distributions are tracked per junta (participants can be in multiple juntas)
+9. **All tracking per junta**: Contributions, payouts, and distributions are tracked per junta (participants can be in multiple juntas)
 10. **Physical money**: The system tracks everything, but actual money is managed physically offline
 
 ## Example Scenarios
@@ -407,9 +407,9 @@ Tracks how much each participant received per junta.
 ### Scenario 6: Participant in Multiple Juntas
 
 - Participant participates in Junta A (2 months, slot 1) and Junta B (4 months, slot 3) simultaneously
-- Each junta tracks payments, receipts, and distributions independently
-- Participant pays different amounts per month in each junta (based on each junta's total and slot configuration)
-- Participant receives money at different times in each junta (when their slot receives in each junta)
+- Each junta tracks contributions, payouts, and distributions independently
+- Participant contributes different amounts per month in each junta (based on each junta's total and slot configuration)
+- Participant receives money at different times in each junta (when their slot receives payout in each junta)
 
 ## Questions for Clarification
 

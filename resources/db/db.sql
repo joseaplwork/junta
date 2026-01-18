@@ -1,11 +1,7 @@
 --
--- PostgreSQL database dump
+-- PostgreSQL database schema for Junta System
+-- Based on design.md specification
 --
-
--- Dumped from database version 16.0
--- Dumped by pg_dump version 16.0
-
--- Started on 2024-01-04 04:20:46 CET
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -19,13 +15,8 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 DROP DATABASE IF EXISTS juntas;
---
--- TOC entry 3656 (class 1262 OID 32768)
--- Name: juntas; Type: DATABASE; Schema: -; Owner: joseparedes
---
 
 CREATE DATABASE juntas WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE_PROVIDER = icu LOCALE = 'en_US.UTF-8' ICU_LOCALE = 'en-US';
-
 
 ALTER DATABASE juntas OWNER TO joseparedes;
 
@@ -43,277 +34,156 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 SET default_tablespace = '';
-
 SET default_table_access_method = heap;
 
 --
--- TOC entry 217 (class 1259 OID 32783)
--- Name: Administrators; Type: TABLE; Schema: public; Owner: postgres
+-- Table: Participants
+-- People who participate in juntas
 --
+CREATE TABLE public."Participants" (
+    id uuid NOT NULL,
+    name character varying NOT NULL,
+    surname character varying NOT NULL,
+    phone_number character varying NOT NULL
+);
 
+ALTER TABLE public."Participants" OWNER TO postgres;
+ALTER TABLE ONLY public."Participants" ADD CONSTRAINT "Participants_pkey" PRIMARY KEY (id);
+
+--
+-- Table: Administrators
+-- Participants who can create and manage juntas
+--
 CREATE TABLE public."Administrators" (
     id uuid NOT NULL,
-    user_id uuid NOT NULL,
-    role character varying NOT NULL,
-    username character varying NOT NULL,
-    password character varying NOT NULL
+    participant_id uuid NOT NULL,
+    email character varying NOT NULL,
+    password character varying NOT NULL,
+    roles character varying[] NOT NULL DEFAULT ARRAY['admin']::character varying[]
 );
-
 
 ALTER TABLE public."Administrators" OWNER TO postgres;
+ALTER TABLE ONLY public."Administrators" ADD CONSTRAINT "Administrators_pkey" PRIMARY KEY (id);
+ALTER TABLE ONLY public."Administrators" ADD CONSTRAINT "Administrators_email_key" UNIQUE (email);
+ALTER TABLE ONLY public."Administrators" ADD CONSTRAINT "Administrators_participant_id_fkey" FOREIGN KEY (participant_id) REFERENCES public."Participants"(id) NOT VALID;
 
 --
--- TOC entry 216 (class 1259 OID 32776)
--- Name: Groups; Type: TABLE; Schema: public; Owner: postgres
+-- Table: Juntas
+-- Savings cycles with participants and payment schedules
 --
-
-CREATE TABLE public."Groups" (
-    id uuid NOT NULL,
-    creation_date timestamp with time zone,
-    name character varying NOT NULL
-);
-
-
-ALTER TABLE public."Groups" OWNER TO postgres;
-
---
--- TOC entry 218 (class 1259 OID 32790)
--- Name: Juntas; Type: TABLE; Schema: public; Owner: postgres
---
-
 CREATE TABLE public."Juntas" (
     id uuid NOT NULL,
     admin_id uuid NOT NULL,
+    name text NOT NULL,
+    amount integer NOT NULL,
+    slots integer NOT NULL,
+    partial_amount integer NOT NULL,
     start_date timestamp with time zone NOT NULL,
     end_date timestamp with time zone NOT NULL,
-    amount integer NOT NULL,
-    active boolean NOT NULL,
-    name text NOT NULL,
-    slots integer NOT NULL,
-    partial_amount integer NOT NULL
+    active boolean NOT NULL
 );
 
-
 ALTER TABLE public."Juntas" OWNER TO postgres;
+ALTER TABLE ONLY public."Juntas" ADD CONSTRAINT "Juntas_pkey" PRIMARY KEY (id);
+ALTER TABLE ONLY public."Juntas" ADD CONSTRAINT "Juntas_admin_id_fkey" FOREIGN KEY (admin_id) REFERENCES public."Administrators"(id) NOT VALID;
 
 --
--- TOC entry 219 (class 1259 OID 32797)
--- Name: JuntasGroups; Type: TABLE; Schema: public; Owner: postgres
+-- Table: Slots
+-- Organizational units representing payment periods within a junta
+-- One slot is created per month of the junta's duration
 --
-
-CREATE TABLE public."JuntasGroups" (
+CREATE TABLE public."Slots" (
     id uuid NOT NULL,
-    group_id uuid NOT NULL,
     junta_id uuid NOT NULL,
+    name character varying,
     "order" integer NOT NULL
 );
 
-
-ALTER TABLE public."JuntasGroups" OWNER TO postgres;
+ALTER TABLE public."Slots" OWNER TO postgres;
+ALTER TABLE ONLY public."Slots" ADD CONSTRAINT "Slots_pkey" PRIMARY KEY (id);
+ALTER TABLE ONLY public."Slots" ADD CONSTRAINT "Slots_junta_id_fkey" FOREIGN KEY (junta_id) REFERENCES public."Juntas"(id) NOT VALID;
 
 --
--- TOC entry 220 (class 1259 OID 32802)
--- Name: JuntasPartialAmount; Type: TABLE; Schema: public; Owner: postgres
+-- Table: ParticipantsSlots
+-- Junction table linking participants to slots
+-- Ensures one participant can only belong to one slot per junta
 --
-
-CREATE TABLE public."JuntasPartialAmount" (
+CREATE TABLE public."ParticipantsSlots" (
     id uuid NOT NULL,
-    junta_group_id uuid NOT NULL,
-    date timestamp with time zone NOT NULL,
-    paid timestamp with time zone NOT NULL,
-    partial_amount timestamp with time zone NOT NULL
+    participant_id uuid NOT NULL,
+    slot_id uuid NOT NULL
 );
 
-
-ALTER TABLE public."JuntasPartialAmount" OWNER TO postgres;
+ALTER TABLE public."ParticipantsSlots" OWNER TO postgres;
+ALTER TABLE ONLY public."ParticipantsSlots" ADD CONSTRAINT "ParticipantsSlots_pkey" PRIMARY KEY (id);
+ALTER TABLE ONLY public."ParticipantsSlots" ADD CONSTRAINT "ParticipantsSlots_participant_id_fkey" FOREIGN KEY (participant_id) REFERENCES public."Participants"(id) NOT VALID;
+ALTER TABLE ONLY public."ParticipantsSlots" ADD CONSTRAINT "ParticipantsSlots_slot_id_fkey" FOREIGN KEY (slot_id) REFERENCES public."Slots"(id) NOT VALID;
 
 --
--- TOC entry 215 (class 1259 OID 32769)
--- Name: Participants; Type: TABLE; Schema: public; Owner: postgres
+-- Table: Contributions
+-- Tracks participant contributions per month per junta
 --
-
-CREATE TABLE public."Participants" (
+CREATE TABLE public."Contributions" (
     id uuid NOT NULL,
-    group_id uuid,
-    name character varying NOT NULL,
-    surname character varying NOT NULL,
-    phone_number integer NOT NULL
+    participant_id uuid NOT NULL,
+    junta_id uuid NOT NULL,
+    slot_id uuid NOT NULL,
+    month integer NOT NULL,
+    amount decimal(10,2) NOT NULL,
+    paid_date timestamp with time zone,
+    status character varying NOT NULL DEFAULT 'pending'::character varying
 );
 
-
-ALTER TABLE public."Participants" OWNER TO postgres;
-
---
--- TOC entry 3647 (class 0 OID 32783)
--- Dependencies: 217
--- Data for Name: Administrators; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public."Administrators" (id, user_id, role, username, password) FROM stdin;
-\.
-
+ALTER TABLE public."Contributions" OWNER TO postgres;
+ALTER TABLE ONLY public."Contributions" ADD CONSTRAINT "Contributions_pkey" PRIMARY KEY (id);
+ALTER TABLE ONLY public."Contributions" ADD CONSTRAINT "Contributions_participant_id_fkey" FOREIGN KEY (participant_id) REFERENCES public."Participants"(id) NOT VALID;
+ALTER TABLE ONLY public."Contributions" ADD CONSTRAINT "Contributions_junta_id_fkey" FOREIGN KEY (junta_id) REFERENCES public."Juntas"(id) NOT VALID;
+ALTER TABLE ONLY public."Contributions" ADD CONSTRAINT "Contributions_slot_id_fkey" FOREIGN KEY (slot_id) REFERENCES public."Slots"(id) NOT VALID;
 
 --
--- TOC entry 3646 (class 0 OID 32776)
--- Dependencies: 216
--- Data for Name: Groups; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Table: Payouts
+-- Tracks when slots receive money (payout) from the junta pool per junta
 --
+CREATE TABLE public."Payouts" (
+    id uuid NOT NULL,
+    slot_id uuid NOT NULL,
+    junta_id uuid NOT NULL,
+    month integer NOT NULL,
+    amount_received decimal(10,2) NOT NULL,
+    received_date timestamp with time zone,
+    is_fully_paid boolean NOT NULL DEFAULT false
+);
 
-COPY public."Groups" (id, creation_date, name) FROM stdin;
-\.
-
-
---
--- TOC entry 3648 (class 0 OID 32790)
--- Dependencies: 218
--- Data for Name: Juntas; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public."Juntas" (id, admin_id, start_date, end_date, amount, active, name, slots, partial_amount) FROM stdin;
-\.
-
-
---
--- TOC entry 3649 (class 0 OID 32797)
--- Dependencies: 219
--- Data for Name: JuntasGroups; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public."JuntasGroups" (id, group_id, junta_id, "order") FROM stdin;
-\.
-
+ALTER TABLE public."Payouts" OWNER TO postgres;
+ALTER TABLE ONLY public."Payouts" ADD CONSTRAINT "Payouts_pkey" PRIMARY KEY (id);
+ALTER TABLE ONLY public."Payouts" ADD CONSTRAINT "Payouts_slot_id_fkey" FOREIGN KEY (slot_id) REFERENCES public."Slots"(id) NOT VALID;
+ALTER TABLE ONLY public."Payouts" ADD CONSTRAINT "Payouts_junta_id_fkey" FOREIGN KEY (junta_id) REFERENCES public."Juntas"(id) NOT VALID;
 
 --
--- TOC entry 3650 (class 0 OID 32802)
--- Dependencies: 220
--- Data for Name: JuntasPartialAmount; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Table: Distributions
+-- Tracks how much each participant received per junta
 --
+CREATE TABLE public."Distributions" (
+    id uuid NOT NULL,
+    payout_id uuid NOT NULL,
+    participant_id uuid NOT NULL,
+    junta_id uuid NOT NULL,
+    amount_distributed decimal(10,2) NOT NULL,
+    distributed_date timestamp with time zone
+);
 
-COPY public."JuntasPartialAmount" (id, junta_group_id, date, paid, partial_amount) FROM stdin;
-\.
-
-
---
--- TOC entry 3645 (class 0 OID 32769)
--- Dependencies: 215
--- Data for Name: Participants; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public."Participants" (id, group_id, name, surname, phone_number) FROM stdin;
-\.
-
-
---
--- TOC entry 3489 (class 2606 OID 32789)
--- Name: Administrators Administrators_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."Administrators"
-    ADD CONSTRAINT "Administrators_pkey" PRIMARY KEY (id);
-
+ALTER TABLE public."Distributions" OWNER TO postgres;
+ALTER TABLE ONLY public."Distributions" ADD CONSTRAINT "Distributions_pkey" PRIMARY KEY (id);
+ALTER TABLE ONLY public."Distributions" ADD CONSTRAINT "Distributions_payout_id_fkey" FOREIGN KEY (payout_id) REFERENCES public."Payouts"(id) NOT VALID;
+ALTER TABLE ONLY public."Distributions" ADD CONSTRAINT "Distributions_participant_id_fkey" FOREIGN KEY (participant_id) REFERENCES public."Participants"(id) NOT VALID;
+ALTER TABLE ONLY public."Distributions" ADD CONSTRAINT "Distributions_junta_id_fkey" FOREIGN KEY (junta_id) REFERENCES public."Juntas"(id) NOT VALID;
 
 --
--- TOC entry 3487 (class 2606 OID 32782)
--- Name: Groups Groups_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Create enum type for Contribution status
 --
-
-ALTER TABLE ONLY public."Groups"
-    ADD CONSTRAINT "Groups_pkey" PRIMARY KEY (id);
-
+CREATE TYPE contribution_status AS ENUM ('pending', 'paid', 'overdue');
 
 --
--- TOC entry 3493 (class 2606 OID 32801)
--- Name: JuntasGroups JuntasGroups_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Add constraint to ensure contribution status is valid
 --
-
-ALTER TABLE ONLY public."JuntasGroups"
-    ADD CONSTRAINT "JuntasGroups_pkey" PRIMARY KEY (id);
-
-
---
--- TOC entry 3495 (class 2606 OID 32806)
--- Name: JuntasPartialAmount JuntasPartialAmount_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."JuntasPartialAmount"
-    ADD CONSTRAINT "JuntasPartialAmount_pkey" PRIMARY KEY (id);
-
-
---
--- TOC entry 3491 (class 2606 OID 32796)
--- Name: Juntas Juntas_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."Juntas"
-    ADD CONSTRAINT "Juntas_pkey" PRIMARY KEY (id);
-
-
---
--- TOC entry 3485 (class 2606 OID 32775)
--- Name: Participants Participants_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."Participants"
-    ADD CONSTRAINT "Participants_pkey" PRIMARY KEY (id);
-
-
---
--- TOC entry 3497 (class 2606 OID 32812)
--- Name: Administrators Administrators_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."Administrators"
-    ADD CONSTRAINT "Administrators_user_id_fkey" FOREIGN KEY (user_id) REFERENCES public."Participants"(id) NOT VALID;
-
-
---
--- TOC entry 3499 (class 2606 OID 32827)
--- Name: JuntasGroups JuntasGroups_group_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."JuntasGroups"
-    ADD CONSTRAINT "JuntasGroups_group_id_fkey" FOREIGN KEY (group_id) REFERENCES public."Groups"(id) NOT VALID;
-
-
---
--- TOC entry 3500 (class 2606 OID 32822)
--- Name: JuntasGroups JuntasGroups_junta_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."JuntasGroups"
-    ADD CONSTRAINT "JuntasGroups_junta_id_fkey" FOREIGN KEY (junta_id) REFERENCES public."Juntas"(id) NOT VALID;
-
-
---
--- TOC entry 3501 (class 2606 OID 32832)
--- Name: JuntasPartialAmount JuntasPartialAmount_junta_group_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."JuntasPartialAmount"
-    ADD CONSTRAINT "JuntasPartialAmount_junta_group_id_fkey" FOREIGN KEY (junta_group_id) REFERENCES public."JuntasGroups"(id) NOT VALID;
-
-
---
--- TOC entry 3498 (class 2606 OID 32817)
--- Name: Juntas Juntas_admin_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."Juntas"
-    ADD CONSTRAINT "Juntas_admin_id_fkey" FOREIGN KEY (admin_id) REFERENCES public."Administrators"(id) NOT VALID;
-
-
---
--- TOC entry 3496 (class 2606 OID 32807)
--- Name: Participants Participants_group_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."Participants"
-    ADD CONSTRAINT "Participants_group_id_fkey" FOREIGN KEY (group_id) REFERENCES public."Groups"(id) NOT VALID;
-
-
--- Completed on 2024-01-04 04:20:46 CET
-
---
--- PostgreSQL database dump complete
---
-
+ALTER TABLE public."Contributions" ADD CONSTRAINT "Contributions_status_check" CHECK (status IN ('pending', 'paid', 'overdue'));

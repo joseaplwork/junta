@@ -6,11 +6,14 @@ import { AdminModule } from './admins/admin.module'
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
 import { AuthModule } from './auth/auth.module'
+import { Contribution } from './contributions/contribution.entity'
+import { Distribution } from './distributions/distribution.entity'
 import { Junta } from './juntas/junta.entity'
 import { JuntaModule } from './juntas/junta.module'
 import { ParticipantsSlots } from './participants-slots/participants-slots.entity'
 import { Participant } from './participants/participant.entity'
 import { ParticipantModule } from './participants/participant.module'
+import { Payout } from './payouts/payout.entity'
 import { Slot } from './slots/slot.entity'
 
 @Module({
@@ -22,7 +25,16 @@ import { Slot } from './slots/slot.entity'
       username: 'joseparedes',
       password: 'admin',
       database: 'juntas',
-      entities: [Participant, Admin, Junta, Slot, ParticipantsSlots],
+      entities: [
+        Participant,
+        Admin,
+        Junta,
+        Slot,
+        ParticipantsSlots,
+        Contribution,
+        Payout,
+        Distribution,
+      ],
       synchronize: true,
       logging: true,
       logger: 'advanced-console',
