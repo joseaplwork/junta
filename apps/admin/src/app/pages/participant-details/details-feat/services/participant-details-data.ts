@@ -36,7 +36,7 @@ export class ParticipantDetailsData {
     id: dto.id,
     name: dto.name,
     amount: dto.amount,
-    slots: dto.slots,
+    groups: dto.groups,
     partialAmount: dto.partial_amount,
     startDate: dto.start_date,
     endDate: dto.end_date,

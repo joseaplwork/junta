@@ -9,3 +9,12 @@
   (view)="viewJunta($event)"
   (edit)="editJunta($event)"
   (delete)="deleteJunta($event)" />
+
+<button
+  mat-fab
+  color="primary"
+  class="!fixed bottom-8 right-8 shadow-lg"
+  aria-label="Create junta"
+  (click)="createJunta()">
+  <mat-icon>add</mat-icon>
+</button>

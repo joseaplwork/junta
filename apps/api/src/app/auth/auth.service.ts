@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  NotAcceptableException,
-  UnauthorizedException,
-} from '@nestjs/common'
+import { Injectable, UnauthorizedException } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import * as bcrypt from 'bcrypt'
 import { randomUUID } from 'crypto'
@@ -71,18 +67,18 @@ export class AuthService {
   }
 
   createAccessToken(payload: AuthTokenPayload) {
-    const { tokenId, iat } = this.getRandomTokenAndIat()
+    const { tokenId, iat } = this._getRandomTokenAndIat()
 
     return this._jwt.sign({ ...payload, tokenId, iat })
   }
 
   createRefreshToken(payload: AuthTokenPayload) {
-    const { tokenId, iat } = this.getRandomTokenAndIat()
+    const { tokenId, iat } = this._getRandomTokenAndIat()
 
     return this._jwt.sign({ ...payload, tokenId, iat }, { expiresIn: '7d' })
   }
 
-  private getRandomTokenAndIat() {
+  private _getRandomTokenAndIat() {
     const tokenId = randomUUID()
     const iat = Math.floor(Date.now() / 1000)
 

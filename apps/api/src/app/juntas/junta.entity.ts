@@ -10,8 +10,8 @@ import {
 import { Admin } from '@/api/admins/admin.entity'
 import { Contribution } from '@/api/contributions/contribution.entity'
 import { Distribution } from '@/api/distributions/distribution.entity'
+import { Group } from '@/api/groups/group.entity'
 import { Payout } from '@/api/payouts/payout.entity'
-import { Slot } from '@/api/slots/slot.entity'
 
 @Entity('Juntas')
 export class Junta {
@@ -25,7 +25,7 @@ export class Junta {
   amount: number
 
   @Column({ type: 'int' })
-  slots: number
+  groups: number
 
   @Column({ type: 'int' })
   partial_amount: number
@@ -46,8 +46,8 @@ export class Junta {
   @JoinColumn({ name: 'admin_id' })
   admin: Admin
 
-  @OneToMany(() => Slot, slot => slot.junta)
-  slotList: Slot[]
+  @OneToMany(() => Group, group => group.junta)
+  groupList: Group[]
 
   @OneToMany(() => Contribution, contribution => contribution.junta)
   contributions: Contribution[]

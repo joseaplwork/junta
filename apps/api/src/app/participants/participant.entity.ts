@@ -9,7 +9,7 @@ import {
 import { Admin } from '@/api/admins/admin.entity'
 import { Contribution } from '@/api/contributions/contribution.entity'
 import { Distribution } from '@/api/distributions/distribution.entity'
-import { ParticipantsSlots } from '@/api/participants-slots/participants-slots.entity'
+import { ParticipantsGroups } from '@/api/participants-groups/participants-groups.entity'
 
 @Entity('Participants')
 export class Participant {
@@ -26,10 +26,10 @@ export class Participant {
   phone_number: string
 
   @OneToMany(
-    () => ParticipantsSlots,
-    participantsSlots => participantsSlots.participant,
+    () => ParticipantsGroups,
+    participantsGroups => participantsGroups.participant,
   )
-  participantsSlots: ParticipantsSlots[]
+  participantsGroups: ParticipantsGroups[]
 
   @OneToMany(() => Contribution, contribution => contribution.participant)
   contributions: Contribution[]

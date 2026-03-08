@@ -14,7 +14,7 @@ import { Permission } from '@junta/shared/enums/permission'
 import { Permissions } from '@/api/decorators/permissions.decorator'
 import { RequestWithAuthenticatedAdmin } from '@/api/interfaces/request.interface'
 
-import { JuntaUpdatePayload } from './junta.interface'
+import { GroupConfig, JuntaUpdatePayload } from './junta.interface'
 import { JuntaService } from './junta.service'
 
 @Controller('junta')
@@ -39,13 +39,13 @@ export class JuntaController {
     @Req() req: RequestWithAuthenticatedAdmin,
     @Body('name') name: string,
     @Body('amount') amount: number,
-    @Body('slots') slots: number,
     @Body('startDate') startDate: string,
     @Body('endDate') endDate: string,
     @Body('active') active: boolean,
+    @Body('groupConfigs') groupConfigs: GroupConfig[],
   ) {
     return this._app.createOne(
-      { name, amount, slots, startDate, endDate, active },
+      { name, amount, startDate, endDate, active, groupConfigs },
       req.admin.id,
     )
   }
@@ -56,18 +56,18 @@ export class JuntaController {
     @Param('id') id: string,
     @Body('name') name?: string,
     @Body('amount') amount?: number,
-    @Body('slots') slots?: number,
     @Body('startDate') startDate?: string,
     @Body('endDate') endDate?: string,
     @Body('active') active?: boolean,
+    @Body('groupConfigs') groupConfigs?: GroupConfig[],
   ) {
     const data: JuntaUpdatePayload = {}
     if (name !== undefined) data.name = name
     if (amount !== undefined) data.amount = amount
-    if (slots !== undefined) data.slots = slots
     if (startDate !== undefined) data.startDate = startDate
     if (endDate !== undefined) data.endDate = endDate
     if (active !== undefined) data.active = active
+    if (groupConfigs !== undefined) data.groupConfigs = groupConfigs
     return this._app.update(id, data)
   }
 

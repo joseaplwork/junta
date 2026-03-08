@@ -4,14 +4,17 @@ import { MatButtonModule } from '@angular/material/button'
 import { MatCardModule } from '@angular/material/card'
 import { MatChipsModule } from '@angular/material/chips'
 import { MatDividerModule } from '@angular/material/divider'
+import { MatExpansionModule } from '@angular/material/expansion'
 import { MatIconModule } from '@angular/material/icon'
 import { ActivatedRoute } from '@angular/router'
 
-import { Junta } from '@/admin/shared/interfaces/junta'
 import { Navigation } from '@/admin/shared/services/navigation'
 import { Snackbar } from '@/admin/shared/services/snackbar'
 
-import { JuntaDetailsData } from './services/junta-details-data'
+import {
+  JuntaDetailsData,
+  JuntaWithGroups,
+} from './services/junta-details-data'
 
 @Component({
   selector: 'ja-junta-details-feat',
@@ -22,6 +25,7 @@ import { JuntaDetailsData } from './services/junta-details-data'
     MatIconModule,
     MatChipsModule,
     MatDividerModule,
+    MatExpansionModule,
     DatePipe,
   ],
 })
@@ -31,7 +35,7 @@ export class DetailsFeat implements OnInit {
   private readonly _snackbar = inject(Snackbar)
   private readonly _navigation = inject(Navigation)
 
-  junta = signal<Junta | null>(null)
+  junta = signal<JuntaWithGroups | null>(null)
   loading = signal(true)
   error = signal<string | null>(null)
 

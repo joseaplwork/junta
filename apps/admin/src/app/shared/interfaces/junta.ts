@@ -2,7 +2,7 @@ export interface Junta {
   id: string
   name: string
   amount: number
-  slots: number
+  groups: number
   partialAmount: number
   startDate: string
   endDate: string
@@ -14,7 +14,7 @@ export interface JuntaDTO {
   id: string
   name: string
   amount: number
-  slots: number
+  groups: number
   partial_amount: number
   start_date: string
   end_date: string

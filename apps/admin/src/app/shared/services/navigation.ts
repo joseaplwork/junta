@@ -23,6 +23,14 @@ export class Navigation {
     return this._route.navigate(['dashboard', 'junta', id])
   }
 
+  goToJuntaCreate() {
+    return this._route.navigate(['dashboard', 'junta', 'create'])
+  }
+
+  goToJuntaEdit(id: string) {
+    return this._route.navigate(['dashboard', 'junta', 'edit', id])
+  }
+
   goToParticipantList() {
     return this._route.navigate(['dashboard', 'participant'])
   }

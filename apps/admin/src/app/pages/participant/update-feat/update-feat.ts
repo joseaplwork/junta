@@ -45,7 +45,10 @@ export class UpdateFeat {
     payload: UpdatePayload,
   ): Promise<void> => {
     try {
-      const updatedParticipant = await this._participantUpdate.update(id, payload)
+      const updatedParticipant = await this._participantUpdate.update(
+        id,
+        payload,
+      )
 
       this._state.emitParticipantUpdated(updatedParticipant)
       this._snackbar.success('Participant updated successfully')

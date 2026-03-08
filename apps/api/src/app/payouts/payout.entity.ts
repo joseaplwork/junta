@@ -8,8 +8,8 @@ import {
 } from 'typeorm'
 
 import { Distribution } from '@/api/distributions/distribution.entity'
+import { Group } from '@/api/groups/group.entity'
 import { Junta } from '@/api/juntas/junta.entity'
-import { Slot } from '@/api/slots/slot.entity'
 
 @Entity('Payouts')
 export class Payout {
@@ -17,7 +17,7 @@ export class Payout {
   id: string
 
   @Column({ type: 'uuid' })
-  slot_id: string
+  group_id: string
 
   @Column({ type: 'uuid' })
   junta_id: string
@@ -34,9 +34,9 @@ export class Payout {
   @Column({ type: 'boolean', default: false })
   is_fully_paid: boolean
 
-  @ManyToOne(() => Slot)
-  @JoinColumn({ name: 'slot_id' })
-  slot: Slot
+  @ManyToOne(() => Group)
+  @JoinColumn({ name: 'group_id' })
+  group: Group
 
   @ManyToOne(() => Junta)
   @JoinColumn({ name: 'junta_id' })

@@ -5,6 +5,7 @@ import { RouteSessionRedirection } from './guards/route-session-redirection'
 import { MainLayout } from './layouts/main-layout/main-layout'
 import { AdminPage } from './pages/admin/admin-page'
 import { DashboardPage } from './pages/dashboard/dashboard-page'
+import { JuntaCreatePage } from './pages/junta-create/junta-create-page'
 import { JuntaDetailsPage } from './pages/junta-details/junta-details-page'
 import { JuntaPage } from './pages/junta/junta-page'
 import { LoginPage } from './pages/login/login-page'
@@ -39,6 +40,14 @@ export const routes: Routes = [
       {
         path: 'junta',
         component: JuntaPage,
+      },
+      {
+        path: 'junta/create',
+        component: JuntaCreatePage,
+      },
+      {
+        path: 'junta/edit/:id',
+        component: JuntaCreatePage,
       },
       {
         path: 'junta/:id',

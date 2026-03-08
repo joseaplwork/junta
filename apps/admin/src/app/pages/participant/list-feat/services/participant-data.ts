@@ -1,6 +1,9 @@
 import { Injectable, inject } from '@angular/core'
 
-import { Participant, ParticipantDTO } from '@/admin/shared/interfaces/participant'
+import {
+  Participant,
+  ParticipantDTO,
+} from '@/admin/shared/interfaces/participant'
 import { Api } from '@/admin/shared/services/api'
 
 @Injectable({ providedIn: 'root' })

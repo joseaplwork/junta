@@ -8,13 +8,13 @@ import { AppService } from './app.service'
 import { AuthModule } from './auth/auth.module'
 import { Contribution } from './contributions/contribution.entity'
 import { Distribution } from './distributions/distribution.entity'
+import { Group } from './groups/group.entity'
 import { Junta } from './juntas/junta.entity'
 import { JuntaModule } from './juntas/junta.module'
-import { ParticipantsSlots } from './participants-slots/participants-slots.entity'
+import { ParticipantsGroups } from './participants-groups/participants-groups.entity'
 import { Participant } from './participants/participant.entity'
 import { ParticipantModule } from './participants/participant.module'
 import { Payout } from './payouts/payout.entity'
-import { Slot } from './slots/slot.entity'
 
 @Module({
   imports: [
@@ -29,8 +29,8 @@ import { Slot } from './slots/slot.entity'
         Participant,
         Admin,
         Junta,
-        Slot,
-        ParticipantsSlots,
+        Group,
+        ParticipantsGroups,
         Contribution,
         Payout,
         Distribution,

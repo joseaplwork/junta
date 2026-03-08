@@ -6,9 +6,9 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm'
 
+import { Group } from '@/api/groups/group.entity'
 import { Junta } from '@/api/juntas/junta.entity'
 import { Participant } from '@/api/participants/participant.entity'
-import { Slot } from '@/api/slots/slot.entity'
 
 export enum ContributionStatus {
   PENDING = 'pending',
@@ -28,7 +28,7 @@ export class Contribution {
   junta_id: string
 
   @Column({ type: 'uuid' })
-  slot_id: string
+  group_id: string
 
   @Column({ type: 'int' })
   month: number
@@ -54,7 +54,7 @@ export class Contribution {
   @JoinColumn({ name: 'junta_id' })
   junta: Junta
 
-  @ManyToOne(() => Slot)
-  @JoinColumn({ name: 'slot_id' })
-  slot: Slot
+  @ManyToOne(() => Group)
+  @JoinColumn({ name: 'group_id' })
+  group: Group
 }

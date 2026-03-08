@@ -83,7 +83,9 @@ export class ListFeat {
     const participant = this._state.participantDeleted()
 
     if (participant) {
-      this.participants.update(current => current.filter(p => p.id !== participant.id))
+      this.participants.update(current =>
+        current.filter(p => p.id !== participant.id),
+      )
     }
   }
 
@@ -92,7 +94,9 @@ export class ListFeat {
 
     if (updatedParticipant) {
       this.participants.update(current =>
-        current.map(p => (p.id === updatedParticipant.id ? updatedParticipant : p)),
+        current.map(p =>
+          p.id === updatedParticipant.id ? updatedParticipant : p,
+        ),
       )
     }
   }

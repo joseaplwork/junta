@@ -74,9 +74,9 @@ export class ParticipantService {
 
     const juntas = await this._juntasRepository
       .createQueryBuilder('junta')
-      .innerJoin('junta.slotList', 'slot')
-      .innerJoin('slot.participantsSlots', 'participantsSlots')
-      .where('participantsSlots.participant_id = :participantId', {
+      .innerJoin('junta.groupList', 'group')
+      .innerJoin('group.participantsGroups', 'participantsGroups')
+      .where('participantsGroups.participant_id = :participantId', {
         participantId,
       })
       .getMany()

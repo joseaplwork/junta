@@ -6,11 +6,11 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm'
 
+import { Group } from '@/api/groups/group.entity'
 import { Participant } from '@/api/participants/participant.entity'
-import { Slot } from '@/api/slots/slot.entity'
 
-@Entity('ParticipantsSlots')
-export class ParticipantsSlots {
+@Entity('ParticipantsGroups')
+export class ParticipantsGroups {
   @PrimaryGeneratedColumn('uuid')
   id: string
 
@@ -18,13 +18,13 @@ export class ParticipantsSlots {
   participant_id: string
 
   @Column({ type: 'uuid' })
-  slot_id: string
+  group_id: string
 
-  @ManyToOne(() => Participant, participant => participant.participantsSlots)
+  @ManyToOne(() => Participant, participant => participant.participantsGroups)
   @JoinColumn({ name: 'participant_id' })
   participant: Participant
 
-  @ManyToOne(() => Slot, slot => slot.participantsSlots)
-  @JoinColumn({ name: 'slot_id' })
-  slot: Slot
+  @ManyToOne(() => Group, group => group.participantsGroups)
+  @JoinColumn({ name: 'group_id' })
+  group: Group
 }

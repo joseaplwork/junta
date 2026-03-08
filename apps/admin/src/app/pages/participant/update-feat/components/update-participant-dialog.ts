@@ -55,6 +55,7 @@ export class UpdateParticipantDialog {
     try {
       const formValue = this.form.value
       const payload: UpdatePayload = {}
+
       if (formValue.name !== undefined) payload.name = formValue.name
       if (formValue.surname !== undefined) payload.surname = formValue.surname
       if (formValue.phoneNumber !== undefined)

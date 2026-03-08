@@ -35,7 +35,7 @@
         </div>
         <mat-divider />
         <div>
-          <p class="text-muted text-sm">Per Slot Amount</p>
+          <p class="text-muted text-sm">Per Group Amount</p>
           <p class="text-xl font-semibold">
             {{ formatCurrency(junta()!.partialAmount) }}
           </p>
@@ -51,13 +51,8 @@
     <mat-card-content class="pt-4">
       <div class="space-y-4">
         <div>
-          <p class="text-muted text-sm">Total Slots</p>
-          <p class="text-2xl font-bold">{{ junta()!.slots }}</p>
-        </div>
-        <mat-divider />
-        <div>
-          <p class="text-muted text-sm">Groups</p>
-          <p class="text-muted text-xl font-semibold">Coming soon</p>
+          <p class="text-muted text-sm">Total Groups</p>
+          <p class="text-2xl font-bold">{{ junta()!.groups }}</p>
         </div>
       </div>
     </mat-card-content>
@@ -90,16 +85,50 @@
 <div class="mt-8">
   <mat-card>
     <mat-card-header>
-      <mat-card-title>Groups & Members</mat-card-title>
+      <mat-card-title>Groups & Participants</mat-card-title>
     </mat-card-header>
     <mat-card-content class="pt-4">
+      @if (junta()!.groupList.length === 0) {
       <div class="text-muted flex flex-col items-center justify-center py-8">
         <mat-icon class="!h-16 !w-16 !text-6xl">groups</mat-icon>
-        <p class="mt-4 text-lg">Group management coming soon</p>
-        <p class="text-sm">
-          You'll be able to create groups and assign members here
-        </p>
+        <p class="mt-4 text-lg">No groups configured</p>
+        <p class="text-sm">This junta has no groups assigned yet</p>
       </div>
+      } @else {
+      <div class="space-y-4">
+        @for (group of junta()!.groupList; track group.order) {
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <div class="flex items-center gap-2">
+                <span>Group {{ group.order }}</span>
+                @if (group.name) {
+                <span class="text-muted">- {{ group.name }}</span>
+                }
+              </div>
+            </mat-panel-title>
+            <mat-panel-description>
+              {{ group.participants.length }} participant{{
+                group.participants.length !== 1 ? 's' : ''
+              }}
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+
+          @if (group.participants.length === 0) {
+          <p class="text-muted text-sm py-2">No participants assigned</p>
+          } @else {
+          <div class="flex flex-wrap gap-2 pt-2">
+            @for (participant of group.participants; track participant.id) {
+            <mat-chip>
+              {{ participant.name }} {{ participant.surname }}
+            </mat-chip>
+            }
+          </div>
+          }
+        </mat-expansion-panel>
+        }
+      </div>
+      }
     </mat-card-content>
   </mat-card>
 </div>

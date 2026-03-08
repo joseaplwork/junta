@@ -76,10 +76,10 @@ CREATE TABLE public."Juntas" (
     admin_id uuid NOT NULL,
     name text NOT NULL,
     amount integer NOT NULL,
-    slots integer NOT NULL,
+    groups integer NOT NULL,
     partial_amount integer NOT NULL,
-    start_date timestamp with time zone NOT NULL,
-    end_date timestamp with time zone NOT NULL,
+    start_date timestamptz with time zone NOT NULL,
+    end_date timestamptz with time zone NOT NULL,
     active boolean NOT NULL
 );
 
@@ -88,36 +88,36 @@ ALTER TABLE ONLY public."Juntas" ADD CONSTRAINT "Juntas_pkey" PRIMARY KEY (id);
 ALTER TABLE ONLY public."Juntas" ADD CONSTRAINT "Juntas_admin_id_fkey" FOREIGN KEY (admin_id) REFERENCES public."Administrators"(id) NOT VALID;
 
 --
--- Table: Slots
+-- Table: Groups
 -- Organizational units representing payment periods within a junta
 -- One slot is created per month of the junta's duration
 --
-CREATE TABLE public."Slots" (
+    CREATE TABLE public."Groups" (
     id uuid NOT NULL,
     junta_id uuid NOT NULL,
     name character varying,
     "order" integer NOT NULL
 );
 
-ALTER TABLE public."Slots" OWNER TO postgres;
-ALTER TABLE ONLY public."Slots" ADD CONSTRAINT "Slots_pkey" PRIMARY KEY (id);
-ALTER TABLE ONLY public."Slots" ADD CONSTRAINT "Slots_junta_id_fkey" FOREIGN KEY (junta_id) REFERENCES public."Juntas"(id) NOT VALID;
+ALTER TABLE public."Groups" OWNER TO postgres;
+ALTER TABLE ONLY public."Groups" ADD CONSTRAINT "Groups_pkey" PRIMARY KEY (id);
+ALTER TABLE ONLY public."Groups" ADD CONSTRAINT "Groups_junta_id_fkey" FOREIGN KEY (junta_id) REFERENCES public."Juntas"(id) NOT VALID;
 
 --
--- Table: ParticipantsSlots
--- Junction table linking participants to slots
--- Ensures one participant can only belong to one slot per junta
+-- Table: ParticipantsGroups
+-- Junction table linking participants to groups
+-- Ensures one participant can only belong to one group per junta
 --
-CREATE TABLE public."ParticipantsSlots" (
+CREATE TABLE public."ParticipantsGroups" (
     id uuid NOT NULL,
     participant_id uuid NOT NULL,
-    slot_id uuid NOT NULL
+    group_id uuid NOT NULL
 );
 
-ALTER TABLE public."ParticipantsSlots" OWNER TO postgres;
-ALTER TABLE ONLY public."ParticipantsSlots" ADD CONSTRAINT "ParticipantsSlots_pkey" PRIMARY KEY (id);
-ALTER TABLE ONLY public."ParticipantsSlots" ADD CONSTRAINT "ParticipantsSlots_participant_id_fkey" FOREIGN KEY (participant_id) REFERENCES public."Participants"(id) NOT VALID;
-ALTER TABLE ONLY public."ParticipantsSlots" ADD CONSTRAINT "ParticipantsSlots_slot_id_fkey" FOREIGN KEY (slot_id) REFERENCES public."Slots"(id) NOT VALID;
+ALTER TABLE public."ParticipantsGroups" OWNER TO postgres;
+ALTER TABLE ONLY public."ParticipantsGroups" ADD CONSTRAINT "ParticipantsGroups_pkey" PRIMARY KEY (id);
+ALTER TABLE ONLY public."ParticipantsGroups" ADD CONSTRAINT "ParticipantsGroups_participant_id_fkey" FOREIGN KEY (participant_id) REFERENCES public."Participants"(id) NOT VALID;
+ALTER TABLE ONLY public."ParticipantsGroups" ADD CONSTRAINT "ParticipantsGroups_group_id_fkey" FOREIGN KEY (group_id) REFERENCES public."Groups"(id) NOT VALID;
 
 --
 -- Table: Contributions
@@ -127,10 +127,10 @@ CREATE TABLE public."Contributions" (
     id uuid NOT NULL,
     participant_id uuid NOT NULL,
     junta_id uuid NOT NULL,
-    slot_id uuid NOT NULL,
+    group_id uuid NOT NULL,
     month integer NOT NULL,
     amount decimal(10,2) NOT NULL,
-    paid_date timestamp with time zone,
+    paid_date timestamptz with time zone,
     status character varying NOT NULL DEFAULT 'pending'::character varying
 );
 
@@ -138,25 +138,25 @@ ALTER TABLE public."Contributions" OWNER TO postgres;
 ALTER TABLE ONLY public."Contributions" ADD CONSTRAINT "Contributions_pkey" PRIMARY KEY (id);
 ALTER TABLE ONLY public."Contributions" ADD CONSTRAINT "Contributions_participant_id_fkey" FOREIGN KEY (participant_id) REFERENCES public."Participants"(id) NOT VALID;
 ALTER TABLE ONLY public."Contributions" ADD CONSTRAINT "Contributions_junta_id_fkey" FOREIGN KEY (junta_id) REFERENCES public."Juntas"(id) NOT VALID;
-ALTER TABLE ONLY public."Contributions" ADD CONSTRAINT "Contributions_slot_id_fkey" FOREIGN KEY (slot_id) REFERENCES public."Slots"(id) NOT VALID;
+ALTER TABLE ONLY public."Contributions" ADD CONSTRAINT "Contributions_group_id_fkey" FOREIGN KEY (group_id) REFERENCES public."Groups"(id) NOT VALID;
 
 --
 -- Table: Payouts
--- Tracks when slots receive money (payout) from the junta pool per junta
+-- Tracks when groups receive money (payout) from the junta pool per junta
 --
 CREATE TABLE public."Payouts" (
     id uuid NOT NULL,
-    slot_id uuid NOT NULL,
+    group_id uuid NOT NULL,
     junta_id uuid NOT NULL,
     month integer NOT NULL,
     amount_received decimal(10,2) NOT NULL,
-    received_date timestamp with time zone,
+    received_date timestamptz with time zone,
     is_fully_paid boolean NOT NULL DEFAULT false
 );
 
 ALTER TABLE public."Payouts" OWNER TO postgres;
 ALTER TABLE ONLY public."Payouts" ADD CONSTRAINT "Payouts_pkey" PRIMARY KEY (id);
-ALTER TABLE ONLY public."Payouts" ADD CONSTRAINT "Payouts_slot_id_fkey" FOREIGN KEY (slot_id) REFERENCES public."Slots"(id) NOT VALID;
+ALTER TABLE ONLY public."Payouts" ADD CONSTRAINT "Payouts_group_id_fkey" FOREIGN KEY (group_id) REFERENCES public."Groups"(id) NOT VALID;
 ALTER TABLE ONLY public."Payouts" ADD CONSTRAINT "Payouts_junta_id_fkey" FOREIGN KEY (junta_id) REFERENCES public."Juntas"(id) NOT VALID;
 
 --
@@ -169,7 +169,7 @@ CREATE TABLE public."Distributions" (
     participant_id uuid NOT NULL,
     junta_id uuid NOT NULL,
     amount_distributed decimal(10,2) NOT NULL,
-    distributed_date timestamp with time zone
+    distributed_date timestamptz with time zone
 );
 
 ALTER TABLE public."Distributions" OWNER TO postgres;
