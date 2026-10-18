@@ -19,45 +19,47 @@ every money movement. The money itself changes hands offline.
 
 ## Glossary
 
-| Term         | Meaning                                                        | In code                                          |
-| ------------ | -------------------------------------------------------------- | ------------------------------------------------ |
-| Junta        | One savings cycle with a start date, an end date and a pool.   | `Junta` entity, `JuntaResponse`                  |
-| Pool amount  | Money collected every month and paid out in full to one group. | `Junta.amount`                                   |
-| Currency     | ISO 4217 code of the junta's money, such as MXN or PEN.        | `Junta.currency`                                 |
-| Group        | The participants who receive the pool together in one month.   | `Group` entity, `GroupResponse`                  |
-| Group count  | Number of groups, equal to the number of months.               | `Junta.groupCount` (column `groups`)             |
-| Group amount | What each group collects per month: pool ÷ group count.        | `Junta.groupAmount` (column `partial_amount`)    |
-| Payout order | The month in which a group receives the pool. 1 = first month. | `Group.order`                                    |
-| Member       | A participant assigned to a group of a junta.                  | `ParticipantGroup` entity, `GroupMemberResponse` |
-| Participant  | A person who can take part in juntas.                          | `Participant` entity                             |
-| Admin        | A back-office user. Always linked to a participant.            | `Admin` entity                                   |
-| Contribution | A member's payment for one month.                              | `Contribution` entity (no endpoints yet)         |
-| Payout       | The pool paid to one group in one month.                       | `Payout` entity (no endpoints yet)               |
-| Distribution | One member's equal share of a payout.                          | `Distribution` entity (no endpoints yet)         |
-| Raffle       | The random draw that sets the initial payout order.            | `shuffle()` in `libs/domain`                     |
+| Term         | Meaning                                                              | In code                                          |
+| ------------ | -------------------------------------------------------------------- | ------------------------------------------------ |
+| Junta        | One savings cycle with a start date, an end date and a pool.         | `Junta` entity, `JuntaResponse`                  |
+| Pool amount  | Money collected every month and paid out in full to one group.       | `Junta.amount`                                   |
+| Currency     | ISO 4217 code of the junta's money, such as MXN or PEN.              | `Junta.currency`                                 |
+| Group        | The participants who receive the pool together in one month.         | `Group` entity, `GroupResponse`                  |
+| Group count  | Number of groups, equal to the number of months.                     | `Junta.groupCount` (column `groups`)             |
+| Group amount | What each group collects per month: pool ÷ group count.              | `Junta.groupAmount` (column `partial_amount`)    |
+| Payout order | The month in which a group receives the pool. 1 = first month.       | `Group.order`                                    |
+| Member       | A participant assigned to a group of a junta.                        | `ParticipantGroup` entity, `GroupMemberResponse` |
+| Participant  | A person who can take part in juntas.                                | `Participant` entity                             |
+| Account      | A login for the web or mobile app. Always linked to one participant. | `Account` entity                                 |
+| Organizer    | An account that creates and runs juntas.                             | `Role.ORGANIZER`, `Junta.organizerId`            |
+| Contribution | A member's payment for one month.                                    | `Contribution` entity (no endpoints yet)         |
+| Payout       | The pool paid to one group in one month.                             | `Payout` entity (no endpoints yet)               |
+| Distribution | One member's equal share of a payout.                                | `Distribution` entity (no endpoints yet)         |
+| Raffle       | The random draw that sets the initial payout order.                  | `shuffle()` in `libs/domain`                     |
 
 ## Business rules
 
 Status values: **enforced** means code rejects violations, **partial** means
 only some paths enforce it, **planned** means the rule is agreed but not built.
 
-| Id    | Rule                                                                                                                        | Status   | Where                                                          |
-| ----- | --------------------------------------------------------------------------------------------------------------------------- | -------- | -------------------------------------------------------------- |
-| BR-01 | A junta has one group per calendar month from the start month to the end month, inclusive, and at least one.                | partial  | `junta-schedule.ts` (admin form), `group-assignments.ts` (API) |
-| BR-02 | Payout orders are 1 to n with no gaps or repeats. Order n receives the pool in month n.                                     | enforced | `group-assignments.ts`                                         |
-| BR-03 | Each group collects exactly pool ÷ group count every month, in whole units. A pool that does not divide evenly is rejected. | enforced | `junta-financials.ts`                                          |
-| BR-04 | Each member pays group amount ÷ members of their group every month.                                                         | planned  |                                                                |
-| BR-05 | A participant belongs to at most one group per junta.                                                                       | enforced | `group-assignments.ts`                                         |
-| BR-06 | In its month a group receives the full pool and splits it equally among its members.                                        | planned  |                                                                |
-| BR-07 | Every member pays every month until the junta ends, whether or not their group was already paid.                            | planned  |                                                                |
-| BR-08 | A raffle draws the initial payout order. Admins may change the order afterwards.                                            | partial  | `raffle.ts` (admin form only)                                  |
-| BR-09 | A participant may take part in several juntas at once. Each junta tracks money independently.                               | enforced | data model                                                     |
-| BR-10 | Money changes hands offline. The system only records it.                                                                    | enforced | by design                                                      |
-| BR-11 | Every admin is linked to exactly one participant, created together.                                                         | enforced | `AdminsService.create`                                         |
-| BR-12 | Permissions derive from roles. A super admin holds every permission. An admin holds all but admin management.               | enforced | `permissions.ts`, `PermissionsGuard`                           |
-| BR-13 | Each junta stores its currency as an ISO 4217 code. Its amounts are whole units of that currency.                           | enforced | `junta-financials.ts`, `CreateJuntaDto`                        |
-| BR-14 | An admin account holds the admin or super admin role. The participant role cannot be its only role.                         | enforced | `permissions.ts`, `AdminsService`                              |
-| BR-15 | A participant sees only the juntas they belong to and the names of their own group. Never phone numbers or other groups.    | enforced | `participant-visibility.ts`, `MeService`                       |
+| Id    | Rule                                                                                                                                   | Status   | Where                                                          |
+| ----- | -------------------------------------------------------------------------------------------------------------------------------------- | -------- | -------------------------------------------------------------- |
+| BR-01 | A junta has one group per calendar month from the start month to the end month, inclusive, and at least one.                           | partial  | `junta-schedule.ts` (admin form), `group-assignments.ts` (API) |
+| BR-02 | Payout orders are 1 to n with no gaps or repeats. Order n receives the pool in month n.                                                | enforced | `group-assignments.ts`                                         |
+| BR-03 | Each group collects exactly pool ÷ group count every month, in whole units. A pool that does not divide evenly is rejected.            | enforced | `junta-financials.ts`                                          |
+| BR-04 | Each member pays group amount ÷ members of their group every month.                                                                    | planned  |                                                                |
+| BR-05 | A participant belongs to at most one group per junta.                                                                                  | enforced | `group-assignments.ts`                                         |
+| BR-06 | In its month a group receives the full pool and splits it equally among its members.                                                   | planned  |                                                                |
+| BR-07 | Every member pays every month until the junta ends, whether or not their group was already paid.                                       | planned  |                                                                |
+| BR-08 | A raffle draws the initial payout order. Admins may change the order afterwards.                                                       | partial  | `raffle.ts` (admin form only)                                  |
+| BR-09 | A participant may take part in several juntas at once. Each junta tracks money independently.                                          | enforced | data model                                                     |
+| BR-10 | Money changes hands offline. The system only records it.                                                                               | enforced | by design                                                      |
+| BR-11 | Every account is linked to exactly one participant, created together.                                                                  | enforced | `AccountsService.createAccount`                                |
+| BR-12 | Permissions derive from roles. An admin holds every permission; an organizer holds all but account management.                         | enforced | `permissions.ts`, `PermissionsGuard`                           |
+| BR-13 | Each junta stores its currency as an ISO 4217 code. Its amounts are whole units of that currency.                                      | enforced | `junta-financials.ts`, `CreateJuntaDto`                        |
+| BR-14 | Only admins and organizers can sign in to the web app. Participant-only accounts use the mobile app.                                   | enforced | `permissions.ts`, `AuthService`                                |
+| BR-15 | A participant sees only the juntas they belong to and the names of their own group. Never phone numbers or other groups.               | enforced | `participant-visibility.ts`, `MeService`                       |
+| BR-16 | An organizer manages only their own juntas, and the participants they created or who belong to those juntas. Admins manage everything. | enforced | `permissions.ts`, `participant-scope.ts`                       |
 
 Rule files live in `libs/domain/src/lib/`. Services live in `apps/api/src/app/`.
 
@@ -93,11 +95,11 @@ These double as test cases. Scenario 2 is covered by
 
 ## Roles
 
-| Role          | Can do                                                                                                                                   |
-| ------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| `superAdmin`  | Everything, including managing admins.                                                                                                   |
-| `admin`       | Everything except managing admins. The generators grant admins the permissions of every new resource.                                    |
-| `participant` | Read their own juntas through `/api/me` (`self:read`, BR-15). Participants sign in to the mobile app with their own accounts (spec 003). |
+| Role          | Can do                                                                                                               |
+| ------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `admin`       | Everything, including managing accounts. A few system administrators, never created through the app.                 |
+| `organizer`   | Create and run their own juntas and participants (BR-16). Generated resources grant their permissions to organizers. |
+| `participant` | Every app user: read the juntas they belong to through `/api/me` (`self:read`, BR-15).                               |
 
 The mapping is `ROLE_PERMISSIONS` in `libs/domain/src/lib/permissions.ts`.
 The admin app is the owner's back office. Participants will use a mobile app,
@@ -107,10 +109,10 @@ see [spec 003](specs/003-participant-mobile-app.md).
 
 The TypeORM entities in `apps/api/src/app/**/entities/` define the schema, and
 the migrations in `apps/api/src/app/database/migrations/` apply it (ADR 0005).
-Tables keep their historical names, for example `Administrators` and
-`ParticipantsGroups`.
+Tables keep their historical names, for example `ParticipantsGroups`.
 
-- `Juntas` belong to one `Administrators` row and own many `Groups`.
+- `Accounts` hold every login. Each links to one `Participants` row (BR-11).
+- `Juntas` belong to their organizer's `Accounts` row and own many `Groups`.
 - `ParticipantsGroups` links `Participants` to `Groups`. It is the membership
   table.
 - `Contributions`, `Payouts` and `Distributions` reference the junta, the group
@@ -132,7 +134,8 @@ rule above.
 | 2026-10-18 | Payment amount columns became whole-unit integers (migration `WholeUnitPaymentAmounts`).           | Q-01         |
 | 2026-10-18 | Each junta stores its own currency (BR-13). Existing juntas got MXN.                               | Q-02         |
 | 2026-10-18 | A pool must split evenly across its groups; uneven pools are rejected (BR-03).                     | Q-13         |
-| 2026-10-18 | The participant role cannot be an admin account's only role (BR-14).                               | Q-14         |
+| 2026-10-18 | The participant role cannot be an admin account's only role (BR-14). Replaced by spec 004.         | Q-14         |
+| 2026-10-18 | `superAdmin` became `admin` and the old `admin` became `organizer`; one Accounts table (spec 004). | BR-12, BR-16 |
 
 ## Open questions
 

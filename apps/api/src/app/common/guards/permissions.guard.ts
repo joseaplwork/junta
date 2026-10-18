@@ -3,7 +3,7 @@ import { Reflector } from '@nestjs/core'
 
 import { Permission } from '@junta/contracts'
 
-import { AuthenticatedRequest } from '@/api/common/auth/authenticated-admin'
+import { AuthenticatedRequest } from '@/api/common/auth/authenticated-account'
 import { PERMISSIONS_KEY } from '@/api/common/decorators/require-permissions.decorator'
 
 @Injectable()

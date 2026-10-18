@@ -18,7 +18,7 @@ export function toJuntaResponse(junta: Junta): JuntaResponse {
     startDate: junta.startDate.toISOString(),
     endDate: junta.endDate.toISOString(),
     active: junta.active,
-    adminId: junta.adminId,
+    organizerId: junta.organizerId,
   }
 }
 

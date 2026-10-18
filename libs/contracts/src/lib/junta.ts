@@ -35,7 +35,8 @@ export interface JuntaResponse {
   startDate: string
   endDate: string
   active: boolean
-  adminId: string
+  /** The account that created and runs the junta (BR-16). */
+  organizerId: string
 }
 
 export interface GroupMemberResponse {

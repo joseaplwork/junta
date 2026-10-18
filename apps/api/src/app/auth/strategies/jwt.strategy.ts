@@ -2,7 +2,7 @@ import { Inject, Injectable, UnauthorizedException } from '@nestjs/common'
 import { PassportStrategy } from '@nestjs/passport'
 import { ExtractJwt, Strategy } from 'passport-jwt'
 
-import { AuthenticatedAdmin } from '@/api/common/auth/authenticated-admin'
+import { AuthenticatedAccount } from '@/api/common/auth/authenticated-account'
 import { APP_CONFIG, AppConfig } from '@/api/config/app-config'
 
 import { AccessTokenPayload } from '../auth.types'
@@ -17,7 +17,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     })
   }
 
-  validate(payload: AccessTokenPayload): AuthenticatedAdmin {
+  validate(payload: AccessTokenPayload): AuthenticatedAccount {
     if (payload.type !== 'access') {
       throw new UnauthorizedException()
     }

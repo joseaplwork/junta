@@ -1,6 +1,6 @@
 import { AccessTokenClaims } from '@junta/contracts'
 
-import { AuthenticatedAdmin } from '@/api/common/auth/authenticated-admin'
+import { AuthenticatedAccount } from '@/api/common/auth/authenticated-account'
 
 /** `type` stops a refresh token from being accepted as an access token, and vice versa. */
 export interface AccessTokenPayload extends AccessTokenClaims {
@@ -9,18 +9,18 @@ export interface AccessTokenPayload extends AccessTokenClaims {
 
 export interface RefreshTokenPayload {
   type: 'refresh'
-  /** Set on participant tokens (spec 003). Admin refresh tokens have none. */
-  kind?: 'participant'
+  /** Set on mobile app tokens. Web refresh tokens have none, so each side refuses the other. */
+  kind?: 'mobile'
   sub: string
   /**
-   * The admin's `tokenVersion` when the token was issued. Tokens issued before
+   * The account's `tokenVersion` when the token was issued. Tokens issued before
    * spec 002 have none and count as version 0.
    */
   ver?: number
 }
 
 /** Everything needed to issue tokens: the admin and its current token version. */
-export interface TokenSubject extends AuthenticatedAdmin {
+export interface TokenSubject extends AuthenticatedAccount {
   tokenVersion: number
 }
 

@@ -67,12 +67,16 @@ describe('api-resource generator', () => {
     }
   })
 
-  it('grants the new permissions to admins', () => {
+  it('grants the new permissions to organizers', () => {
     const policy = read(tree, 'libs/domain/src/lib/permissions.ts')
-    const adminPermissions = policy.match(/\[Role\.ADMIN\]: \[([^\]]*)\]/)?.[1]
+    const organizerPermissions = policy.match(
+      /\[Role\.ORGANIZER\]: \[([^\]]*)\]/,
+    )?.[1]
 
     for (const action of ['CREATE', 'READ', 'UPDATE', 'DELETE']) {
-      expect(adminPermissions).toContain(`Permission.SAMPLE_RECORD_${action}`)
+      expect(organizerPermissions).toContain(
+        `Permission.SAMPLE_RECORD_${action}`,
+      )
     }
     expect(policy).not.toMatch(/\[Role\.PARTICIPANT\]: \[[^\]]*SAMPLE_RECORD/)
   })
@@ -108,17 +112,17 @@ describe('api-resource generator', () => {
     const workspace = createWorkspaceTree()
 
     workspace.write(
-      'apps/api/src/app/admins/entities/admin.entity.ts',
-      "@Entity('Administrators')\nexport class Admin {}\n",
+      'apps/api/src/app/auth/entities/login.entity.ts',
+      "@Entity('Accounts')\nexport class Login {}\n",
     )
 
     await expect(
       apiResourceGenerator(workspace, {
-        name: 'administrator',
+        name: 'account',
         fields: 'label:string',
         skipFormat: true,
       }),
-    ).rejects.toThrow('the database table "Administrators"')
+    ).rejects.toThrow('the database table "Accounts"')
   })
 
   it.each(['test', 'title', 'column', 'module'])(

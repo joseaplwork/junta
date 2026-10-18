@@ -1,29 +1,29 @@
 import * as SecureStore from 'expo-secure-store'
 
-import { ParticipantTokensResponse } from '@junta/contracts'
+import { TokenPairResponse } from '@junta/contracts'
 
 const KEY = 'junta.session'
 
-type Listener = (tokens: ParticipantTokensResponse | null) => void
+type Listener = (tokens: TokenPairResponse | null) => void
 
-let current: ParticipantTokensResponse | null = null
+let current: TokenPairResponse | null = null
 const listeners = new Set<Listener>()
 
 /** Tokens live in the device keychain (iOS) or keystore (Android), never in plain storage. */
 export const tokenStore = {
-  async load(): Promise<ParticipantTokensResponse | null> {
+  async load(): Promise<TokenPairResponse | null> {
     const stored = await SecureStore.getItemAsync(KEY)
 
-    current = stored ? (JSON.parse(stored) as ParticipantTokensResponse) : null
+    current = stored ? (JSON.parse(stored) as TokenPairResponse) : null
 
     return current
   },
 
-  get(): ParticipantTokensResponse | null {
+  get(): TokenPairResponse | null {
     return current
   },
 
-  async set(tokens: ParticipantTokensResponse | null): Promise<void> {
+  async set(tokens: TokenPairResponse | null): Promise<void> {
     current = tokens
 
     if (tokens) await SecureStore.setItemAsync(KEY, JSON.stringify(tokens))

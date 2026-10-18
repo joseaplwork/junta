@@ -31,7 +31,7 @@ describe('apiRequest', () => {
     await expect(apiRequest('me/juntas', { auth: true })).resolves.toEqual([])
 
     expect(fetchMock.mock.calls[1]?.[0]).toBe(
-      'http://api.test/api/participant-auth/refresh',
+      'http://api.test/api/mobile-auth/refresh',
     )
     expect(fetchMock.mock.calls[2]?.[1]).toMatchObject({
       headers: expect.objectContaining({ Authorization: 'Bearer new-access' }),

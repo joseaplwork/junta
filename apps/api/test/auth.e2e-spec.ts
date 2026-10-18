@@ -9,7 +9,7 @@ import {
   E2E_ADMIN,
   E2eApp,
   apiPath,
-  asSuperAdmin,
+  asAdmin,
   createE2eApp,
 } from './support/e2e-app'
 
@@ -70,7 +70,7 @@ describe('Auth (e2e)', () => {
       .expect(200)
 
     expect(response.body.email).toBe(E2E_ADMIN.email)
-    expect(response.body.permissions).toContain(Permission.ADMIN_CREATE)
+    expect(response.body.permissions).toContain(Permission.ACCOUNT_CREATE)
   })
 
   it('refreshes the session from the refresh cookie', async () => {
@@ -104,7 +104,7 @@ describe('Auth (e2e)', () => {
 
   describe('session revocation (spec 002)', () => {
     const credentials = { email: 'revoke@junta.test', password: 'first-pass' }
-    let adminId: string
+    let organizerId: string
     let currentPassword = credentials.password
 
     const login = async (password = currentPassword): Promise<string> =>
@@ -118,17 +118,17 @@ describe('Auth (e2e)', () => {
       request(server()).post(apiPath('auth/refresh')).set('Cookie', cookie)
 
     beforeAll(async () => {
-      const created = await asSuperAdmin(e2e)
-        .post('admins', {
+      const created = await asAdmin(e2e)
+        .post('accounts', {
           ...credentials,
-          roles: [Role.ADMIN],
+          roles: [Role.ORGANIZER],
           name: 'Rita',
           surname: 'Vega',
           phoneNumber: '622333444',
         })
         .expect(201)
 
-      adminId = created.body.id
+      organizerId = created.body.id
     })
 
     it('ends every session of the admin on logout', async () => {
@@ -148,8 +148,8 @@ describe('Auth (e2e)', () => {
     it('ends every session of the admin when the password changes', async () => {
       const before = await login()
 
-      await asSuperAdmin(e2e)
-        .patch(`admins/${adminId}`, { password: 'second-pass' })
+      await asAdmin(e2e)
+        .patch(`accounts/${organizerId}`, { password: 'second-pass' })
         .expect(200)
 
       currentPassword = 'second-pass'
@@ -169,7 +169,10 @@ describe('Auth (e2e)', () => {
       const session = await login()
       const expired = e2e.app
         .get(JwtService)
-        .sign({ type: 'refresh', sub: adminId, ver: 0 }, { expiresIn: '-1s' })
+        .sign(
+          { type: 'refresh', sub: organizerId, ver: 0 },
+          { expiresIn: '-1s' },
+        )
 
       await request(server())
         .post(apiPath('auth/logout'))

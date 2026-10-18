@@ -52,9 +52,15 @@ Cross-cutting code lives in `common/` (guards, decorators, filters),
 - **Config** comes from `@Inject(APP_CONFIG) config: AppConfig`. Only
   `config/app-config.ts` reads `process.env`.
 - **Auth**: `JwtAuthGuard` and `PermissionsGuard` are global. `@Public()` opts
-  a route out. `@CurrentAdmin()` returns the caller. Incrementing
-  `Admin.tokenVersion` revokes that admin's refresh tokens: logout and password
-  changes do it (spec 002).
+  a route out. `@CurrentAccount()` returns the caller, and
+  `@CurrentParticipant()` their participant id. Incrementing
+  `Account.tokenVersion` revokes that account's refresh tokens: logout and
+  password changes do it (spec 002).
+- **Scope** (BR-16): services that read or change juntas or participants take
+  the caller as `viewer`. Admins see everything; organizers see their own
+  juntas and participants, through `canManageJunta` and `scopeParticipants`.
+  Someone else's record answers 404. Generated resources are not scoped yet:
+  scope them in their spec when organizers must not share them.
 
 ## Errors
 
@@ -101,5 +107,5 @@ The schema changes only through migrations in
   when transactions are involved. See `participants.service.spec.ts` and
   `juntas.service.spec.ts`.
 - **e2e**: `test/<resource>.e2e-spec.ts` using `createE2eApp()` and
-  `asSuperAdmin()` from `test/support/e2e-app.ts`. Run with
+  `asAdmin()` from `test/support/e2e-app.ts`. Run with
   `npm run verify:e2e`.

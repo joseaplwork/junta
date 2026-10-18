@@ -1,13 +1,18 @@
-import { Inject, Injectable, UnauthorizedException } from '@nestjs/common'
+import {
+  ForbiddenException,
+  Inject,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import * as bcrypt from 'bcrypt'
 import { randomUUID } from 'crypto'
 
-import { permissionsForRoles } from '@junta/domain'
+import { canUseWebApp, permissionsForRoles } from '@junta/domain'
 
-import { AdminsService } from '@/api/admins/admins.service'
-import { Admin } from '@/api/admins/entities/admin.entity'
-import { AuthenticatedAdmin } from '@/api/common/auth/authenticated-admin'
+import { AccountsService } from '@/api/accounts/accounts.service'
+import { Account } from '@/api/accounts/entities/account.entity'
+import { AuthenticatedAccount } from '@/api/common/auth/authenticated-account'
 import { APP_CONFIG, AppConfig } from '@/api/config/app-config'
 
 import {
@@ -20,34 +25,78 @@ import {
 /** Compared against when the email is unknown, so both failures take the same time. */
 const DUMMY_PASSWORD_HASH = bcrypt.hashSync(randomUUID(), 10)
 
-export function toAuthenticatedAdmin(
-  admin: Pick<Admin, 'id' | 'email' | 'roles'>,
-): AuthenticatedAdmin {
+type AccountClaims = Pick<Account, 'id' | 'email' | 'roles'> & {
+  participant?: { id: string } | null
+}
+
+export function toAuthenticatedAccount(
+  account: AccountClaims,
+): AuthenticatedAccount {
   return {
-    id: admin.id,
-    email: admin.email,
-    roles: admin.roles,
-    permissions: permissionsForRoles(admin.roles),
+    id: account.id,
+    email: account.email,
+    roles: account.roles,
+    permissions: permissionsForRoles(account.roles),
+    participantId: account.participant?.id,
   }
 }
 
 export function toTokenSubject(
-  admin: Pick<Admin, 'id' | 'email' | 'roles' | 'tokenVersion'>,
+  account: AccountClaims & Pick<Account, 'tokenVersion'>,
 ): TokenSubject {
-  return { ...toAuthenticatedAdmin(admin), tokenVersion: admin.tokenVersion }
+  return {
+    ...toAuthenticatedAccount(account),
+    tokenVersion: account.tokenVersion,
+  }
 }
 
+/** Signs access and refresh tokens; shared by the web and the mobile sign-in. */
+export function signTokens(
+  jwtService: JwtService,
+  config: AppConfig,
+  subject: TokenSubject,
+  kind?: RefreshTokenPayload['kind'],
+): IssuedTokens {
+  const accessPayload: AccessTokenPayload = {
+    type: 'access',
+    sub: subject.id,
+    email: subject.email,
+    roles: subject.roles,
+    permissions: subject.permissions,
+    participantId: subject.participantId,
+  }
+  const refreshPayload: RefreshTokenPayload = {
+    type: 'refresh',
+    sub: subject.id,
+    ver: subject.tokenVersion,
+    ...(kind ? { kind } : {}),
+  }
+
+  return {
+    accessToken: jwtService.sign(accessPayload, {
+      expiresIn: config.auth.accessTokenTtl,
+      jwtid: randomUUID(),
+    }),
+    refreshToken: jwtService.sign(refreshPayload, {
+      expiresIn: config.auth.refreshTokenTtl,
+      jwtid: randomUUID(),
+    }),
+  }
+}
+
+/** Sign-in for the web app, with the refresh token in a cookie. */
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly adminsService: AdminsService,
+    private readonly accountsService: AccountsService,
     private readonly jwtService: JwtService,
     @Inject(APP_CONFIG) private readonly config: AppConfig,
   ) {}
 
   /**
    * Unknown emails, wrong passwords and malformed credentials all fail with the
-   * same 401 after a bcrypt comparison, so responses cannot reveal which emails exist.
+   * same 401 after a bcrypt comparison, so responses cannot reveal which emails
+   * exist. A correct password on a participant-only account gets 403 (BR-14).
    */
   async validateCredentials(
     email: unknown,
@@ -57,63 +106,45 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials')
     }
 
-    const admin = await this.adminsService.findByEmailWithPassword(email)
+    const account = await this.accountsService.findByEmailWithPassword(email)
     const passwordMatches = await bcrypt.compare(
       password,
-      admin?.password ?? DUMMY_PASSWORD_HASH,
+      account?.password ?? DUMMY_PASSWORD_HASH,
     )
 
-    if (!admin || !passwordMatches) {
+    if (!account || !passwordMatches) {
       throw new UnauthorizedException('Invalid credentials')
     }
 
-    return toTokenSubject(admin)
+    assertWebAccess(account.roles)
+
+    return toTokenSubject(account)
   }
 
   issueTokens(subject: TokenSubject): IssuedTokens {
-    const accessPayload: AccessTokenPayload = {
-      type: 'access',
-      sub: subject.id,
-      email: subject.email,
-      roles: subject.roles,
-      permissions: subject.permissions,
-    }
-    const refreshPayload: RefreshTokenPayload = {
-      type: 'refresh',
-      sub: subject.id,
-      ver: subject.tokenVersion,
-    }
-
-    return {
-      accessToken: this.jwtService.sign(accessPayload, {
-        expiresIn: this.config.auth.accessTokenTtl,
-        jwtid: randomUUID(),
-      }),
-      refreshToken: this.jwtService.sign(refreshPayload, {
-        expiresIn: this.config.auth.refreshTokenTtl,
-        jwtid: randomUUID(),
-      }),
-    }
+    return signTokens(this.jwtService, this.config, subject)
   }
 
   /**
-   * Reloads the admin so role changes and deletions apply at the next refresh.
-   * A token issued before the admin's latest logout or password change is
-   * rejected (spec 002).
+   * Reloads the account so role changes and deletions apply at the next
+   * refresh. A token issued before the account's latest logout or password
+   * change is rejected (spec 002).
    */
   async refresh(refreshToken: string | undefined): Promise<IssuedTokens> {
     const payload = this.verifyRefreshToken(refreshToken)
-    const admin = await this.adminsService.findEntityById(payload.sub)
+    const account = await this.accountsService.findEntityById(payload.sub)
 
-    if (!admin || admin.tokenVersion !== (payload.ver ?? 0)) {
+    if (!account || account.tokenVersion !== (payload.ver ?? 0)) {
       throw new UnauthorizedException('Invalid refresh token')
     }
 
-    return this.issueTokens(toTokenSubject(admin))
+    assertWebAccess(account.roles)
+
+    return this.issueTokens(toTokenSubject(account))
   }
 
   /**
-   * Ends every session of the admin who owns the refresh token (spec 002).
+   * Ends every session of the account that owns the refresh token (spec 002).
    * A missing, invalid or already revoked token changes nothing, because
    * logging out must always succeed.
    */
@@ -126,7 +157,7 @@ export class AuthService {
       return
     }
 
-    await this.adminsService.revokeSessions(payload.sub, payload.ver ?? 0)
+    await this.accountsService.revokeSessions(payload.sub, payload.ver ?? 0)
   }
 
   private verifyRefreshToken(token: string | undefined): RefreshTokenPayload {
@@ -147,5 +178,14 @@ export class AuthService {
     }
 
     return payload
+  }
+}
+
+/** BR-14: the web app is for admins and organizers. */
+function assertWebAccess(roles: Account['roles']): void {
+  if (!canUseWebApp(roles)) {
+    throw new ForbiddenException(
+      'The web app is for admins and organizers. Participants use the mobile app.',
+    )
   }
 }

@@ -8,12 +8,9 @@ import {
   useState,
 } from 'react'
 
-import {
-  ParticipantLoginRequest,
-  ParticipantRegisterRequest,
-} from '@junta/contracts'
+import { LoginRequest, RegisterRequest } from '@junta/contracts'
 
-import { participantAuthApi } from '@/mobile/shared/api/participant-auth-api'
+import { mobileAuthApi } from '@/mobile/shared/api/mobile-auth-api'
 
 import { tokenStore } from './token-store'
 
@@ -21,8 +18,8 @@ export type SessionStatus = 'loading' | 'signedOut' | 'signedIn'
 
 export interface Session {
   status: SessionStatus
-  signIn: (request: ParticipantLoginRequest) => Promise<void>
-  register: (request: ParticipantRegisterRequest) => Promise<void>
+  signIn: (request: LoginRequest) => Promise<void>
+  register: (request: RegisterRequest) => Promise<void>
   signOut: () => Promise<void>
 }
 
@@ -49,12 +46,12 @@ export function SessionProvider({
     return unsubscribe
   }, [])
 
-  const signIn = useCallback(async (request: ParticipantLoginRequest) => {
-    await tokenStore.set(await participantAuthApi.login(request))
+  const signIn = useCallback(async (request: LoginRequest) => {
+    await tokenStore.set(await mobileAuthApi.login(request))
   }, [])
 
-  const register = useCallback(async (request: ParticipantRegisterRequest) => {
-    await tokenStore.set(await participantAuthApi.register(request))
+  const register = useCallback(async (request: RegisterRequest) => {
+    await tokenStore.set(await mobileAuthApi.register(request))
   }, [])
 
   const signOut = useCallback(async () => {
@@ -63,7 +60,7 @@ export function SessionProvider({
     await tokenStore.set(null)
 
     if (refreshToken)
-      await participantAuthApi.logout(refreshToken).catch(() => undefined)
+      await mobileAuthApi.logout(refreshToken).catch(() => undefined)
   }, [])
 
   const session = useMemo(

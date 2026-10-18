@@ -5,8 +5,8 @@ import * as bcrypt from 'bcrypt'
 
 import { Permission, Role } from '@junta/contracts'
 
-import { AdminsService } from '@/api/admins/admins.service'
-import { Admin } from '@/api/admins/entities/admin.entity'
+import { AccountsService } from '@/api/accounts/accounts.service'
+import { Account } from '@/api/accounts/entities/account.entity'
 import { APP_CONFIG, AppConfig } from '@/api/config/app-config'
 
 import { AuthService } from './auth.service'
@@ -22,17 +22,17 @@ const config = {
 describe('AuthService', () => {
   let service: AuthService
   const jwtService = new JwtService({ secret: config.auth.jwtSecret })
-  const adminsService = {
+  const accountsService = {
     findByEmailWithPassword: jest.fn(),
     findEntityById: jest.fn(),
     revokeSessions: jest.fn(),
   }
 
-  const admin = async (): Promise<Admin> =>
-    Object.assign(new Admin(), {
+  const admin = async (): Promise<Account> =>
+    Object.assign(new Account(), {
       id: 'admin-1',
       email: 'ana@junta.test',
-      roles: [Role.ADMIN],
+      roles: [Role.ORGANIZER],
       tokenVersion: 0,
       password: await bcrypt.hash('right-password', 4),
     })
@@ -43,7 +43,7 @@ describe('AuthService', () => {
     const moduleRef = await Test.createTestingModule({
       providers: [
         AuthService,
-        { provide: AdminsService, useValue: adminsService },
+        { provide: AccountsService, useValue: accountsService },
         { provide: JwtService, useValue: jwtService },
         { provide: APP_CONFIG, useValue: config },
       ],
@@ -54,7 +54,7 @@ describe('AuthService', () => {
 
   describe('validateCredentials', () => {
     it('returns the admin with permissions derived from roles (BR-12)', async () => {
-      adminsService.findByEmailWithPassword.mockResolvedValue(await admin())
+      accountsService.findByEmailWithPassword.mockResolvedValue(await admin())
 
       const result = await service.validateCredentials(
         'ana@junta.test',
@@ -62,14 +62,14 @@ describe('AuthService', () => {
       )
 
       expect(result.permissions).toContain(Permission.JUNTA_CREATE)
-      expect(result.permissions).not.toContain(Permission.ADMIN_CREATE)
+      expect(result.permissions).not.toContain(Permission.ACCOUNT_CREATE)
     })
 
     it.each([
       ['an unknown email', null],
       ['a wrong password', 'admin'],
     ])('rejects %s with the same message', async (_case, found) => {
-      adminsService.findByEmailWithPassword.mockResolvedValue(
+      accountsService.findByEmailWithPassword.mockResolvedValue(
         found ? await admin() : null,
       )
 
@@ -84,12 +84,12 @@ describe('AuthService', () => {
     ])(
       'rejects %s with 401 instead of crashing',
       async (_case, email, password) => {
-        adminsService.findByEmailWithPassword.mockResolvedValue(await admin())
+        accountsService.findByEmailWithPassword.mockResolvedValue(await admin())
 
         await expect(
           service.validateCredentials(email, password),
         ).rejects.toThrow(new UnauthorizedException('Invalid credentials'))
-        expect(adminsService.findByEmailWithPassword).not.toHaveBeenCalled()
+        expect(accountsService.findByEmailWithPassword).not.toHaveBeenCalled()
       },
     )
   })
@@ -98,7 +98,7 @@ describe('AuthService', () => {
     const authenticated = {
       id: 'admin-1',
       email: 'ana@junta.test',
-      roles: [Role.ADMIN],
+      roles: [Role.ORGANIZER],
       permissions: [Permission.JUNTA_READ],
       tokenVersion: 0,
     }
@@ -109,7 +109,7 @@ describe('AuthService', () => {
       expect(jwtService.verify(accessToken)).toMatchObject({
         type: 'access',
         sub: 'admin-1',
-        roles: [Role.ADMIN],
+        roles: [Role.ORGANIZER],
       })
     })
 
@@ -124,7 +124,7 @@ describe('AuthService', () => {
     it('refuses to refresh for an admin that no longer exists', async () => {
       const { refreshToken } = service.issueTokens(authenticated)
 
-      adminsService.findEntityById.mockResolvedValue(null)
+      accountsService.findEntityById.mockResolvedValue(null)
 
       await expect(service.refresh(refreshToken)).rejects.toBeInstanceOf(
         UnauthorizedException,
@@ -134,14 +134,14 @@ describe('AuthService', () => {
     it('issues new tokens from the roles currently stored', async () => {
       const { refreshToken } = service.issueTokens(authenticated)
 
-      adminsService.findEntityById.mockResolvedValue(
-        Object.assign(await admin(), { roles: [Role.SUPER_ADMIN] }),
+      accountsService.findEntityById.mockResolvedValue(
+        Object.assign(await admin(), { roles: [Role.ADMIN] }),
       )
 
       const tokens = await service.refresh(refreshToken)
 
       expect(jwtService.verify(tokens.accessToken)).toMatchObject({
-        roles: [Role.SUPER_ADMIN],
+        roles: [Role.ADMIN],
       })
     })
 
@@ -166,7 +166,7 @@ describe('AuthService', () => {
     it('rejects a refresh token issued before the latest logout or password change', async () => {
       const { refreshToken } = service.issueTokens(authenticated)
 
-      adminsService.findEntityById.mockResolvedValue(
+      accountsService.findEntityById.mockResolvedValue(
         Object.assign(await admin(), { tokenVersion: 1 }),
       )
 
@@ -181,7 +181,7 @@ describe('AuthService', () => {
         { expiresIn: '7d' },
       )
 
-      adminsService.findEntityById.mockResolvedValue(await admin())
+      accountsService.findEntityById.mockResolvedValue(await admin())
 
       await expect(service.refresh(legacyToken)).resolves.toMatchObject({
         accessToken: expect.any(String),
@@ -194,14 +194,14 @@ describe('AuthService', () => {
       const { refreshToken } = service.issueTokens({
         id: 'admin-1',
         email: 'ana@junta.test',
-        roles: [Role.ADMIN],
+        roles: [Role.ORGANIZER],
         permissions: [],
         tokenVersion: 2,
       })
 
       await service.logout(refreshToken)
 
-      expect(adminsService.revokeSessions).toHaveBeenCalledWith('admin-1', 2)
+      expect(accountsService.revokeSessions).toHaveBeenCalledWith('admin-1', 2)
     })
 
     it.each([
@@ -209,7 +209,7 @@ describe('AuthService', () => {
       ['a forged token', 'not-a-jwt'],
     ])('succeeds without revoking anything for %s', async (_case, token) => {
       await expect(service.logout(token)).resolves.toBeUndefined()
-      expect(adminsService.revokeSessions).not.toHaveBeenCalled()
+      expect(accountsService.revokeSessions).not.toHaveBeenCalled()
     })
   })
 })

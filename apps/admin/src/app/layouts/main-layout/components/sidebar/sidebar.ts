@@ -43,10 +43,10 @@ export class Sidebar {
       exact: true,
     },
     {
-      label: 'Admins',
+      label: 'Accounts',
       icon: 'admin_panel_settings',
-      route: '/dashboard/admin',
-      permission: Permission.ADMIN_READ,
+      route: '/dashboard/account',
+      permission: Permission.ACCOUNT_READ,
     },
     {
       label: 'Participants',

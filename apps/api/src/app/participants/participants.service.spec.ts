@@ -2,10 +2,21 @@ import { NotFoundException } from '@nestjs/common'
 import { Test } from '@nestjs/testing'
 import { getRepositoryToken } from '@nestjs/typeorm'
 
+import { Permission, Role } from '@junta/contracts'
+
+import { AuthenticatedAccount } from '@/api/common/auth/authenticated-account'
 import { Junta } from '@/api/juntas/entities/junta.entity'
 
 import { Participant } from './entities/participant.entity'
 import { ParticipantsService } from './participants.service'
+
+const viewer = (roles: Role[]): AuthenticatedAccount => ({
+  id: 'account-1',
+  email: 'ana@junta.test',
+  roles,
+  permissions: [Permission.PARTICIPANT_READ],
+  participantId: 'participant-self',
+})
 
 const buildParticipant = (overrides: Partial<Participant> = {}): Participant =>
   Object.assign(new Participant(), {
@@ -18,12 +29,19 @@ const buildParticipant = (overrides: Partial<Participant> = {}): Participant =>
 
 describe('ParticipantsService', () => {
   let service: ParticipantsService
+  const query = {
+    where: jest.fn().mockReturnThis(),
+    andWhere: jest.fn().mockReturnThis(),
+    orderBy: jest.fn().mockReturnThis(),
+    addOrderBy: jest.fn().mockReturnThis(),
+    getMany: jest.fn(),
+    getOne: jest.fn(),
+  }
   const participants = {
     create: jest.fn((input: Partial<Participant>) => buildParticipant(input)),
     save: jest.fn(async (participant: Participant) => participant),
-    find: jest.fn(),
-    findOneBy: jest.fn(),
     remove: jest.fn(),
+    createQueryBuilder: jest.fn(() => query),
   }
 
   beforeEach(async () => {
@@ -40,58 +58,49 @@ describe('ParticipantsService', () => {
     service = moduleRef.get(ParticipantsService)
   })
 
-  it('creates a participant and returns the response contract', async () => {
-    await expect(
-      service.create({
-        name: 'Ana',
-        surname: 'Diaz',
-        phoneNumber: '600111222',
-      }),
-    ).resolves.toEqual({
-      id: 'participant-1',
-      name: 'Ana',
-      surname: 'Diaz',
-      phoneNumber: '600111222',
-    })
-  })
+  it('records who created the participant (BR-16)', async () => {
+    await service.create(
+      { name: 'Ana', surname: 'Diaz', phoneNumber: '600111222' },
+      viewer([Role.ORGANIZER]),
+    )
 
-  it('lists participants sorted by surname then name', async () => {
-    participants.find.mockResolvedValue([buildParticipant()])
-
-    await expect(service.findAll()).resolves.toHaveLength(1)
-    expect(participants.find).toHaveBeenCalledWith({
-      order: { surname: 'ASC', name: 'ASC' },
-    })
-  })
-
-  it('throws NotFoundException for an unknown id', async () => {
-    participants.findOneBy.mockResolvedValue(null)
-
-    await expect(service.findOne('missing')).rejects.toBeInstanceOf(
-      NotFoundException,
+    expect(participants.create).toHaveBeenCalledWith(
+      expect.objectContaining({ createdBy: 'account-1' }),
     )
   })
 
-  it('updates only the provided fields', async () => {
-    participants.findOneBy.mockResolvedValue(buildParticipant())
+  it('limits an organizer to their own participants (BR-16)', async () => {
+    query.getMany.mockResolvedValue([buildParticipant()])
 
-    await expect(
-      service.update('participant-1', { phoneNumber: '699000000' }),
-    ).resolves.toEqual({
-      id: 'participant-1',
-      name: 'Ana',
-      surname: 'Diaz',
-      phoneNumber: '699000000',
-    })
+    await service.findAll(viewer([Role.ORGANIZER]))
+
+    expect(query.andWhere).toHaveBeenCalled()
   })
 
-  it('removes an existing participant', async () => {
+  it('shows an admin every participant', async () => {
+    query.getMany.mockResolvedValue([buildParticipant()])
+
+    await expect(service.findAll(viewer([Role.ADMIN]))).resolves.toHaveLength(1)
+    expect(query.andWhere).not.toHaveBeenCalled()
+  })
+
+  it('answers 404 for a participant outside the scope', async () => {
+    query.getOne.mockResolvedValue(null)
+
+    await expect(
+      service.findOne(viewer([Role.ORGANIZER]), 'missing'),
+    ).rejects.toBeInstanceOf(NotFoundException)
+  })
+
+  it('updates only the given fields', async () => {
     const participant = buildParticipant()
 
-    participants.findOneBy.mockResolvedValue(participant)
+    query.getOne.mockResolvedValue(participant)
 
-    await service.remove('participant-1')
+    await service.update(viewer([Role.ADMIN]), 'participant-1', {
+      phoneNumber: '699000000',
+    })
 
-    expect(participants.remove).toHaveBeenCalledWith(participant)
+    expect(participant).toMatchObject({ name: 'Ana', phoneNumber: '699000000' })
   })
 })

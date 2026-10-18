@@ -7,7 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm'
 
-import { Admin } from '@/api/admins/entities/admin.entity'
+import { Account } from '@/api/accounts/entities/account.entity'
 import { Contribution } from '@/api/payments/entities/contribution.entity'
 import { Distribution } from '@/api/payments/entities/distribution.entity'
 import { Payout } from '@/api/payments/entities/payout.entity'
@@ -44,12 +44,13 @@ export class Junta {
   @Column({ type: 'boolean' })
   active: boolean
 
-  @Column({ name: 'admin_id', type: 'uuid' })
-  adminId: string
+  /** The account that runs this junta (BR-16). */
+  @Column({ name: 'organizer_id', type: 'uuid' })
+  organizerId: string
 
-  @ManyToOne(() => Admin, admin => admin.juntas)
-  @JoinColumn({ name: 'admin_id' })
-  admin: Admin
+  @ManyToOne(() => Account, account => account.juntas)
+  @JoinColumn({ name: 'organizer_id' })
+  organizer: Account
 
   @OneToMany(() => Group, group => group.junta)
   groups: Group[]

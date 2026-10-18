@@ -2,13 +2,13 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
 
-import { ParticipantRegisterRequest } from '@junta/contracts'
+import { RegisterRequest } from '@junta/contracts'
 
 import { authErrorKey } from '@/mobile/shared/auth/auth-error'
 import { useSession } from '@/mobile/shared/auth/session'
 import { Button, ErrorText, TextField } from '@/mobile/shared/components/ui'
 
-const EMPTY: ParticipantRegisterRequest = {
+const EMPTY: RegisterRequest = {
   email: '',
   password: '',
   name: '',
@@ -28,7 +28,7 @@ export function RegisterFeature({
   const [errorKey, setErrorKey] = useState<string | null>(null)
 
   const field =
-    (key: keyof ParticipantRegisterRequest) =>
+    (key: keyof RegisterRequest) =>
     (value: string): void =>
       setForm(current => ({ ...current, [key]: value }))
 

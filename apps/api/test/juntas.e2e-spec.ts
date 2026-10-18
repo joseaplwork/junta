@@ -1,10 +1,10 @@
 import { JuntaDetailResponse, ParticipantResponse } from '@junta/contracts'
 
-import { E2eApp, asSuperAdmin, createE2eApp } from './support/e2e-app'
+import { E2eApp, asAdmin, createE2eApp } from './support/e2e-app'
 
 describe('Juntas (e2e)', () => {
   let e2e: E2eApp
-  let api: ReturnType<typeof asSuperAdmin>
+  let api: ReturnType<typeof asAdmin>
   let participants: ParticipantResponse[]
 
   const juntaRequest = (
@@ -21,7 +21,7 @@ describe('Juntas (e2e)', () => {
 
   beforeAll(async () => {
     e2e = await createE2eApp()
-    api = asSuperAdmin(e2e)
+    api = asAdmin(e2e)
     participants = []
 
     for (const name of ['Ana', 'Luis', 'Marta']) {

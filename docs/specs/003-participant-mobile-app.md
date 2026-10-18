@@ -4,6 +4,9 @@
 - **Owner:** joseaplwork
 - **Rules:** BR-02, BR-03, BR-12, BR-13, BR-15 (new)
 
+> Spec 004 later merged participant accounts into the `Accounts` table and
+> renamed `/api/participant-auth` to `/api/mobile-auth`.
+
 ## Problem
 
 Participants cannot see their juntas, their payout month or what their group
@@ -53,14 +56,14 @@ Assumptions taken while building, to confirm with the owner:
 
 ## API changes (`apps/api`)
 
-| Method | Path                             | Permission  | Request                      | Response                    | Errors             |
-| ------ | -------------------------------- | ----------- | ---------------------------- | --------------------------- | ------------------ |
-| POST   | `/api/participant-auth/register` | public      | `ParticipantRegisterRequest` | `ParticipantTokensResponse` | 400, 409           |
-| POST   | `/api/participant-auth/login`    | public      | `ParticipantLoginRequest`    | `ParticipantTokensResponse` | 401                |
-| POST   | `/api/participant-auth/refresh`  | public      | `RefreshTokenRequest`        | `ParticipantTokensResponse` | 401                |
-| POST   | `/api/participant-auth/logout`   | public      | `RefreshTokenRequest`        | 204                         | none               |
-| GET    | `/api/me/juntas`                 | `self:read` | none                         | `MyJuntaSummaryResponse[]`  | 401, 403           |
-| GET    | `/api/me/juntas/:id`             | `self:read` | none                         | `MyJuntaDetailResponse`     | 400, 401, 403, 404 |
+| Method | Path                        | Permission  | Request                      | Response                    | Errors             |
+| ------ | --------------------------- | ----------- | ---------------------------- | --------------------------- | ------------------ |
+| POST   | `/api/mobile-auth/register` | public      | `ParticipantRegisterRequest` | `ParticipantTokensResponse` | 400, 409           |
+| POST   | `/api/mobile-auth/login`    | public      | `ParticipantLoginRequest`    | `ParticipantTokensResponse` | 401                |
+| POST   | `/api/mobile-auth/refresh`  | public      | `RefreshTokenRequest`        | `ParticipantTokensResponse` | 401                |
+| POST   | `/api/mobile-auth/logout`   | public      | `RefreshTokenRequest`        | 204                         | none               |
+| GET    | `/api/me/juntas`            | `self:read` | none                         | `MyJuntaSummaryResponse[]`  | 401, 403           |
+| GET    | `/api/me/juntas/:id`        | `self:read` | none                         | `MyJuntaDetailResponse`     | 400, 401, 403, 404 |
 
 - Tokens travel in the request and response body, never in cookies, and the
   app keeps them in the device keychain through `expo-secure-store`.

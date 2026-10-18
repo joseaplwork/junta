@@ -1,8 +1,4 @@
-import {
-  API_PREFIX,
-  ApiResource,
-  ParticipantTokensResponse,
-} from '@junta/contracts'
+import { API_PREFIX, ApiResource, TokenPairResponse } from '@junta/contracts'
 
 import { tokenStore } from '@/mobile/shared/auth/token-store'
 import { resolveApiUrl } from '@/mobile/shared/config/api-url'
@@ -50,7 +46,7 @@ function refreshAccessToken(): Promise<string | null> {
 
     if (!refreshToken) return null
 
-    const response = await send(`${ApiResource.participantAuth}/refresh`, {
+    const response = await send(`${ApiResource.mobileAuth}/refresh`, {
       method: 'POST',
       body: { refreshToken },
     })
@@ -61,7 +57,7 @@ function refreshAccessToken(): Promise<string | null> {
       return null
     }
 
-    const tokens = (await response.json()) as ParticipantTokensResponse
+    const tokens = (await response.json()) as TokenPairResponse
 
     await tokenStore.set(tokens)
 

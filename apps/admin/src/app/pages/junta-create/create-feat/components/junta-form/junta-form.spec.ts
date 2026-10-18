@@ -35,7 +35,7 @@ const junta: JuntaDetailResponse = {
   startDate: start.toISOString(),
   endDate: end.toISOString(),
   active: true,
-  adminId: 'admin-1',
+  organizerId: 'admin-1',
   groups: [
     {
       id: 'g2',
