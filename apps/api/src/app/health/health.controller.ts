@@ -1,6 +1,6 @@
 import { Controller, Get } from '@nestjs/common'
 
-import { ApiResource } from '@junta/contracts'
+import { ApiResource, HealthResponse } from '@junta/contracts'
 
 import { Public } from '@/api/common/decorators/public.decorator'
 
@@ -8,7 +8,7 @@ import { Public } from '@/api/common/decorators/public.decorator'
 export class HealthController {
   @Public()
   @Get()
-  check(): { status: 'ok' } {
+  check(): HealthResponse {
     return { status: 'ok' }
   }
 }

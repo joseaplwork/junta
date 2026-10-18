@@ -1,6 +1,6 @@
 # Architecture
 
-Junta is an Nx monorepo with two applications and two shared libraries.
+Junta is an Nx monorepo with three applications and two shared libraries.
 
 ```mermaid
 graph LR
@@ -9,7 +9,10 @@ graph LR
   api["apps/api<br/>NestJS + TypeORM"] --> contracts
   api --> domain
   domain --> contracts
+  mobile["apps/mobile<br/>Ionic + Capacitor"] --> contracts
+  mobile --> domain
   admin -. HTTP/JSON .-> api
+  mobile -. HTTP/JSON .-> api
   api --> db[(PostgreSQL)]
 ```
 
@@ -17,6 +20,7 @@ graph LR
 | -------------------- | --------------------- | -------------------------------- |
 | `apps/api`           | `@junta/api`          | `type:app`, `scope:api`          |
 | `apps/admin`         | `@junta/admin`        | `type:app`, `scope:admin`        |
+| `apps/mobile`        | `@junta/mobile`       | `type:app`, `scope:mobile`       |
 | `libs/contracts`     | `@junta/contracts`    | `type:contracts`, `scope:shared` |
 | `libs/domain`        | `@junta/domain`       | `type:domain`, `scope:shared`    |
 | `tools/nx-plugin`    | `@junta/nx-plugin`    | `type:tool`, `scope:tooling`     |
@@ -122,19 +126,37 @@ The admin shows the API message for business rule errors through
 - `shared/api` holds one client per API resource. It is the only HTTP code.
 - Change detection is zoneless. State is signals; every component is OnPush.
 
+## Mobile application
+
+- The app for participants on iOS and Android, see
+  [ADR 0006](decisions/0006-hybrid-mobile-app.md) and
+  [spec 003](specs/003-participant-mobile-app.md). Angular 20 with Ionic 9
+  components, zoneless and signal-based like the admin. Capacitor 8 wraps the
+  web build in native iOS and Android projects.
+- Same structure as the admin: lazy pages made of features, one `shared/api`
+  client per resource, `jm-` selectors.
+- `npm run start:mobile` serves it in the browser and proxies `/api` to the
+  local API. Native builds call the API by the absolute URL in
+  `apps/mobile/src/environments/environment.ts`, so `CORS_ORIGIN` must include
+  `capacitor://localhost` (iOS) and `https://localhost` (Android).
+- The native projects get added once the app id is decided. From then on they
+  are committed source.
+- Participants cannot sign in yet. The admin's refresh cookie does not suit
+  native apps, so spec 003 decides the participant sign-in.
+
 ## How the rules are enforced
 
-| Rule                                                                | Enforced by                                                   |
-| ------------------------------------------------------------------- | ------------------------------------------------------------- |
-| Library dependency directions, no app-to-app imports                | `@nx/enforce-module-boundaries` in `.eslintrc.json`           |
-| Contracts import nothing, domain imports no framework               | `bannedExternalImports` in `.eslintrc.json`                   |
-| Controllers hold no persistence or business logic                   | `no-restricted-imports` in `apps/api/.eslintrc.json`          |
-| Admin pages never import each other                                 | `@nx/workspace-no-cross-page-imports` (`tools/eslint-rules`)  |
-| Admin pages never use `HttpClient`                                  | `no-restricted-imports` in `apps/admin/.eslintrc.json`        |
-| Signals, OnPush, `inject()`, `ja-` prefix, control flow             | angular-eslint rules in `apps/admin/.eslintrc.json`           |
-| Strict types, no `any`, explicit return types, no floating promises | `tsconfig.base.json` and the root ESLint config               |
-| API shapes match on both sides                                      | DTOs and clients typed with `@junta/contracts`                |
-| New resources follow the canonical layout                           | `@junta/nx-plugin` generators and their snapshot tests        |
-| Generators keep producing working code                              | The `Generators` CI job builds and tests a generated resource |
-| Formatting                                                          | Prettier, the format-on-edit hook and `nx format:check`       |
-| Work is verified before it is reported done                         | `tools/scripts/verify.mjs`, the agent stop hooks and CI       |
+| Rule                                                                | Enforced by                                                    |
+| ------------------------------------------------------------------- | -------------------------------------------------------------- |
+| Library dependency directions, no app-to-app imports                | `@nx/enforce-module-boundaries` in `.eslintrc.json`            |
+| Contracts import nothing, domain imports no framework               | `bannedExternalImports` in `.eslintrc.json`                    |
+| Controllers hold no persistence or business logic                   | `no-restricted-imports` in `apps/api/.eslintrc.json`           |
+| Pages of an app never import each other                             | `@nx/workspace-no-cross-page-imports` (`tools/eslint-rules`)   |
+| Pages never use `HttpClient`                                        | `no-restricted-imports` in each Angular app's `.eslintrc.json` |
+| Signals, OnPush, `inject()`, `ja-` or `jm-` prefix, control flow    | angular-eslint rules in each Angular app's `.eslintrc.json`    |
+| Strict types, no `any`, explicit return types, no floating promises | `tsconfig.base.json` and the root ESLint config                |
+| API shapes match on both sides                                      | DTOs and clients typed with `@junta/contracts`                 |
+| New resources follow the canonical layout                           | `@junta/nx-plugin` generators and their snapshot tests         |
+| Generators keep producing working code                              | The `Generators` CI job builds and tests a generated resource  |
+| Formatting                                                          | Prettier, the format-on-edit hook and `nx format:check`        |
+| Work is verified before it is reported done                         | `tools/scripts/verify.mjs`, the agent stop hooks and CI        |

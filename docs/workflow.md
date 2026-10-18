@@ -74,6 +74,8 @@ matches its description.
 - Money, rounding or currency.
 - Roles, permissions, or who may see what.
 - Deleting or migrating data, or renaming entity columns.
+- Anything that ships to the app stores: app ids, store listings, signing,
+  native permissions.
 - Anything listed under open questions in `domain.md`.
 
 Answers go into `domain.md` or the spec, so the next session knows them.
@@ -94,6 +96,11 @@ Answers go into `domain.md` or the spec, so the next session knows them.
 branch protection to require all three:
 
 - **Verify**: `npm run verify` on the affected projects.
-- **API e2e**: the e2e suite against a PostgreSQL service.
-- **Generators**: generates a sample resource with every field type, then runs
-  lint, typecheck, test, build and e2e on it.
+- **API e2e**: applies the migrations to a fresh PostgreSQL database, checks
+  that they match the entities, then runs the e2e suite.
+- **Generators**: generates a sample resource with every field type and its
+  migration, then runs lint, typecheck, test, build and e2e on it.
+
+CI builds and tests the mobile app's web code like any other project. Native
+iOS and Android builds need Xcode and the Android SDK, so they run on a
+developer machine for now.

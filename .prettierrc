@@ -11,7 +11,7 @@
   "importOrder": [
     "<THIRD_PARTY_MODULES>",
     "^@(junta)(.*)$",
-    "^@/(admin|api)(.*)$",
+    "^@/(admin|api|mobile)(.*)$",
     "^../",
     "^[./]"
   ],
@@ -28,7 +28,7 @@
   "importOrderSortSpecifiers": true,
   "overrides": [
     {
-      "files": "apps/admin/src/**/*.html",
+      "files": "apps/{admin,mobile}/src/**/*.html",
       "options": { "parser": "angular" }
     }
   ]

@@ -41,11 +41,15 @@
               },
               {
                 "sourceTag": "scope:admin",
-                "notDependOnLibsWithTags": ["scope:api"]
+                "notDependOnLibsWithTags": ["scope:api", "scope:mobile"]
               },
               {
                 "sourceTag": "scope:api",
-                "notDependOnLibsWithTags": ["scope:admin"]
+                "notDependOnLibsWithTags": ["scope:admin", "scope:mobile"]
+              },
+              {
+                "sourceTag": "scope:mobile",
+                "notDependOnLibsWithTags": ["scope:admin", "scope:api"]
               }
             ]
           }

@@ -8,6 +8,6 @@ import { AppConfig } from './config/app-config'
 /** HTTP-level setup shared by main.ts and the e2e tests, so both run the same app. */
 export function configureApp(app: INestApplication, config: AppConfig): void {
   app.setGlobalPrefix(API_PREFIX)
-  app.enableCors({ origin: config.corsOrigin, credentials: true })
+  app.enableCors({ origin: config.corsOrigins, credentials: true })
   app.use(cookieParser())
 }

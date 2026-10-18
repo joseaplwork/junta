@@ -13,8 +13,9 @@ Read in this order when you are new to the repository:
    why the repository looks the way it does.
 
 Agent instructions live next to the code: [../AGENTS.md](../AGENTS.md),
-[../apps/api/AGENTS.md](../apps/api/AGENTS.md) and
-[../apps/admin/AGENTS.md](../apps/admin/AGENTS.md).
+[../apps/api/AGENTS.md](../apps/api/AGENTS.md),
+[../apps/admin/AGENTS.md](../apps/admin/AGENTS.md) and
+[../apps/mobile/AGENTS.md](../apps/mobile/AGENTS.md).
 
 ## Keeping docs true
 

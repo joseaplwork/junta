@@ -3,19 +3,30 @@ import { join } from 'path'
 
 import { RULE_NAME, pageOf, rule } from './no-cross-page-imports'
 
-const pagesDir = join('/repo', 'apps', 'admin', 'src', 'app', 'pages')
+const pagesDir = (app: string): string =>
+  join('/repo', 'apps', app, 'src', 'app', 'pages')
 const participantFile = join(
-  pagesDir,
+  pagesDir('admin'),
   'participant',
   'list-feat',
   'list-feat.ts',
+)
+const mobileHomeFile = join(
+  pagesDir('mobile'),
+  'home',
+  'status-feat',
+  'status-feat.ts',
 )
 
 const ruleTester = new RuleTester()
 
 describe(RULE_NAME, () => {
-  it('finds the page of a file', () => {
-    expect(pageOf(participantFile)).toBe('participant')
+  it('finds the app and page of a file', () => {
+    expect(pageOf(participantFile)).toEqual({
+      app: 'admin',
+      page: 'participant',
+    })
+    expect(pageOf(mobileHomeFile)).toEqual({ app: 'mobile', page: 'home' })
     expect(pageOf(join('/repo', 'apps', 'admin', 'src', 'app', 'app.ts'))).toBe(
       null,
     )
@@ -39,6 +50,10 @@ describe(RULE_NAME, () => {
         code: "import { JuntaPage } from './pages/junta/junta-page'",
         filename: join('/repo', 'apps', 'admin', 'src', 'app', 'routes.ts'),
       },
+      {
+        code: "import { HomePageState } from '../home-page-state'",
+        filename: mobileHomeFile,
+      },
     ],
     invalid: [
       {
@@ -54,6 +69,16 @@ describe(RULE_NAME, () => {
       {
         code: "const page = import('../../junta/junta-page')",
         filename: participantFile,
+        errors: [{ messageId: 'crossPage' }],
+      },
+      {
+        code: "import { ProfilePage } from '../../profile/profile-page'",
+        filename: mobileHomeFile,
+        errors: [{ messageId: 'crossPage' }],
+      },
+      {
+        code: "import { HomePage } from '@/admin/pages/home/home-page'",
+        filename: mobileHomeFile,
         errors: [{ messageId: 'crossPage' }],
       },
     ],

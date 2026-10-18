@@ -18,7 +18,8 @@ export interface AuthConfig {
 
 export interface AppConfig {
   port: number
-  corsOrigin: string
+  /** Origins allowed to call the API with cookies. */
+  corsOrigins: string[]
   database: DatabaseConfig
   auth: AuthConfig
 }
@@ -80,7 +81,10 @@ export function loadDatabaseConfig(env: Env): DatabaseConfig {
 export function loadAppConfig(env: Env): AppConfig {
   return {
     port: readInteger(env, 'PORT', 3000),
-    corsOrigin: env['CORS_ORIGIN'] || 'http://localhost:4200',
+    corsOrigins: (env['CORS_ORIGIN'] || 'http://localhost:4200')
+      .split(',')
+      .map(origin => origin.trim())
+      .filter(Boolean),
     database: loadDatabaseConfig(env),
     auth: {
       jwtSecret: readRequired(env, 'JWT_SECRET'),

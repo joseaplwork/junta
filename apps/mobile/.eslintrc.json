@@ -1,0 +1,86 @@
+{
+  "extends": ["../../.eslintrc.json"],
+  "ignorePatterns": ["!**/*", "index.html", "android/**", "ios/**"],
+  "parserOptions": {
+    "project": [
+      "apps/mobile/tsconfig.app.json",
+      "apps/mobile/tsconfig.spec.json",
+      "apps/mobile/tsconfig.editor.json"
+    ]
+  },
+  "overrides": [
+    {
+      "files": ["*.ts"],
+      "extends": [
+        "plugin:@nx/angular",
+        "plugin:@angular-eslint/template/process-inline-templates"
+      ],
+      "rules": {
+        "@angular-eslint/component-class-suffix": "off",
+        "@angular-eslint/directive-class-suffix": "off",
+        "@angular-eslint/component-selector": [
+          "error",
+          { "type": "element", "prefix": "jm", "style": "kebab-case" }
+        ],
+        "@angular-eslint/directive-selector": [
+          "error",
+          { "type": "attribute", "prefix": "jm", "style": "camelCase" }
+        ],
+        "@angular-eslint/prefer-on-push-component-change-detection": "error",
+        "@angular-eslint/prefer-signals": "error",
+        "@angular-eslint/prefer-inject": "error",
+        "@angular-eslint/prefer-output-readonly": "error",
+        "@angular-eslint/no-uncalled-signals": "error",
+        "@nx/workspace-no-cross-page-imports": "error",
+        "lines-between-class-members": [
+          "error",
+          {
+            "enforce": [
+              { "blankLine": "always", "prev": "field", "next": "method" },
+              { "blankLine": "always", "prev": "method", "next": "method" }
+            ]
+          }
+        ],
+        "padding-line-between-statements": [
+          "error",
+          {
+            "blankLine": "always",
+            "prev": ["const", "let", "var"],
+            "next": "*"
+          },
+          {
+            "blankLine": "any",
+            "prev": ["const", "let", "var"],
+            "next": ["const", "let", "var"]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["src/app/pages/**/*.ts"],
+      "excludedFiles": ["*.spec.ts"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "paths": [
+              {
+                "name": "@angular/common/http",
+                "message": "Pages call the typed clients in shared/api instead of HttpClient."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["*.html"],
+      "extends": ["plugin:@nx/angular-template"],
+      "rules": {
+        "@angular-eslint/template/prefer-control-flow": "error",
+        "@angular-eslint/template/prefer-self-closing-tags": "error",
+        "@angular-eslint/template/button-has-type": "error"
+      }
+    }
+  ]
+}

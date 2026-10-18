@@ -1,9 +1,11 @@
 # Junta: instructions for AI agents
 
-Junta is a back office for _juntas_, rotating savings groups. Admins create
-juntas, assign participants to monthly payout groups and record the money that
-changes hands offline. Business rules live in [docs/domain.md](docs/domain.md).
-Read it before you touch anything involving money, groups or roles.
+Junta manages _juntas_, rotating savings groups. In the admin app the owner
+creates juntas, assigns participants to monthly payout groups and records the
+money that changes hands offline. A mobile app for participants, for iOS and
+Android, is being built (spec 003). Business rules live in
+[docs/domain.md](docs/domain.md). Read it before you touch anything involving
+money, groups or roles.
 
 This file is the canonical agent guide for every tool. `CLAUDE.md` imports it,
 and Cursor reads it directly. The app folders add their own `AGENTS.md`.
@@ -15,6 +17,7 @@ and Cursor reads it directly. The app folders add their own `AGENTS.md`.
 | Install                                 | `npm ci` (Node 22 or 24; CI uses `.nvmrc`)                                         |
 | Run the API (needs `apps/api/.env`)     | `npm run start:api`                                                                |
 | Run the admin app                       | `npm run start:admin`                                                              |
+| Run the mobile app in the browser       | `npm run start:mobile`                                                             |
 | New resource, backend and admin page    | `npx nx g @junta/nx-plugin:crud <name> --fields="<spec>" --no-interactive`         |
 | New backend resource only               | `npx nx g @junta/nx-plugin:api-resource <name> --fields="<spec>" --no-interactive` |
 | Apply database migrations               | `npx nx run @junta/api:migration-run`                                              |
@@ -48,6 +51,7 @@ Inspect projects and generators with the Nx MCP server when it is available.
 | -------------------- | ---------------------------------------------------------------------------- | ----------------- |
 | `apps/api`           | NestJS + TypeORM REST API. See `apps/api/AGENTS.md`.                         | contracts, domain |
 | `apps/admin`         | Angular 20 admin app, zoneless and signal-based. See `apps/admin/AGENTS.md`. | contracts, domain |
+| `apps/mobile`        | Ionic + Capacitor app for participants. See `apps/mobile/AGENTS.md`.         | contracts, domain |
 | `libs/contracts`     | API request and response types, enums, route names. Types only.              | nothing           |
 | `libs/domain`        | Pure business rules with tests, tagged with `BR-xx` ids.                     | contracts         |
 | `tools/nx-plugin`    | The code generators and their templates.                                     | tooling only      |
@@ -64,19 +68,21 @@ Each rule names what enforces it. Never weaken an enforcer to get green.
    DTOs `implements` it and admin clients return it. [typecheck]
 2. **Shared libraries stay pure.** `libs/contracts` imports nothing.
    `libs/domain` imports only contracts and no framework. [lint: module boundaries]
-3. **Apps never import each other.** Anything both apps need goes in a library.
-   [lint: module boundaries]
+3. **Apps never import each other.** Rules and API shapes that several apps
+   need go in `libs/domain` and `libs/contracts`. Each app keeps its own HTTP,
+   auth and layout code. [lint: module boundaries]
 4. **Business rules live in `libs/domain`** as pure functions with tests.
    Controllers hold no logic and cannot import repositories or domain code.
    [lint: no-restricted-imports]
 5. **Every API route needs a valid token and a permission** unless it is
    marked `@Public()`. [global guards]
-6. **Admin pages are independent.** A page never imports another page.
-   [lint: @nx/workspace-no-cross-page-imports]
-7. **Admin pages talk to the API only through `shared/api` clients.**
+6. **Pages are independent.** In the admin and mobile apps, a page never
+   imports another page. [lint: @nx/workspace-no-cross-page-imports]
+7. **Pages talk to the API only through their app's `shared/api` clients.**
    [lint: no-restricted-imports]
-8. **Angular style:** standalone, OnPush, `input()`, `output()`, `signal()`,
-   `inject()`, `ja-` selectors, built-in control flow. [lint]
+8. **Angular style** in both apps: standalone, OnPush, `input()`, `output()`,
+   `signal()`, `inject()`, built-in control flow, `ja-` selectors in the admin
+   and `jm-` in the mobile app. [lint]
 9. **TypeScript is strict.** No `any`. Exported functions declare return types.
    Promises are awaited or explicitly `void`. [typecheck, lint]
 10. **Entities define the schema and migrations change it.** Every entity
@@ -99,8 +105,8 @@ Each rule names what enforces it. Never weaken an enforcer to get green.
 ## Ask before you decide
 
 Stop and ask the user when a task depends on rounding or currency, roles and
-permissions, deleting data, or any open question in `docs/domain.md`. Write the
-answer into that file.
+permissions, deleting data, anything published to the app stores, or any open
+question in `docs/domain.md`. Write the answer into that file or the spec.
 
 ## Troubleshooting
 

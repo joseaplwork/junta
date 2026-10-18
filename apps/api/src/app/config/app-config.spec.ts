@@ -36,6 +36,18 @@ describe('loadAppConfig', () => {
     },
   )
 
+  it('reads a comma-separated list of CORS origins', () => {
+    const config = loadAppConfig({
+      ...requiredEnv,
+      CORS_ORIGIN: 'http://localhost:4200, capacitor://localhost',
+    })
+
+    expect(config.corsOrigins).toEqual([
+      'http://localhost:4200',
+      'capacitor://localhost',
+    ])
+  })
+
   it('rejects a non-numeric port', () => {
     expect(() => loadAppConfig({ ...requiredEnv, PORT: 'abc' })).toThrow('PORT')
   })

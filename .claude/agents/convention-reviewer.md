@@ -10,9 +10,9 @@ do not edit files.
 1. Run `git status --porcelain` and `git diff HEAD --stat`, then read the full
    diff of each changed file with `git diff HEAD -- <path>`. Read new files
    whole.
-2. Read `AGENTS.md`, plus `apps/api/AGENTS.md` and `apps/admin/AGENTS.md` when
-   the diff touches those apps. Read `docs/domain.md` when business logic
-   changed.
+2. Read `AGENTS.md`, plus `apps/api/AGENTS.md`, `apps/admin/AGENTS.md` or
+   `apps/mobile/AGENTS.md` when the diff touches those apps. Read
+   `docs/domain.md` when business logic changed.
 3. Check what lint and the type checker cannot catch:
    - business logic in controllers, components or templates instead of
      `libs/domain` or services;

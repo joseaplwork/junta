@@ -26,6 +26,7 @@
     "baseUrl": ".",
     "paths": {
       "@/admin/*": ["apps/admin/src/app/*"],
+      "@/mobile/*": ["apps/mobile/src/app/*"],
       "@/api/*": ["apps/api/src/app/*"],
       "@junta/contracts": ["libs/contracts/src/index.ts"],
       "@junta/domain": ["libs/domain/src/index.ts"],
