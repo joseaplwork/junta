@@ -1,0 +1,39 @@
+{
+  "name": "@junta/nx-plugin",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "tools/nx-plugin/src",
+  "projectType": "library",
+  "tags": ["type:tool", "scope:tooling"],
+  "targets": {
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "inputs": [
+        "default",
+        "^production",
+        "{workspaceRoot}/jest.preset.js",
+        "{workspaceRoot}/.prettierrc",
+        "{workspaceRoot}/apps/api/src/app/app.module.ts",
+        "{workspaceRoot}/apps/api/src/app/database/entities.ts",
+        "{workspaceRoot}/apps/admin/src/app/routes.ts",
+        "{workspaceRoot}/apps/admin/src/app/layouts/main-layout/components/sidebar/sidebar.ts",
+        "{workspaceRoot}/libs/contracts/src/index.ts",
+        "{workspaceRoot}/libs/contracts/src/lib/api.ts",
+        "{workspaceRoot}/libs/contracts/src/lib/enums/permission.ts",
+        "{workspaceRoot}/libs/domain/src/lib/permissions.ts"
+      ],
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "tools/nx-plugin/jest.config.ts"
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc -p tools/nx-plugin/tsconfig.json --noEmit"
+      }
+    }
+  }
+}

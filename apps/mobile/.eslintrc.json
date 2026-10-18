@@ -1,0 +1,80 @@
+{
+  "extends": ["../../.eslintrc.json"],
+  "ignorePatterns": [
+    "!**/*",
+    "node_modules/**",
+    ".expo/**",
+    "ios/**",
+    "android/**",
+    "expo-env.d.ts"
+  ],
+  "parserOptions": {
+    "project": ["apps/mobile/tsconfig.json"]
+  },
+  "overrides": [
+    {
+      "files": ["*.ts", "*.tsx"],
+      "parser": "@typescript-eslint/parser",
+      "plugins": ["@typescript-eslint", "react-hooks"],
+      "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:@typescript-eslint/stylistic",
+        "plugin:react-hooks/recommended",
+        "plugin:prettier/recommended"
+      ],
+      "rules": {
+        "no-console": [
+          "error",
+          {
+            "allow": ["warn", "error"]
+          }
+        ],
+        "@typescript-eslint/explicit-module-boundary-types": "error",
+        "@typescript-eslint/no-unused-vars": [
+          "error",
+          {
+            "argsIgnorePattern": "^_",
+            "varsIgnorePattern": "^_"
+          }
+        ],
+        "@typescript-eslint/no-floating-promises": "error",
+        "@typescript-eslint/no-misused-promises": "error",
+        "react-hooks/exhaustive-deps": "error",
+        "@nx/workspace-no-cross-page-imports": "error"
+      }
+    },
+    {
+      "files": [
+        "src/app/**/*.tsx",
+        "src/screens/**/*.ts",
+        "src/screens/**/*.tsx"
+      ],
+      "excludedFiles": ["*.spec.ts", "*.spec.tsx"],
+      "rules": {
+        "no-restricted-globals": [
+          "error",
+          {
+            "name": "fetch",
+            "message": "Routes and screens call the typed clients in shared/api instead of fetch."
+          }
+        ]
+      }
+    },
+    {
+      "files": ["*.spec.ts", "*.spec.tsx"],
+      "env": {
+        "jest": true
+      },
+      "rules": {
+        "@typescript-eslint/explicit-module-boundary-types": "off"
+      }
+    },
+    {
+      "files": ["*.js"],
+      "env": {
+        "node": true
+      }
+    }
+  ]
+}

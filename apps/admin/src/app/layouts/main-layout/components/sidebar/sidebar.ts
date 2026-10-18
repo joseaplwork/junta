@@ -1,19 +1,26 @@
-import { Component, inject, signal } from '@angular/core'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  signal,
+} from '@angular/core'
 import { MatButtonModule } from '@angular/material/button'
 import { MatIconModule } from '@angular/material/icon'
 import { MatTooltipModule } from '@angular/material/tooltip'
 import { RouterModule } from '@angular/router'
 
-import { Permission } from '@junta/shared/enums/permission'
+import { Permission } from '@junta/contracts'
 
 import { HasPermission } from '@/admin/directives/has-permission'
 import { AdminProfile } from '@/admin/shared/services/admin-profile'
-import { Logout } from '@/admin/shared/services/logout'
+import { AdminSession } from '@/admin/shared/services/admin-session'
 
 import { MenuItem } from '../../interfaces/menu-item'
 
 @Component({
   selector: 'ja-sidebar',
+  templateUrl: './sidebar.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     RouterModule,
     MatIconModule,
@@ -21,12 +28,11 @@ import { MenuItem } from '../../interfaces/menu-item'
     MatTooltipModule,
     HasPermission,
   ],
-  templateUrl: './sidebar.html',
 })
 export class Sidebar {
-  private readonly _logout = inject(Logout)
-  readonly profile = inject(AdminProfile)
+  private readonly _session = inject(AdminSession)
 
+  readonly profile = inject(AdminProfile)
   readonly collapsed = signal(true)
 
   readonly menuItems: MenuItem[] = [
@@ -57,10 +63,10 @@ export class Sidebar {
   ]
 
   toggle(): void {
-    this.collapsed.update(v => !v)
+    this.collapsed.update(collapsed => !collapsed)
   }
 
   logout(): void {
-    this._logout.endSession()
+    void this._session.logout()
   }
 }

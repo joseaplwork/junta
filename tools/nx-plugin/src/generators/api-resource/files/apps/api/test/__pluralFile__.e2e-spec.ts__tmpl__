@@ -1,0 +1,61 @@
+import { randomUUID } from 'crypto'
+
+import { <%- singularClass %>Response } from '@junta/contracts'
+
+import { E2eApp, asSuperAdmin, createE2eApp } from './support/e2e-app'
+
+const createRequest = {
+<%_ for (const field of fields) { _%>
+  <%- field.name %>: <%- render.sampleValue(field) %>,
+<%_ } _%>
+}
+
+describe('<%- pluralTitle %> (e2e)', () => {
+  let e2e: E2eApp
+  let api: ReturnType<typeof asSuperAdmin>
+
+  beforeAll(async () => {
+    e2e = await createE2eApp()
+    api = asSuperAdmin(e2e)
+  })
+
+  afterAll(async () => {
+    await e2e.app.close()
+  })
+
+  it('runs the full create, read, update and delete cycle', async () => {
+    const created = await api.post('<%- pluralFile %>', createRequest).expect(201)
+    const <%- singularProperty %>: <%- singularClass %>Response = created.body
+
+    expect(<%- singularProperty %>).toEqual({ id: expect.any(String), ...createRequest })
+
+    await api.get(`<%- pluralFile %>/${<%- singularProperty %>.id}`).expect(200, <%- singularProperty %>)
+
+    const updated = await api
+      .patch(`<%- pluralFile %>/${<%- singularProperty %>.id}`, {
+        <%- fields[0].name %>: <%- render.changedSampleValue(fields[0]) %>,
+      })
+      .expect(200)
+
+    expect(updated.body.<%- fields[0].name %>).toEqual(<%- render.changedSampleValue(fields[0]) %>)
+
+    await api.delete(`<%- pluralFile %>/${<%- singularProperty %>.id}`).expect(204)
+    await api.get(`<%- pluralFile %>/${<%- singularProperty %>.id}`).expect(404)
+  })
+<%_ if (fields.some(field => !field.optional)) { _%>
+
+  it('rejects missing required fields', async () => {
+    await api.post('<%- pluralFile %>', {}).expect(400)
+  })
+<%_ } _%>
+
+  it('rejects fields that are not part of the contract', async () => {
+    await api
+      .post('<%- pluralFile %>', { ...createRequest, unexpected: true })
+      .expect(400)
+  })
+
+  it('answers 404 for an unknown id', async () => {
+    await api.get(`<%- pluralFile %>/${randomUUID()}`).expect(404)
+  })
+})

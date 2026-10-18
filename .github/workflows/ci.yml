@@ -1,0 +1,111 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  actions: read
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NX_DAEMON: 'false'
+
+jobs:
+  verify:
+    name: Verify
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - uses: nrwl/nx-set-shas@v4
+      - run: npm run verify
+
+  api-e2e:
+    name: API e2e
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: juntas
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready --health-interval 5s --health-timeout 5s
+          --health-retries 10
+    env:
+      DB_HOST: localhost
+      DB_PORT: '5432'
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: juntas
+      E2E_DB_NAME: juntas_e2e
+      JWT_SECRET: ci-only-secret
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: Migrations apply cleanly and match the entities
+        run: |
+          npx nx run @junta/api:migration-run
+          npx nx run @junta/api:migration-check
+      - run: npm run verify:e2e
+
+  generators:
+    name: Generators
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: juntas
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready --health-interval 5s --health-timeout 5s
+          --health-retries 10
+    env:
+      DB_HOST: localhost
+      DB_PORT: '5432'
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: juntas
+      E2E_DB_NAME: juntas_e2e
+      JWT_SECRET: ci-only-secret
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: Generate a resource with every field type
+        run: >-
+          npx nx g @junta/nx-plugin:crud ci-sample
+          --fields="title:string,amount:decimal,dueDate:date,done:boolean,count:int,notes?:string"
+          --no-interactive
+      - name: Write the migration for the sample resource
+        run: |
+          npx nx run @junta/api:migration-run
+          npx nx run @junta/api:migration-generate --name=AddCiSamples
+      - name: Generated code passes every gate
+        run: npx nx run-many -t lint typecheck test build -p @junta/api @junta/admin @junta/contracts @junta/domain @junta/nx-plugin
+      - name: Generated API passes its e2e test
+        run: npm run verify:e2e

@@ -11,7 +11,7 @@
   "importOrder": [
     "<THIRD_PARTY_MODULES>",
     "^@(junta)(.*)$",
-    "^@/(admin|api)(.*)$",
+    "^@/(admin|api|mobile)(.*)$",
     "^../",
     "^[./]"
   ],
@@ -25,5 +25,24 @@
     "prettier-plugin-tailwindcss"
   ],
   "importOrderSeparation": true,
-  "importOrderSortSpecifiers": true
+  "importOrderSortSpecifiers": true,
+  "overrides": [
+    {
+      "files": "apps/{admin,mobile}/src/**/*.html",
+      "options": {
+        "parser": "angular"
+      }
+    },
+    {
+      "files": "*.tsx",
+      "options": {
+        "importOrderParserPlugins": [
+          "typescript",
+          "jsx",
+          "classProperties",
+          "decorators-legacy"
+        ]
+      }
+    }
+  ]
 }

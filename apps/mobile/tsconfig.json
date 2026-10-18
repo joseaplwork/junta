@@ -1,0 +1,16 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "paths": {
+      "@/mobile/*": ["./src/*"],
+      "@junta/contracts": ["../../libs/contracts/src/index.ts"],
+      "@junta/domain": ["../../libs/domain/src/index.ts"]
+    },
+    "types": ["jest", "node"]
+  },
+  "include": ["**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules"]
+}

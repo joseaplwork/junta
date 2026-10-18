@@ -1,0 +1,88 @@
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  signal,
+} from '@angular/core'
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
+<%_ if (hasBoolean) { _%>
+import { MatCheckboxModule } from '@angular/material/checkbox'
+<%_ } _%>
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog'
+import { MatFormFieldModule } from '@angular/material/form-field'
+import { MatInputModule } from '@angular/material/input'
+
+import {
+  Create<%- singularClass %>Request,
+  <%- singularClass %>Response,
+} from '@junta/contracts'
+
+import { CrudDialogShell } from '@/admin/shared/components/crud'
+<%_ if (hasDate) { _%>
+import {
+  fromDateInputValue,
+  toDateInputValue,
+} from '@/admin/shared/forms/date-input'
+<%_ } _%>
+
+export interface <%- singularClass %>FormDialogData {
+  title: string
+  submitLabel: string
+  /** Prefills the form when editing. */
+  <%- singularProperty %>: <%- singularClass %>Response | null
+  /** Resolves true when saved. The dialog stays open otherwise. */
+  handleSubmit: (request: Create<%- singularClass %>Request) => Promise<boolean>
+}
+
+/** Shared by create-feat and update-feat, so it lives at page level. */
+@Component({
+  templateUrl: './<%- singularFile %>-form-dialog.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    ReactiveFormsModule,
+<%_ if (hasBoolean) { _%>
+    MatCheckboxModule,
+<%_ } _%>
+    MatFormFieldModule,
+    MatInputModule,
+    CrudDialogShell,
+  ],
+})
+export class <%- singularClass %>FormDialog {
+  private readonly _dialogRef = inject(MatDialogRef<<%- singularClass %>FormDialog>)
+  private readonly _fb = inject(FormBuilder).nonNullable
+
+  readonly data = inject<<%- singularClass %>FormDialogData>(MAT_DIALOG_DATA)
+  readonly submitting = signal(false)
+  readonly form = this._fb.group({
+<%_ for (const field of fields) { _%>
+    <%- field.name %>: <%- render.formControl(field, 'this.data.' + singularProperty) %>,
+<%_ } _%>
+  })
+
+  async onSubmit(): Promise<void> {
+    if (this.form.invalid || this.submitting()) return
+
+    this.submitting.set(true)
+
+    const saved = await this.data.handleSubmit(this._toRequest())
+
+    this.submitting.set(false)
+
+    if (saved) this._dialogRef.close()
+  }
+
+  onCancel(): void {
+    this._dialogRef.close()
+  }
+
+  private _toRequest(): Create<%- singularClass %>Request {
+    const value = this.form.getRawValue()
+
+    return {
+<%_ for (const field of fields) { _%>
+      <%- field.name %>: <%- render.requestValue(field, 'value') %>,
+<%_ } _%>
+    }
+  }
+}

@@ -1,7 +1,8 @@
 import {
   Controller,
   Get,
-  Request as NestRequest,
+  HttpCode,
+  HttpStatus,
   Post,
   Req,
   Res,
@@ -9,70 +10,89 @@ import {
 } from '@nestjs/common'
 import { Request, Response } from 'express'
 
-import { Role } from '@junta/shared/enums/role'
+import {
+  AccessTokenResponse,
+  ApiResource,
+  AuthProfileResponse,
+} from '@junta/contracts'
 
-import { Admin } from '@/api/admins/admin.entity'
-import { Public } from '@/api/decorators/is-public.decorator'
-import { Roles } from '@/api/decorators/roles.decorator'
+import { AuthenticatedAdmin } from '@/api/common/auth/authenticated-admin'
+import { CurrentAdmin } from '@/api/common/decorators/current-admin.decorator'
+import { Public } from '@/api/common/decorators/public.decorator'
 
 import { AuthService } from './auth.service'
-import { LocalAuthGuard } from './local-auth.guard'
+import { IssuedTokens, TokenSubject } from './auth.types'
+import { CookieOriginGuard } from './guards/cookie-origin.guard'
+import { LocalAuthGuard } from './guards/local-auth.guard'
+import {
+  REFRESH_TOKEN_COOKIE,
+  REFRESH_TOKEN_COOKIE_OPTIONS,
+} from './refresh-token.cookie'
 
-interface RequestWithAdmin extends Request {
-  admin: Admin
-}
-
-@Controller('auth')
+@Controller(ApiResource.auth)
 export class AuthController {
-  constructor(private auth: AuthService) {}
+  constructor(private readonly authService: AuthService) {}
 
+  /** `LocalAuthGuard` puts the `TokenSubject` from `LocalStrategy` on the request. */
   @Public()
-  @UseGuards(LocalAuthGuard)
+  @UseGuards(CookieOriginGuard, LocalAuthGuard)
   @Post('login')
-  login(@Res() res: Response, @NestRequest() req: RequestWithAdmin) {
-    const { accessToken, refreshToken } = this.auth.login(req.admin)
-
-    res.cookie('refreshToken', refreshToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'none',
-    })
-
-    return res.send({ accessToken })
+  @HttpCode(HttpStatus.OK)
+  login(
+    @CurrentAdmin() subject: TokenSubject,
+    @Res({ passthrough: true }) response: Response,
+  ): AccessTokenResponse {
+    return this.startSession(response, this.authService.issueTokens(subject))
   }
 
   @Public()
+  @UseGuards(CookieOriginGuard)
   @Post('refresh')
-  async refresh(@Res() res: Response, @Req() req: Request) {
-    const actualRefreshToken = req.cookies.refreshToken
-    const admin = await this.auth.decodeRefreshToken(actualRefreshToken)
-    const newAccessToken = this.auth.createAccessToken(admin)
-    const newRefreshToken = this.auth.createRefreshToken(admin)
+  @HttpCode(HttpStatus.OK)
+  async refresh(
+    @Req() request: Request,
+    @Res({ passthrough: true }) response: Response,
+  ): Promise<AccessTokenResponse> {
+    const tokens = await this.authService.refresh(
+      request.cookies?.[REFRESH_TOKEN_COOKIE],
+    )
 
-    res.cookie('refreshToken', newRefreshToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'none',
-    })
-
-    return res.send({ accessToken: newAccessToken })
+    return this.startSession(response, tokens)
   }
 
   @Get('profile')
-  @Roles(Role.ADMIN)
-  getProfile(@NestRequest() req: RequestWithAdmin) {
-    return req.admin
+  profile(@CurrentAdmin() admin: AuthenticatedAdmin): AuthProfileResponse {
+    return {
+      id: admin.id,
+      email: admin.email,
+      roles: admin.roles,
+      permissions: admin.permissions,
+    }
   }
 
-  @Get('logout')
-  @Roles(Role.ADMIN)
-  logout(@Res() res: Response) {
-    res.clearCookie('refreshToken', {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'none',
-    })
+  /** Ends every session of the cookie's admin, then clears the cookie (spec 002). */
+  @Public()
+  @UseGuards(CookieOriginGuard)
+  @Post('logout')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async logout(
+    @Req() request: Request,
+    @Res({ passthrough: true }) response: Response,
+  ): Promise<void> {
+    await this.authService.logout(request.cookies?.[REFRESH_TOKEN_COOKIE])
+    response.clearCookie(REFRESH_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE_OPTIONS)
+  }
 
-    res.send({ message: 'Cookie cleared successfully' })
+  private startSession(
+    response: Response,
+    tokens: IssuedTokens,
+  ): AccessTokenResponse {
+    response.cookie(
+      REFRESH_TOKEN_COOKIE,
+      tokens.refreshToken,
+      REFRESH_TOKEN_COOKIE_OPTIONS,
+    )
+
+    return { accessToken: tokens.accessToken }
   }
 }

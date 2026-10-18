@@ -1,0 +1,14 @@
+export interface <%- singularClass %>Response {
+  id: string
+<%_ for (const field of fields) { _%>
+  <%- field.name %>: <%- render.contractType(field) %>
+<%_ } _%>
+}
+
+export interface Create<%- singularClass %>Request {
+<%_ for (const field of fields) { _%>
+  <%- render.requestProperty(field) %>
+<%_ } _%>
+}
+
+export type Update<%- singularClass %>Request = Partial<Create<%- singularClass %>Request>

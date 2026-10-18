@@ -2,9 +2,9 @@
   "name": "@junta/admin",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
-  "prefix": "app",
+  "prefix": "ja",
   "sourceRoot": "apps/admin/src",
-  "tags": [],
+  "tags": ["type:app", "scope:admin"],
   "targets": {
     "build": {
       "executor": "@angular-devkit/build-angular:application",
@@ -68,17 +68,19 @@
       }
     },
     "lint": {
-      "executor": "@nx/eslint:lint",
-      "options": {
-        "fix": true,
-        "printConfig": ""
-      }
+      "executor": "@nx/eslint:lint"
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
         "jestConfig": "apps/admin/jest.config.ts"
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "ngc -p apps/admin/tsconfig.app.json --noEmit && tsc -p apps/admin/tsconfig.spec.json --noEmit"
       }
     },
     "serve-static": {

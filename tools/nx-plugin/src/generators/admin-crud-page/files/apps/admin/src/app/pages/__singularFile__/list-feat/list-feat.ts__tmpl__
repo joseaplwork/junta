@@ -1,0 +1,94 @@
+import {
+  ChangeDetectionStrategy,
+  Component,
+  effect,
+  inject,
+  signal,
+} from '@angular/core'
+
+import { <%- singularClass %>Response } from '@junta/contracts'
+
+import { <%- pluralClass %>Api } from '@/admin/shared/api/<%- pluralFile %>-api'
+import {
+  ActionConfig,
+  ColumnConfig,
+  CrudDataTable,
+} from '@/admin/shared/components/crud'
+import { Snackbar } from '@/admin/shared/services/snackbar'
+
+import { <%- singularClass %>PageState } from '../<%- singularFile %>-page-state'
+
+@Component({
+  selector: 'ja-<%- singularFile %>-list-feat',
+  templateUrl: './list-feat.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [CrudDataTable],
+})
+export class ListFeat {
+  private readonly _state = inject(<%- singularClass %>PageState)
+  private readonly _<%- pluralProperty %>Api = inject(<%- pluralClass %>Api)
+  private readonly _snackbar = inject(Snackbar)
+
+  readonly columns: ColumnConfig<<%- singularClass %>Response>[] = [
+<%_ for (const field of fields) { _%>
+    <%- render.tableColumn(field) %>,
+<%_ } _%>
+  ]
+
+  readonly actions: ActionConfig = { edit: true, delete: true }
+  readonly <%- pluralProperty %> = signal<<%- singularClass %>Response[]>([])
+  readonly loading = signal(false)
+  readonly error = signal<string | null>(null)
+
+  constructor() {
+    void this._load()
+
+    effect(() => {
+      const created = this._state.created()
+
+      if (created) this.<%- pluralProperty %>.update(list => [...list, created])
+    })
+
+    effect(() => {
+      const updated = this._state.updated()
+
+      if (updated) {
+        this.<%- pluralProperty %>.update(list =>
+          list.map(item => (item.id === updated.id ? updated : item)),
+        )
+      }
+    })
+
+    effect(() => {
+      const deleted = this._state.deleted()
+
+      if (deleted) {
+        this.<%- pluralProperty %>.update(list =>
+          list.filter(item => item.id !== deleted.id),
+        )
+      }
+    })
+  }
+
+  edit(<%- singularProperty %>: <%- singularClass %>Response): void {
+    this._state.requestUpdate(<%- singularProperty %>)
+  }
+
+  remove(<%- singularProperty %>: <%- singularClass %>Response): void {
+    this._state.requestDelete(<%- singularProperty %>)
+  }
+
+  private async _load(): Promise<void> {
+    this.loading.set(true)
+    this.error.set(null)
+
+    try {
+      this.<%- pluralProperty %>.set(await this._<%- pluralProperty %>Api.list())
+    } catch {
+      this.error.set('Failed to load <%- pluralLabel.toLowerCase() %>')
+      this._snackbar.error('Failed to load <%- pluralLabel.toLowerCase() %>')
+    } finally {
+      this.loading.set(false)
+    }
+  }
+}

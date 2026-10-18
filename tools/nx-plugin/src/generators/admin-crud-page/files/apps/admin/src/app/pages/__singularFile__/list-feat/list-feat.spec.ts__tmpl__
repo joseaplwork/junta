@@ -1,0 +1,48 @@
+import { render, screen } from '@testing-library/angular'
+
+import { <%- singularClass %>Response } from '@junta/contracts'
+
+import { <%- pluralClass %>Api } from '@/admin/shared/api/<%- pluralFile %>-api'
+import { Snackbar } from '@/admin/shared/services/snackbar'
+
+import { <%- singularClass %>PageState } from '../<%- singularFile %>-page-state'
+
+import { ListFeat } from './list-feat'
+
+const <%- singularProperty %>: <%- singularClass %>Response = {
+  id: '<%- singularFile %>-1',
+<%_ for (const field of fields) { _%>
+  <%- field.name %>: <%- render.sampleValue(field) %>,
+<%_ } _%>
+}
+
+async function setup(list: () => Promise<<%- singularClass %>Response[]>) {
+  const snackbar = { error: jest.fn() }
+
+  await render(ListFeat, {
+    providers: [
+      <%- singularClass %>PageState,
+      { provide: <%- pluralClass %>Api, useValue: { list } },
+      { provide: Snackbar, useValue: snackbar },
+    ],
+  })
+
+  return { snackbar }
+}
+
+describe('<%- singularClass %> ListFeat', () => {
+  it('renders one row per <%- singularLabel.toLowerCase() %> returned by the API', async () => {
+    await setup(() => Promise.resolve([<%- singularProperty %>]))
+
+    expect(await screen.findAllByRole('row')).toHaveLength(2)
+  })
+
+  it('shows an error when loading fails', async () => {
+    const { snackbar } = await setup(() => Promise.reject(new Error('down')))
+
+    expect(
+      await screen.findByText('Failed to load <%- pluralLabel.toLowerCase() %>'),
+    ).toBeInTheDocument()
+    expect(snackbar.error).toHaveBeenCalled()
+  })
+})

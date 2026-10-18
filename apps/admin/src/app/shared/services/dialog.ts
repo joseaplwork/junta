@@ -6,9 +6,8 @@ import {
   MatDialogRef,
 } from '@angular/material/dialog'
 
-@Injectable({
-  providedIn: 'root',
-})
+/** Opens Material dialogs with the app-wide size defaults. */
+@Injectable({ providedIn: 'root' })
 export class Dialog {
   private readonly _dialog = inject(MatDialog)
 
@@ -18,21 +17,15 @@ export class Dialog {
     width: 'fit-content',
   }
 
-  open<R = unknown, T = unknown, D = unknown>(
-    component: ComponentType<T>,
-    data?: D,
-    options?: Omit<MatDialogConfig, 'data'>,
-  ): MatDialogRef<T, R> {
-    const config: MatDialogConfig<D> = {
+  open<Component, Data, Result = unknown>(
+    component: ComponentType<Component>,
+    data: Data,
+    options?: Omit<MatDialogConfig<Data>, 'data'>,
+  ): MatDialogRef<Component, Result> {
+    return this._dialog.open<Component, Data, Result>(component, {
       ...this._sizeConfig,
       ...options,
       data,
-    }
-
-    return this._dialog.open(component, config)
-  }
-
-  close<C>(component: ComponentType<C>, data?: unknown): void {
-    inject(MatDialogRef<typeof component>).close(data)
+    })
   }
 }

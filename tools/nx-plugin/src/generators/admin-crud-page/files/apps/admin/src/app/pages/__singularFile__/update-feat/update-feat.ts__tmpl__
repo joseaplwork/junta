@@ -1,0 +1,72 @@
+import {
+  ChangeDetectionStrategy,
+  Component,
+  effect,
+  inject,
+} from '@angular/core'
+
+import {
+  <%- singularClass %>Response,
+  Update<%- singularClass %>Request,
+} from '@junta/contracts'
+
+import { <%- pluralClass %>Api } from '@/admin/shared/api/<%- pluralFile %>-api'
+import { Dialog } from '@/admin/shared/services/dialog'
+import { Snackbar } from '@/admin/shared/services/snackbar'
+
+import { <%- singularClass %>PageState } from '../<%- singularFile %>-page-state'
+import {
+  <%- singularClass %>FormDialog,
+  <%- singularClass %>FormDialogData,
+} from '../components/<%- singularFile %>-form-dialog/<%- singularFile %>-form-dialog'
+
+@Component({
+  selector: 'ja-<%- singularFile %>-update-feat',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: '',
+})
+export class UpdateFeat {
+  private readonly _dialog = inject(Dialog)
+  private readonly _<%- pluralProperty %>Api = inject(<%- pluralClass %>Api)
+  private readonly _state = inject(<%- singularClass %>PageState)
+  private readonly _snackbar = inject(Snackbar)
+
+  constructor() {
+    effect(() => {
+      const <%- singularProperty %> = this._state.updateRequest()
+
+      if (!<%- singularProperty %>) return
+
+      this._state.requestUpdate(null)
+      this._openDialog(<%- singularProperty %>)
+    })
+  }
+
+  private _openDialog(<%- singularProperty %>: <%- singularClass %>Response): void {
+    this._dialog.open<<%- singularClass %>FormDialog, <%- singularClass %>FormDialogData>(
+      <%- singularClass %>FormDialog,
+      {
+        title: 'Update <%- singularTitle %>',
+        submitLabel: 'Save',
+        <%- singularProperty %>,
+        handleSubmit: request => this._update(<%- singularProperty %>.id, request),
+      },
+    )
+  }
+
+  private async _update(
+    id: string,
+    request: Update<%- singularClass %>Request,
+  ): Promise<boolean> {
+    try {
+      this._state.emitUpdated(await this._<%- pluralProperty %>Api.update(id, request))
+      this._snackbar.success('<%- singularLabel %> updated')
+
+      return true
+    } catch {
+      this._snackbar.error('Failed to update <%- singularLabel.toLowerCase() %>')
+
+      return false
+    }
+  }
+}

@@ -1,0 +1,250 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`api-resource generator renders apps/api/src/app/sample-records/dto/create-sample-record.dto.ts from the field spec 1`] = `
+"import { IsBoolean, IsISO8601, IsInt, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator'
+
+import { CreateSampleRecordRequest } from '@junta/contracts'
+
+export class CreateSampleRecordDto implements CreateSampleRecordRequest {
+  @IsString()
+  @IsNotEmpty()
+  title: string
+
+  @IsNumber({ maxDecimalPlaces: 2 })
+  amount: number
+
+  @IsISO8601()
+  dueDate: string
+
+  @IsBoolean()
+  sent: boolean
+
+  @IsInt()
+  attempts: number
+
+  @IsOptional()
+  @IsString()
+  notes?: string | null
+}
+"
+`;
+
+exports[`api-resource generator renders apps/api/src/app/sample-records/entities/sample-record.entity.ts from the field spec 1`] = `
+"import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
+
+import { numericTransformer } from '@/api/database/numeric.transformer'
+
+@Entity('SampleRecords')
+export class SampleRecord {
+  @PrimaryGeneratedColumn('uuid')
+  id: string
+
+  @Column({ type: 'varchar' })
+  title: string
+
+  @Column({ type: 'decimal', precision: 10, scale: 2, transformer: numericTransformer })
+  amount: number
+
+  @Column({ name: 'due_date', type: 'timestamptz' })
+  dueDate: Date
+
+  @Column({ type: 'boolean' })
+  sent: boolean
+
+  @Column({ type: 'int' })
+  attempts: number
+
+  @Column({ type: 'varchar', nullable: true })
+  notes: string | null
+}
+"
+`;
+
+exports[`api-resource generator renders apps/api/src/app/sample-records/sample-record.mapper.ts from the field spec 1`] = `
+"import { SampleRecordResponse } from '@junta/contracts'
+
+import { SampleRecord } from './entities/sample-record.entity'
+
+export function toSampleRecordResponse(
+  sampleRecord: SampleRecord,
+): SampleRecordResponse {
+  return {
+    id: sampleRecord.id,
+    title: sampleRecord.title,
+    amount: sampleRecord.amount,
+    dueDate: sampleRecord.dueDate.toISOString(),
+    sent: sampleRecord.sent,
+    attempts: sampleRecord.attempts,
+    notes: sampleRecord.notes,
+  }
+}
+"
+`;
+
+exports[`api-resource generator renders apps/api/src/app/sample-records/sample-records.controller.ts from the field spec 1`] = `
+"import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  ParseUUIDPipe,
+  Patch,
+  Post,
+} from '@nestjs/common'
+
+import {
+  ApiResource,
+  Permission,
+  SampleRecordResponse,
+} from '@junta/contracts'
+
+import { RequirePermissions } from '@/api/common/decorators/require-permissions.decorator'
+
+import { CreateSampleRecordDto } from './dto/create-sample-record.dto'
+import { UpdateSampleRecordDto } from './dto/update-sample-record.dto'
+import { SampleRecordsService } from './sample-records.service'
+
+@Controller(ApiResource.sampleRecords)
+export class SampleRecordsController {
+  constructor(private readonly sampleRecordsService: SampleRecordsService) {}
+
+  @Post()
+  @RequirePermissions(Permission.SAMPLE_RECORD_CREATE)
+  create(@Body() dto: CreateSampleRecordDto): Promise<SampleRecordResponse> {
+    return this.sampleRecordsService.create(dto)
+  }
+
+  @Get()
+  @RequirePermissions(Permission.SAMPLE_RECORD_READ)
+  findAll(): Promise<SampleRecordResponse[]> {
+    return this.sampleRecordsService.findAll()
+  }
+
+  @Get(':id')
+  @RequirePermissions(Permission.SAMPLE_RECORD_READ)
+  findOne(@Param('id', ParseUUIDPipe) id: string): Promise<SampleRecordResponse> {
+    return this.sampleRecordsService.findOne(id)
+  }
+
+  @Patch(':id')
+  @RequirePermissions(Permission.SAMPLE_RECORD_UPDATE)
+  update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() dto: UpdateSampleRecordDto,
+  ): Promise<SampleRecordResponse> {
+    return this.sampleRecordsService.update(id, dto)
+  }
+
+  @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @RequirePermissions(Permission.SAMPLE_RECORD_DELETE)
+  remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
+    return this.sampleRecordsService.remove(id)
+  }
+}
+"
+`;
+
+exports[`api-resource generator renders apps/api/src/app/sample-records/sample-records.service.ts from the field spec 1`] = `
+"import { Injectable, NotFoundException } from '@nestjs/common'
+import { InjectRepository } from '@nestjs/typeorm'
+import { Repository } from 'typeorm'
+
+import { SampleRecordResponse } from '@junta/contracts'
+
+import { CreateSampleRecordDto } from './dto/create-sample-record.dto'
+import { UpdateSampleRecordDto } from './dto/update-sample-record.dto'
+import { SampleRecord } from './entities/sample-record.entity'
+import { toSampleRecordResponse } from './sample-record.mapper'
+
+@Injectable()
+export class SampleRecordsService {
+  constructor(
+    @InjectRepository(SampleRecord)
+    private readonly sampleRecords: Repository<SampleRecord>,
+  ) {}
+
+  async create(dto: CreateSampleRecordDto): Promise<SampleRecordResponse> {
+    const sampleRecord = this.sampleRecords.create({
+      title: dto.title,
+      amount: dto.amount,
+      dueDate: new Date(dto.dueDate),
+      sent: dto.sent,
+      attempts: dto.attempts,
+      notes: dto.notes ?? null,
+    })
+
+    return toSampleRecordResponse(await this.sampleRecords.save(sampleRecord))
+  }
+
+  async findAll(): Promise<SampleRecordResponse[]> {
+    const sampleRecords = await this.sampleRecords.find({
+      order: { title: 'ASC' },
+    })
+
+    return sampleRecords.map(toSampleRecordResponse)
+  }
+
+  async findOne(id: string): Promise<SampleRecordResponse> {
+    return toSampleRecordResponse(await this.findEntity(id))
+  }
+
+  async update(
+    id: string,
+    dto: UpdateSampleRecordDto,
+  ): Promise<SampleRecordResponse> {
+    const sampleRecord = await this.findEntity(id)
+
+    if (dto.title !== undefined) sampleRecord.title = dto.title
+    if (dto.amount !== undefined) sampleRecord.amount = dto.amount
+    if (dto.dueDate !== undefined) sampleRecord.dueDate = new Date(dto.dueDate)
+    if (dto.sent !== undefined) sampleRecord.sent = dto.sent
+    if (dto.attempts !== undefined) sampleRecord.attempts = dto.attempts
+    if (dto.notes !== undefined) sampleRecord.notes = dto.notes ?? null
+
+    return toSampleRecordResponse(await this.sampleRecords.save(sampleRecord))
+  }
+
+  async remove(id: string): Promise<void> {
+    await this.sampleRecords.remove(await this.findEntity(id))
+  }
+
+  private async findEntity(id: string): Promise<SampleRecord> {
+    const sampleRecord = await this.sampleRecords.findOneBy({ id })
+
+    if (!sampleRecord) {
+      throw new NotFoundException(\`Sample Record \${id} not found\`)
+    }
+
+    return sampleRecord
+  }
+}
+"
+`;
+
+exports[`api-resource generator renders libs/contracts/src/lib/sample-record.ts from the field spec 1`] = `
+"export interface SampleRecordResponse {
+  id: string
+  title: string
+  amount: number
+  dueDate: string
+  sent: boolean
+  attempts: number
+  notes: string | null
+}
+
+export interface CreateSampleRecordRequest {
+  title: string
+  amount: number
+  dueDate: string
+  sent: boolean
+  attempts: number
+  notes?: string | null
+}
+
+export type UpdateSampleRecordRequest = Partial<CreateSampleRecordRequest>
+"
+`;

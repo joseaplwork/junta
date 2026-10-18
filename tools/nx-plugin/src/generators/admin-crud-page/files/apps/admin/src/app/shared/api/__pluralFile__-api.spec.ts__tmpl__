@@ -1,0 +1,77 @@
+import { provideHttpClient } from '@angular/common/http'
+import {
+  HttpTestingController,
+  provideHttpClientTesting,
+} from '@angular/common/http/testing'
+import { TestBed } from '@angular/core/testing'
+
+import { <%- singularClass %>Response } from '@junta/contracts'
+
+import { environment } from '../../../environments/environment'
+
+import { <%- pluralClass %>Api } from './<%- pluralFile %>-api'
+
+const <%- singularProperty %>: <%- singularClass %>Response = {
+  id: '<%- singularFile %>-1',
+<%_ for (const field of fields) { _%>
+  <%- field.name %>: <%- render.sampleValue(field) %>,
+<%_ } _%>
+}
+
+describe('<%- pluralClass %>Api', () => {
+  let api: <%- pluralClass %>Api
+  let http: HttpTestingController
+  const baseUrl = `${environment.apiUrl}/api/<%- pluralFile %>`
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [provideHttpClient(), provideHttpClientTesting()],
+    })
+
+    api = TestBed.inject(<%- pluralClass %>Api)
+    http = TestBed.inject(HttpTestingController)
+  })
+
+  afterEach(() => http.verify())
+
+  it('lists <%- pluralLabel.toLowerCase() %>', async () => {
+    const result = api.list()
+
+    http.expectOne({ method: 'GET', url: baseUrl }).flush([<%- singularProperty %>])
+
+    await expect(result).resolves.toEqual([<%- singularProperty %>])
+  })
+
+  it('creates with the request body', async () => {
+    const { id: _id, ...request } = <%- singularProperty %>
+    const result = api.create(request)
+    const call = http.expectOne({ method: 'POST', url: baseUrl })
+
+    expect(call.request.body).toEqual(request)
+    call.flush(<%- singularProperty %>)
+
+    await expect(result).resolves.toEqual(<%- singularProperty %>)
+  })
+
+  it('patches by id', async () => {
+    const result = api.update('<%- singularFile %>-1', {
+      <%- fields[0].name %>: <%- render.changedSampleValue(fields[0]) %>,
+    })
+    const call = http.expectOne({ method: 'PATCH', url: `${baseUrl}/<%- singularFile %>-1` })
+
+    expect(call.request.body).toEqual({ <%- fields[0].name %>: <%- render.changedSampleValue(fields[0]) %> })
+    call.flush(<%- singularProperty %>)
+
+    await expect(result).resolves.toEqual(<%- singularProperty %>)
+  })
+
+  it('deletes by id', async () => {
+    const result = api.remove('<%- singularFile %>-1')
+
+    http
+      .expectOne({ method: 'DELETE', url: `${baseUrl}/<%- singularFile %>-1` })
+      .flush(null, { status: 204, statusText: 'No Content' })
+
+    await expect(result).resolves.toBeNull()
+  })
+})

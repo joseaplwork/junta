@@ -1,18 +1,19 @@
 <div class="grid h-full place-content-center">
   <form
+    class="flex flex-col gap-5 text-center"
     [formGroup]="form"
-    (ngSubmit)="onSubmit()"
-    class="flex flex-col gap-5 text-center">
+    (ngSubmit)="onSubmit()">
     <mat-form-field appearance="outline">
       <mat-label>Email</mat-label>
       <input
         matInput
         type="email"
         formControlName="email"
-        placeholder="Ex. test@test.com"
-        required />
-      @if (form.get('email')?.invalid) {
-      <mat-error> {{ getErrorMessage('email') }} </mat-error>
+        placeholder="Ex. test@test.com" />
+      @if (form.controls.email.hasError('email')) {
+        <mat-error>Invalid email format</mat-error>
+      } @else {
+        <mat-error>This field is required</mat-error>
       }
     </mat-form-field>
     <mat-form-field appearance="outline">
@@ -21,16 +22,16 @@
         matInput
         type="password"
         formControlName="password"
-        placeholder="******"
-        required />
-      @if (form.get('password')?.invalid) {
-      <mat-error> {{ getErrorMessage('password') }} </mat-error>
-      }
+        placeholder="******" />
+      <mat-error>This field is required</mat-error>
     </mat-form-field>
-    @if (showFormError) {
-    <p class="text-error">Login credentials invalid</p>
+    @if (loginFailed()) {
+      <p class="text-error">Login credentials invalid</p>
     }
-    <button mat-flat-button type="submit" [disabled]="!form.valid">
+    <button
+      mat-flat-button
+      type="submit"
+      [disabled]="form.invalid || submitting()">
       Login
     </button>
   </form>

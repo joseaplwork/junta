@@ -1,38 +1,37 @@
-import { Module } from '@nestjs/common'
-import { TypeOrmModule } from '@nestjs/typeorm'
+import { Module, ValidationPipe } from '@nestjs/common'
+import { APP_FILTER, APP_PIPE } from '@nestjs/core'
 
-import { Admin } from './admins/admin.entity'
-import { AdminModule } from './admins/admin.module'
-import { AppController } from './app.controller'
-import { AppService } from './app.service'
+import { AdminsModule } from './admins/admins.module'
 import { AuthModule } from './auth/auth.module'
-import { Junta } from './juntas/junta.entity'
-import { JuntaModule } from './juntas/junta.module'
-import { ParticipantsSlots } from './participants-slots/participants-slots.entity'
-import { Participant } from './participants/participant.entity'
-import { ParticipantModule } from './participants/participant.module'
-import { Slot } from './slots/slot.entity'
+import { DomainRuleViolationFilter } from './common/filters/domain-rule-violation.filter'
+import { QueryFailedFilter } from './common/filters/query-failed.filter'
+import { AppConfigModule } from './config/app-config.module'
+import { DatabaseModule } from './database/database.module'
+import { HealthController } from './health/health.controller'
+import { JuntasModule } from './juntas/juntas.module'
+import { ParticipantsModule } from './participants/participants.module'
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'joseparedes',
-      password: 'admin',
-      database: 'juntas',
-      entities: [Participant, Admin, Junta, Slot, ParticipantsSlots],
-      synchronize: true,
-      logging: true,
-      logger: 'advanced-console',
-    }),
+    AppConfigModule,
+    DatabaseModule,
     AuthModule,
-    ParticipantModule,
-    AdminModule,
-    JuntaModule,
+    AdminsModule,
+    JuntasModule,
+    ParticipantsModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [HealthController],
+  providers: [
+    {
+      provide: APP_PIPE,
+      useValue: new ValidationPipe({
+        whitelist: true,
+        forbidNonWhitelisted: true,
+        transform: true,
+      }),
+    },
+    { provide: APP_FILTER, useClass: QueryFailedFilter },
+    { provide: APP_FILTER, useClass: DomainRuleViolationFilter },
+  ],
 })
 export class AppModule {}

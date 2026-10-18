@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/schema",
+  "$id": "ApiResource",
+  "title": "API resource",
+  "description": "Generates a NestJS resource that follows apps/api/AGENTS.md exactly.",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Singular resource name, e.g. payment or payment-reminder.",
+      "$default": { "$source": "argv", "index": 0 },
+      "x-prompt": "Singular resource name (e.g. payment)"
+    },
+    "fields": {
+      "type": "string",
+      "description": "Comma-separated fields as name:type or name?:type (optional). Types: string, int, decimal, boolean, date.",
+      "x-prompt": "Fields (e.g. title:string,amount:decimal,dueDate?:date)"
+    },
+    "plural": {
+      "type": "string",
+      "description": "Plural name, only when appending s/es/ies is wrong."
+    },
+    "skipFormat": {
+      "type": "boolean",
+      "default": false,
+      "description": "Skip formatting the generated files."
+    }
+  },
+  "required": ["name", "fields"],
+  "additionalProperties": false
+}

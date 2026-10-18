@@ -1,11 +1,21 @@
 <ja-crud-data-table
+  emptyMessage="No juntas found. Click the + button to create one."
+  loadingMessage="Loading juntas..."
   [data]="juntas()"
   [columns]="columns"
   [actions]="actions"
   [loading]="loading()"
   [error]="error()"
-  emptyMessage="No juntas found. Click the + button to create one."
-  loadingMessage="Loading juntas..."
-  (view)="viewJunta($event)"
-  (edit)="editJunta($event)"
-  (delete)="deleteJunta($event)" />
+  (view)="view($event)"
+  (edit)="edit($event)"
+  (delete)="remove($event)" />
+
+<button
+  mat-fab
+  type="button"
+  color="primary"
+  class="!fixed bottom-8 right-8 shadow-lg"
+  aria-label="Create junta"
+  (click)="create()">
+  <mat-icon>add</mat-icon>
+</button>

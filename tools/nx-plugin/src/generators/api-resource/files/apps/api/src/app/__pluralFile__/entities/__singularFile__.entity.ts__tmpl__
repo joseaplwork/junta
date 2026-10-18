@@ -1,0 +1,16 @@
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
+<%_ if (fields.some(field => field.type === 'decimal')) { _%>
+
+import { numericTransformer } from '@/api/database/numeric.transformer'
+<%_ } _%>
+
+@Entity('<%- tableName %>')
+export class <%- singularClass %> {
+  @PrimaryGeneratedColumn('uuid')
+  id: string
+<%_ for (const field of fields) { _%>
+
+  <%- render.columnDecorator(field) %>
+  <%- field.name %>: <%- render.entityType(field) %>
+<%_ } _%>
+}

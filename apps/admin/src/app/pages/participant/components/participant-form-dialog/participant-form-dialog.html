@@ -1,0 +1,28 @@
+<ja-crud-dialog-shell
+  icon="person"
+  [title]="data.title"
+  [submitLabel]="data.submitLabel"
+  [submitting]="submitting()"
+  [formValid]="form.valid"
+  (submitAction)="onSubmit()"
+  (cancelAction)="onCancel()">
+  <form class="grid gap-4" [formGroup]="form">
+    <mat-form-field class="w-full" appearance="outline">
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name" />
+      <mat-error>Name is required</mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="w-full" appearance="outline">
+      <mat-label>Surname</mat-label>
+      <input matInput formControlName="surname" />
+      <mat-error>Surname is required</mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="w-full" appearance="outline">
+      <mat-label>Phone Number</mat-label>
+      <input matInput formControlName="phoneNumber" />
+      <mat-error>Phone number is required</mat-error>
+    </mat-form-field>
+  </form>
+</ja-crud-dialog-shell>

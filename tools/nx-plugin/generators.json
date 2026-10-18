@@ -1,0 +1,20 @@
+{
+  "$schema": "../../node_modules/nx/schemas/generators-schema.json",
+  "generators": {
+    "crud": {
+      "factory": "./src/generators/crud/generator",
+      "schema": "./src/generators/crud/schema.json",
+      "description": "Backend resource, contracts and admin CRUD page in one step (api-resource + admin-crud-page)."
+    },
+    "api-resource": {
+      "factory": "./src/generators/api-resource/generator",
+      "schema": "./src/generators/api-resource/schema.json",
+      "description": "NestJS resource (entity, DTOs, mapper, service, controller, module, tests), its contract types and permissions."
+    },
+    "admin-crud-page": {
+      "factory": "./src/generators/admin-crud-page/generator",
+      "schema": "./src/generators/admin-crud-page/schema.json",
+      "description": "Admin page with list, create, update and delete features, its API client, route and menu entry."
+    }
+  }
+}

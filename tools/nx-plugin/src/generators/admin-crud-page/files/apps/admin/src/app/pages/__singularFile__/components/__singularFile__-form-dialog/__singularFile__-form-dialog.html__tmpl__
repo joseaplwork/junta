@@ -1,0 +1,14 @@
+<ja-crud-dialog-shell
+  icon="edit_note"
+  [title]="data.title"
+  [submitLabel]="data.submitLabel"
+  [submitting]="submitting()"
+  [formValid]="form.valid"
+  (submitAction)="onSubmit()"
+  (cancelAction)="onCancel()">
+  <form class="grid gap-4" [formGroup]="form">
+<%_ for (const field of fields) { _%>
+<%- render.formFieldHtml(field) %>
+<%_ } _%>
+  </form>
+</ja-crud-dialog-shell>

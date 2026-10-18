@@ -1,99 +1,104 @@
-import { Component, effect, inject, signal } from '@angular/core'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  effect,
+  inject,
+  signal,
+} from '@angular/core'
 
+import { ParticipantResponse } from '@junta/contracts'
+
+import { ParticipantsApi } from '@/admin/shared/api/participants-api'
 import {
   ActionConfig,
   ColumnConfig,
   CrudDataTable,
 } from '@/admin/shared/components/crud'
-import { Participant } from '@/admin/shared/interfaces/participant'
 import { Navigation } from '@/admin/shared/services/navigation'
 import { Snackbar } from '@/admin/shared/services/snackbar'
 
-import { ParticipantState } from '../participant-page-state'
-
-import { ParticipantData } from './services/participant-data'
+import { ParticipantPageState } from '../participant-page-state'
 
 @Component({
   selector: 'ja-participant-list-feat',
-  imports: [CrudDataTable],
   templateUrl: './list-feat.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [CrudDataTable],
 })
 export class ListFeat {
-  private readonly _state = inject(ParticipantState)
-  private readonly _participantData = inject(ParticipantData)
-  private readonly _snackbar = inject(Snackbar)
+  private readonly _state = inject(ParticipantPageState)
+  private readonly _participantsApi = inject(ParticipantsApi)
   private readonly _navigation = inject(Navigation)
+  private readonly _snackbar = inject(Snackbar)
 
-  columns: ColumnConfig[] = [
-    { key: 'name', header: 'Name', type: 'combined', combineWith: 'surname' },
+  readonly columns: ColumnConfig<ParticipantResponse>[] = [
+    {
+      key: 'name',
+      header: 'Name',
+      type: 'text',
+      value: participant => `${participant.name} ${participant.surname}`,
+    },
     { key: 'phoneNumber', header: 'Phone', type: 'text' },
   ]
 
-  actions: ActionConfig = { view: true, edit: true, delete: true }
-
-  participants = signal<Participant[]>([])
-  loading = signal(false)
-  error = signal<string | null>(null)
+  readonly actions: ActionConfig = { view: true, edit: true, delete: true }
+  readonly participants = signal<ParticipantResponse[]>([])
+  readonly loading = signal(false)
+  readonly error = signal<string | null>(null)
 
   constructor() {
-    this._loadParticipants()
+    void this._load()
 
-    effect(this._listenForNewParticipant)
-    effect(this._listenForDeletedParticipant)
-    effect(this._listenForUpdatedParticipant)
+    effect(() => {
+      const created = this._state.created()
+
+      if (created) this.participants.update(list => [...list, created])
+    })
+
+    effect(() => {
+      const updated = this._state.updated()
+
+      if (updated) {
+        this.participants.update(list =>
+          list.map(item => (item.id === updated.id ? updated : item)),
+        )
+      }
+    })
+
+    effect(() => {
+      const deleted = this._state.deleted()
+
+      if (deleted) {
+        this.participants.update(list =>
+          list.filter(item => item.id !== deleted.id),
+        )
+      }
+    })
   }
 
-  viewParticipant(participant: Participant): void {
+  view(participant: ParticipantResponse): void {
     this._navigation.goToParticipantDetails(participant.id)
   }
 
-  editParticipant(participant: Participant): void {
-    this._state.emitUpdateParticipant(participant)
+  edit(participant: ParticipantResponse): void {
+    this._state.requestUpdate(participant)
   }
 
-  deleteParticipant(participant: Participant): void {
-    this._state.emitDeleteParticipant(participant)
+  remove(participant: ParticipantResponse): void {
+    this._state.requestDelete(participant)
   }
 
-  private async _loadParticipants(): Promise<void> {
+  private async _load(): Promise<void> {
     this.loading.set(true)
     this.error.set(null)
 
     try {
-      const participants = await this._participantData.fetchAll()
-
-      this.participants.set(participants)
+      this.participants.set(await this._participantsApi.list())
     } catch {
       this.error.set('Failed to load participants')
       this._snackbar.error('Failed to load participants')
     } finally {
       this.loading.set(false)
-    }
-  }
-
-  private _listenForNewParticipant = () => {
-    const participant = this._state.participantCreated()
-
-    if (participant) {
-      this.participants.update(current => [...current, participant])
-    }
-  }
-
-  private _listenForDeletedParticipant = () => {
-    const participant = this._state.participantDeleted()
-
-    if (participant) {
-      this.participants.update(current => current.filter(p => p.id !== participant.id))
-    }
-  }
-
-  private _listenForUpdatedParticipant = () => {
-    const updatedParticipant = this._state.participantUpdated()
-
-    if (updatedParticipant) {
-      this.participants.update(current =>
-        current.map(p => (p.id === updatedParticipant.id ? updatedParticipant : p)),
-      )
     }
   }
 }

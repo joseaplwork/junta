@@ -1,33 +1,40 @@
 import { Injectable, inject } from '@angular/core'
 import { Router } from '@angular/router'
 
-@Injectable({
-  providedIn: 'root',
-})
+/** Every in-app navigation goes through here, so routes are defined in one place. */
+@Injectable({ providedIn: 'root' })
 export class Navigation {
-  private readonly _route = inject(Router)
+  private readonly _router = inject(Router)
 
-  goToLoginPage() {
-    return this._route.navigate(['login'])
+  goToLoginPage(): void {
+    void this._router.navigate(['login'])
   }
 
-  goToDashboardPage() {
-    return this._route.navigate(['dashboard'])
+  goToDashboardPage(): void {
+    void this._router.navigate(['dashboard'])
   }
 
-  goToJuntaList() {
-    return this._route.navigate(['dashboard', 'junta'])
+  goToJuntaList(): void {
+    void this._router.navigate(['dashboard', 'junta'])
   }
 
-  goToJuntaDetails(id: string) {
-    return this._route.navigate(['dashboard', 'junta', id])
+  goToJuntaDetails(id: string): void {
+    void this._router.navigate(['dashboard', 'junta', id])
   }
 
-  goToParticipantList() {
-    return this._route.navigate(['dashboard', 'participant'])
+  goToJuntaCreate(): void {
+    void this._router.navigate(['dashboard', 'junta', 'create'])
   }
 
-  goToParticipantDetails(id: string) {
-    return this._route.navigate(['dashboard', 'participant', id])
+  goToJuntaEdit(id: string): void {
+    void this._router.navigate(['dashboard', 'junta', 'edit', id])
+  }
+
+  goToParticipantList(): void {
+    void this._router.navigate(['dashboard', 'participant'])
+  }
+
+  goToParticipantDetails(id: string): void {
+    void this._router.navigate(['dashboard', 'participant', id])
   }
 }

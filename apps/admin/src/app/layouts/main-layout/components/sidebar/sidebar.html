@@ -7,9 +7,14 @@
       [class.justify-center]="collapsed()"
       [class.justify-between]="!collapsed()">
       @if (!collapsed()) {
-      <h2 class="text-primary pl-2 text-xl font-semibold">Logo</h2>
+        <h2 class="text-primary pl-2 text-xl font-semibold">Logo</h2>
       }
-      <button mat-icon-button (click)="toggle()" class="text-muted">
+      <button
+        mat-icon-button
+        type="button"
+        class="text-muted"
+        aria-label="Toggle navigation"
+        (click)="toggle()">
         <mat-icon>{{ collapsed() ? 'menu' : 'menu_open' }}</mat-icon>
       </button>
     </div>
@@ -17,54 +22,57 @@
     <div class="flex-grow overflow-y-auto overflow-x-hidden">
       <nav class="flex flex-col gap-1 p-2">
         @for (item of menuItems; track item.route) {
-        <a
-          [routerLink]="item.route"
-          routerLinkActive="bg-primary/20 text-primary"
-          [routerLinkActiveOptions]="{ exact: item.exact ?? false }"
-          *hasPermission="item.permission ?? null"
-          [matTooltip]="collapsed() ? item.label : ''"
-          matTooltipPosition="right"
-          class="hover:bg-surface flex items-center gap-3 rounded-lg px-3 py-2 transition-colors"
-          [class.justify-center]="collapsed()"
-          [class.px-2]="collapsed()">
-          <mat-icon class="flex-shrink-0">{{ item.icon }}</mat-icon>
-          @if (!collapsed()) {
-          <span class="whitespace-nowrap">{{ item.label }}</span>
-          }
-        </a>
+          <a
+            *jaHasPermission="item.permission ?? null"
+            routerLinkActive="bg-primary/20 text-primary"
+            matTooltipPosition="right"
+            class="hover:bg-surface flex items-center gap-3 rounded-lg px-3 py-2 transition-colors"
+            [routerLink]="item.route"
+            [routerLinkActiveOptions]="{ exact: item.exact ?? false }"
+            [matTooltip]="collapsed() ? item.label : ''"
+            [class.justify-center]="collapsed()"
+            [class.px-2]="collapsed()">
+            <mat-icon class="flex-shrink-0">{{ item.icon }}</mat-icon>
+            @if (!collapsed()) {
+              <span class="whitespace-nowrap">{{ item.label }}</span>
+            }
+          </a>
         }
       </nav>
     </div>
 
     <div class="border-outline-variant mt-auto border-t p-2">
       @if (!collapsed()) {
-      <p class="text-muted mb-2 truncate px-3 text-center">
-        {{ profile.email() }}
-      </p>
-      <button
-        mat-flat-button
-        color="warn"
-        (click)="logout()"
-        class="flex w-full items-center justify-center gap-2">
-        <mat-icon>logout</mat-icon>
-        <span>Logout</span>
-      </button>
-      } @else {
-      <div class="flex justify-center">
+        <p class="text-muted mb-2 truncate px-3 text-center">
+          {{ profile.email() }}
+        </p>
         <button
-          mat-icon-button
+          mat-flat-button
+          type="button"
           color="warn"
-          (click)="logout()"
-          matTooltip="Logout"
-          matTooltipPosition="right">
+          class="flex w-full items-center justify-center gap-2"
+          (click)="logout()">
           <mat-icon>logout</mat-icon>
+          <span>Logout</span>
         </button>
-      </div>
+      } @else {
+        <div class="flex justify-center">
+          <button
+            mat-icon-button
+            type="button"
+            color="warn"
+            matTooltip="Logout"
+            matTooltipPosition="right"
+            aria-label="Logout"
+            (click)="logout()">
+            <mat-icon>logout</mat-icon>
+          </button>
+        </div>
       }
     </div>
   </aside>
 
   <main class="h-full flex-1 overflow-auto p-5">
-    <ng-content></ng-content>
+    <ng-content />
   </main>
 </div>

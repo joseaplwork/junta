@@ -1,0 +1,63 @@
+import {
+  ChangeDetectionStrategy,
+  Component,
+  effect,
+  inject,
+} from '@angular/core'
+
+import { <%- singularClass %>Response } from '@junta/contracts'
+
+import { <%- pluralClass %>Api } from '@/admin/shared/api/<%- pluralFile %>-api'
+import {
+  CrudDeleteDialog,
+  DeleteDialogData,
+} from '@/admin/shared/components/crud'
+import { Dialog } from '@/admin/shared/services/dialog'
+import { Snackbar } from '@/admin/shared/services/snackbar'
+
+import { <%- singularClass %>PageState } from '../<%- singularFile %>-page-state'
+
+@Component({
+  selector: 'ja-<%- singularFile %>-delete-feat',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: '',
+})
+export class DeleteFeat {
+  private readonly _dialog = inject(Dialog)
+  private readonly _<%- pluralProperty %>Api = inject(<%- pluralClass %>Api)
+  private readonly _state = inject(<%- singularClass %>PageState)
+  private readonly _snackbar = inject(Snackbar)
+
+  constructor() {
+    effect(() => {
+      const <%- singularProperty %> = this._state.deleteRequest()
+
+      if (!<%- singularProperty %>) return
+
+      this._state.requestDelete(null)
+      this._openDialog(<%- singularProperty %>)
+    })
+  }
+
+  private _openDialog(<%- singularProperty %>: <%- singularClass %>Response): void {
+    this._dialog.open<CrudDeleteDialog, DeleteDialogData>(CrudDeleteDialog, {
+      entityName: '<%- singularTitle %>',
+      displayName: <%- render.displayValue(fields, singularProperty) %>,
+      handleDelete: () => this._delete(<%- singularProperty %>),
+    })
+  }
+
+  private async _delete(<%- singularProperty %>: <%- singularClass %>Response): Promise<boolean> {
+    try {
+      await this._<%- pluralProperty %>Api.remove(<%- singularProperty %>.id)
+      this._state.emitDeleted(<%- singularProperty %>)
+      this._snackbar.success('<%- singularLabel %> deleted')
+
+      return true
+    } catch {
+      this._snackbar.error('Failed to delete <%- singularLabel.toLowerCase() %>')
+
+      return false
+    }
+  }
+}

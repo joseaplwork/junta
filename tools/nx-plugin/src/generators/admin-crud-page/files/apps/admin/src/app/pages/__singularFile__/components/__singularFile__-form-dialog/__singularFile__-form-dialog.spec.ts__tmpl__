@@ -1,0 +1,77 @@
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog'
+import { render, screen } from '@testing-library/angular'
+import userEvent from '@testing-library/user-event'
+
+import { <%- singularClass %>Response } from '@junta/contracts'
+<%_ if (hasDate) { _%>
+
+import {
+  fromDateInputValue,
+  toDateInputValue,
+} from '@/admin/shared/forms/date-input'
+<%_ } _%>
+
+import {
+  <%- singularClass %>FormDialog,
+  <%- singularClass %>FormDialogData,
+} from './<%- singularFile %>-form-dialog'
+
+const <%- singularProperty %>: <%- singularClass %>Response = {
+  id: '<%- singularFile %>-1',
+<%_ for (const field of fields) { _%>
+  <%- field.name %>: <%- render.sampleValue(field) %>,
+<%_ } _%>
+}
+
+async function setup(overrides: Partial<<%- singularClass %>FormDialogData> = {}) {
+  const data: <%- singularClass %>FormDialogData = {
+    title: 'Update <%- singularTitle %>',
+    submitLabel: 'Save',
+    <%- singularProperty %>,
+    handleSubmit: jest.fn().mockResolvedValue(true),
+    ...overrides,
+  }
+  const dialogRef = { close: jest.fn() }
+
+  await render(<%- singularClass %>FormDialog, {
+    providers: [
+      { provide: MAT_DIALOG_DATA, useValue: data },
+      { provide: MatDialogRef, useValue: dialogRef },
+    ],
+  })
+
+  return { data, dialogRef, user: userEvent.setup() }
+}
+
+describe('<%- singularClass %>FormDialog', () => {
+  it('submits the prefilled values and closes when saved', async () => {
+    const { data, dialogRef, user } = await setup()
+
+    await user.click(screen.getByRole('button', { name: 'Save' }))
+
+    expect(data.handleSubmit).toHaveBeenCalledWith({
+<%_ for (const field of fields) { _%>
+      <%- field.name %>: <%- render.prefilledRequestValue(field, singularProperty) %>,
+<%_ } _%>
+    })
+    expect(dialogRef.close).toHaveBeenCalled()
+  })
+
+  it('keeps the dialog open when saving fails', async () => {
+    const { dialogRef, user } = await setup({
+      handleSubmit: jest.fn().mockResolvedValue(false),
+    })
+
+    await user.click(screen.getByRole('button', { name: 'Save' }))
+
+    expect(dialogRef.close).not.toHaveBeenCalled()
+  })
+<%_ if (render.emptyFormIsInvalid(fields)) { _%>
+
+  it('disables submit while required fields are empty', async () => {
+    await setup({ <%- singularProperty %>: null, submitLabel: 'Create' })
+
+    expect(screen.getByRole('button', { name: 'Create' })).toBeDisabled()
+  })
+<%_ } _%>
+})

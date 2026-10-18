@@ -1,37 +1,42 @@
-import { signal } from '@angular/core'
+import { Injectable, signal } from '@angular/core'
 
-import { Participant } from '@/admin/shared/interfaces/participant'
+import { ParticipantResponse } from '@junta/contracts'
 
-export class ParticipantState {
-  private readonly _deleteParticipant = signal<Participant | null>(null)
-  private readonly _participantDeleted = signal<Participant | null>(null)
-  private readonly _participantCreated = signal<Participant | null>(null)
-  private readonly _updateParticipant = signal<Participant | null>(null)
-  private readonly _participantUpdated = signal<Participant | null>(null)
+/**
+ * Lets the page features talk without importing each other.
+ * Requests (`updateRequest`, `deleteRequest`) are cleared by the feature that handles them.
+ */
+@Injectable()
+export class ParticipantPageState {
+  private readonly _updateRequest = signal<ParticipantResponse | null>(null)
+  private readonly _deleteRequest = signal<ParticipantResponse | null>(null)
+  private readonly _created = signal<ParticipantResponse | null>(null)
+  private readonly _updated = signal<ParticipantResponse | null>(null)
+  private readonly _deleted = signal<ParticipantResponse | null>(null)
 
-  readonly deleteParticipant = this._deleteParticipant.asReadonly()
-  readonly participantDeleted = this._participantDeleted.asReadonly()
-  readonly participantCreated = this._participantCreated.asReadonly()
-  readonly updateParticipant = this._updateParticipant.asReadonly()
-  readonly participantUpdated = this._participantUpdated.asReadonly()
+  readonly updateRequest = this._updateRequest.asReadonly()
+  readonly deleteRequest = this._deleteRequest.asReadonly()
+  readonly created = this._created.asReadonly()
+  readonly updated = this._updated.asReadonly()
+  readonly deleted = this._deleted.asReadonly()
 
-  emitDeleteParticipant(participant: Participant | null): void {
-    this._deleteParticipant.set(participant)
+  requestUpdate(participant: ParticipantResponse | null): void {
+    this._updateRequest.set(participant)
   }
 
-  emitParticipantDeleted(participant: Participant): void {
-    this._participantDeleted.set(participant)
+  requestDelete(participant: ParticipantResponse | null): void {
+    this._deleteRequest.set(participant)
   }
 
-  emitParticipantCreated(participant: Participant): void {
-    this._participantCreated.set(participant)
+  emitCreated(participant: ParticipantResponse): void {
+    this._created.set(participant)
   }
 
-  emitUpdateParticipant(participant: Participant | null): void {
-    this._updateParticipant.set(participant)
+  emitUpdated(participant: ParticipantResponse): void {
+    this._updated.set(participant)
   }
 
-  emitParticipantUpdated(participant: Participant): void {
-    this._participantUpdated.set(participant)
+  emitDeleted(participant: ParticipantResponse): void {
+    this._deleted.set(participant)
   }
 }

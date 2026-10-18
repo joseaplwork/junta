@@ -1,0 +1,67 @@
+import { Injectable, NotFoundException } from '@nestjs/common'
+import { InjectRepository } from '@nestjs/typeorm'
+import { Repository } from 'typeorm'
+
+import { <%- singularClass %>Response } from '@junta/contracts'
+
+import { Create<%- singularClass %>Dto } from './dto/create-<%- singularFile %>.dto'
+import { Update<%- singularClass %>Dto } from './dto/update-<%- singularFile %>.dto'
+import { <%- singularClass %> } from './entities/<%- singularFile %>.entity'
+import { to<%- singularClass %>Response } from './<%- singularFile %>.mapper'
+
+@Injectable()
+export class <%- pluralClass %>Service {
+  constructor(
+    @InjectRepository(<%- singularClass %>)
+    private readonly <%- pluralProperty %>: Repository<<%- singularClass %>>,
+  ) {}
+
+  async create(dto: Create<%- singularClass %>Dto): Promise<<%- singularClass %>Response> {
+    const <%- singularProperty %> = this.<%- pluralProperty %>.create({
+<%_ for (const field of fields) { _%>
+      <%- field.name %>: <%- render.entityValue(field, 'dto') %>,
+<%_ } _%>
+    })
+
+    return to<%- singularClass %>Response(await this.<%- pluralProperty %>.save(<%- singularProperty %>))
+  }
+
+  async findAll(): Promise<<%- singularClass %>Response[]> {
+    const <%- pluralProperty %> = await this.<%- pluralProperty %>.find({
+      order: { <%- display.name %>: 'ASC' },
+    })
+
+    return <%- pluralProperty %>.map(to<%- singularClass %>Response)
+  }
+
+  async findOne(id: string): Promise<<%- singularClass %>Response> {
+    return to<%- singularClass %>Response(await this.findEntity(id))
+  }
+
+  async update(
+    id: string,
+    dto: Update<%- singularClass %>Dto,
+  ): Promise<<%- singularClass %>Response> {
+    const <%- singularProperty %> = await this.findEntity(id)
+
+<%_ for (const field of fields) { _%>
+    if (dto.<%- field.name %> !== undefined) <%- singularProperty %>.<%- field.name %> = <%- render.entityValue(field, 'dto') %>
+<%_ } _%>
+
+    return to<%- singularClass %>Response(await this.<%- pluralProperty %>.save(<%- singularProperty %>))
+  }
+
+  async remove(id: string): Promise<void> {
+    await this.<%- pluralProperty %>.remove(await this.findEntity(id))
+  }
+
+  private async findEntity(id: string): Promise<<%- singularClass %>> {
+    const <%- singularProperty %> = await this.<%- pluralProperty %>.findOneBy({ id })
+
+    if (!<%- singularProperty %>) {
+      throw new NotFoundException(`<%- singularTitle %> ${id} not found`)
+    }
+
+    return <%- singularProperty %>
+  }
+}

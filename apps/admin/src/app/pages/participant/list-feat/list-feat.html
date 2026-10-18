@@ -1,11 +1,11 @@
 <ja-crud-data-table
+  emptyMessage="No participants found. Click the + button to create one."
+  loadingMessage="Loading participants..."
   [data]="participants()"
   [columns]="columns"
   [actions]="actions"
   [loading]="loading()"
   [error]="error()"
-  emptyMessage="No participants found. Click the + button to create one."
-  loadingMessage="Loading participants..."
-  (view)="viewParticipant($event)"
-  (edit)="editParticipant($event)"
-  (delete)="deleteParticipant($event)" />
+  (view)="view($event)"
+  (edit)="edit($event)"
+  (delete)="remove($event)" />

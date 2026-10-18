@@ -1,56 +1,65 @@
-import { Component, effect, inject } from '@angular/core'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  effect,
+  inject,
+} from '@angular/core'
 
-import { Admin } from '@/admin/shared/interfaces/admin'
+import { AdminResponse, UpdateAdminRequest } from '@junta/contracts'
+
+import { AdminsApi } from '@/admin/shared/api/admins-api'
 import { Dialog } from '@/admin/shared/services/dialog'
 import { Snackbar } from '@/admin/shared/services/snackbar'
 
 import { AdminPageState } from '../admin-page-state'
 
-import { UpdateAdminDialog } from './components/update-admin-dialog'
-import { UpdatePayload } from './interfaces/update-payload'
-import { AdminUpdate } from './services/update-admin'
+import {
+  UpdateAdminDialog,
+  UpdateAdminDialogData,
+} from './components/update-admin-dialog'
 
 @Component({
   selector: 'ja-admin-update-feat',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: '',
 })
 export class UpdateFeat {
   private readonly _dialog = inject(Dialog)
-  private readonly _adminUpdate = inject(AdminUpdate)
-  private readonly _snackbar = inject(Snackbar)
+  private readonly _adminsApi = inject(AdminsApi)
   private readonly _state = inject(AdminPageState)
+  private readonly _snackbar = inject(Snackbar)
 
   constructor() {
-    effect(this._listenForAdminUpdate)
-  }
+    effect(() => {
+      const admin = this._state.updateRequest()
 
-  private _listenForAdminUpdate = () => {
-    const admin = this._state.updateAdmin()
+      if (!admin) return
 
-    if (admin) {
-      this.openUpdateDialog(admin)
-      this._state.emitUpdateAdmin(null)
-    }
-  }
-
-  private async openUpdateDialog(admin: Admin): Promise<void> {
-    this._dialog.open(UpdateAdminDialog, {
-      admin,
-      handleUpdate: this._handleUpdate,
+      this._state.requestUpdate(null)
+      this._openDialog(admin)
     })
   }
 
-  private _handleUpdate = async (
-    id: string,
-    payload: UpdatePayload,
-  ): Promise<void> => {
-    try {
-      const updatedAdmin = await this._adminUpdate.update(id, payload)
+  private _openDialog(admin: AdminResponse): void {
+    this._dialog.open<UpdateAdminDialog, UpdateAdminDialogData>(
+      UpdateAdminDialog,
+      { admin, handleSubmit: request => this._update(admin.id, request) },
+    )
+  }
 
-      this._state.emitAdminUpdated(updatedAdmin)
-      this._snackbar.success('Admin updated successfully')
+  private async _update(
+    id: string,
+    request: UpdateAdminRequest,
+  ): Promise<boolean> {
+    try {
+      this._state.emitUpdated(await this._adminsApi.update(id, request))
+      this._snackbar.success('Admin updated')
+
+      return true
     } catch {
       this._snackbar.error('Failed to update admin')
+
+      return false
     }
   }
 }

@@ -6,30 +6,30 @@
 <mat-dialog-content>
   <p>
     Are you sure you want to delete
-    <strong>{{ data.displayName }}</strong>?
+    <strong>{{ data.displayName }}</strong
+    >?
   </p>
-  <p class="mt-2 text-sm text-muted">This action cannot be undone.</p>
+  <p class="text-muted mt-2 text-sm">This action cannot be undone.</p>
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
   <button
     mat-stroked-button
     type="button"
-    (click)="onCancel()"
-    [disabled]="deleting()">
+    [disabled]="deleting()"
+    (click)="onCancel()">
     Cancel
   </button>
   <button
     mat-flat-button
-    color="warn"
     type="button"
-    (click)="onDelete()"
+    color="warn"
+    class="flex items-center justify-center"
     [disabled]="deleting()"
-    class="flex items-center justify-center">
+    (click)="onDelete()">
     @if (deleting()) {
-    <mat-icon><mat-spinner diameter="18"></mat-spinner></mat-icon>
+      <mat-icon><mat-spinner diameter="18" /></mat-icon>
     }
     <span>Delete</span>
   </button>
 </mat-dialog-actions>
-

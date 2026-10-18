@@ -1,37 +1,42 @@
-import { signal } from '@angular/core'
+import { Injectable, signal } from '@angular/core'
 
-import { Admin } from '@/admin/shared/interfaces/admin'
+import { AdminResponse } from '@junta/contracts'
 
+/**
+ * Lets the page features talk without importing each other.
+ * Requests (`updateRequest`, `deleteRequest`) are cleared by the feature that handles them.
+ */
+@Injectable()
 export class AdminPageState {
-  private readonly _deleteAdmin = signal<Admin | null>(null)
-  private readonly _adminDeleted = signal<Admin | null>(null)
-  private readonly _adminCreated = signal<Admin | null>(null)
-  private readonly _updateAdmin = signal<Admin | null>(null)
-  private readonly _adminUpdated = signal<Admin | null>(null)
+  private readonly _updateRequest = signal<AdminResponse | null>(null)
+  private readonly _deleteRequest = signal<AdminResponse | null>(null)
+  private readonly _created = signal<AdminResponse | null>(null)
+  private readonly _updated = signal<AdminResponse | null>(null)
+  private readonly _deleted = signal<AdminResponse | null>(null)
 
-  readonly deleteAdmin = this._deleteAdmin.asReadonly()
-  readonly adminDeleted = this._adminDeleted.asReadonly()
-  readonly adminCreated = this._adminCreated.asReadonly()
-  readonly updateAdmin = this._updateAdmin.asReadonly()
-  readonly adminUpdated = this._adminUpdated.asReadonly()
+  readonly updateRequest = this._updateRequest.asReadonly()
+  readonly deleteRequest = this._deleteRequest.asReadonly()
+  readonly created = this._created.asReadonly()
+  readonly updated = this._updated.asReadonly()
+  readonly deleted = this._deleted.asReadonly()
 
-  emitDeleteAdmin(admin: Admin | null): void {
-    this._deleteAdmin.set(admin)
+  requestUpdate(admin: AdminResponse | null): void {
+    this._updateRequest.set(admin)
   }
 
-  emitAdminDeleted(admin: Admin): void {
-    this._adminDeleted.set(admin)
+  requestDelete(admin: AdminResponse | null): void {
+    this._deleteRequest.set(admin)
   }
 
-  emitAdminCreated(admin: Admin): void {
-    this._adminCreated.set(admin)
+  emitCreated(admin: AdminResponse): void {
+    this._created.set(admin)
   }
 
-  emitUpdateAdmin(admin: Admin | null): void {
-    this._updateAdmin.set(admin)
+  emitUpdated(admin: AdminResponse): void {
+    this._updated.set(admin)
   }
 
-  emitAdminUpdated(admin: Admin): void {
-    this._adminUpdated.set(admin)
+  emitDeleted(admin: AdminResponse): void {
+    this._deleted.set(admin)
   }
 }
