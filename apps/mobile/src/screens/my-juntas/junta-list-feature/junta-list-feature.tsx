@@ -2,8 +2,8 @@ import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   ActivityIndicator,
-  FlatList,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   View,
@@ -58,33 +58,37 @@ export function JuntaListFeature({
     )
   }
 
+  // ScrollView, not FlatList: a participant has few juntas, and VirtualizedList
+  // layout loops can hang `await render` under CI load.
   return (
-    <FlatList
-      contentContainerStyle={styles.list}
-      data={state.juntas}
-      keyExtractor={junta => junta.id}
-      ListEmptyComponent={<Text style={styles.empty}>{t('juntas.empty')}</Text>}
-      onRefresh={() => void load()}
-      refreshing={false}
-      renderItem={({ item }) => (
-        <Pressable accessibilityRole="button" onPress={() => onOpen(item.id)}>
-          <Card>
-            <Text style={styles.name}>{item.name}</Text>
-            <Text style={styles.amount}>
-              {formatMoney(item.amount, item.currency)}
-            </Text>
-            <Text style={styles.detail}>
-              {t('juntas.payout', { month: formatMonth(item.payoutDate) })}
-            </Text>
-            <Text style={styles.detail}>
-              {t('juntas.groupPays', {
-                amount: formatMoney(item.groupAmount, item.currency),
-              })}
-            </Text>
-          </Card>
-        </Pressable>
+    <ScrollView contentContainerStyle={styles.list}>
+      {state.juntas.length === 0 ? (
+        <Text style={styles.empty}>{t('juntas.empty')}</Text>
+      ) : (
+        state.juntas.map(item => (
+          <Pressable
+            accessibilityRole="button"
+            key={item.id}
+            onPress={() => onOpen(item.id)}
+          >
+            <Card>
+              <Text style={styles.name}>{item.name}</Text>
+              <Text style={styles.amount}>
+                {formatMoney(item.amount, item.currency)}
+              </Text>
+              <Text style={styles.detail}>
+                {t('juntas.payout', { month: formatMonth(item.payoutDate) })}
+              </Text>
+              <Text style={styles.detail}>
+                {t('juntas.groupPays', {
+                  amount: formatMoney(item.groupAmount, item.currency),
+                })}
+              </Text>
+            </Card>
+          </Pressable>
+        ))
       )}
-    />
+    </ScrollView>
   )
 }
 

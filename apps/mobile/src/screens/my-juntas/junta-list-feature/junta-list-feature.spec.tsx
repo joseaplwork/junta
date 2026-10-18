@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react-native'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react-native'
 
 import { MyJuntaSummaryResponse } from '@junta/contracts'
 
@@ -31,7 +31,9 @@ describe('JuntaListFeature', () => {
 
     await render(<JuntaListFeature onOpen={onOpen} />)
 
-    expect(await screen.findByText('Vuelo Peru')).toBeOnTheScreen()
+    await waitFor(() => {
+      expect(screen.getByText('Vuelo Peru')).toBeOnTheScreen()
+    })
     expect(screen.getByText(/febrero de 2026/)).toBeOnTheScreen()
 
     await fireEvent.press(screen.getByRole('button'))
@@ -44,8 +46,10 @@ describe('JuntaListFeature', () => {
 
     await render(<JuntaListFeature onOpen={jest.fn()} />)
 
-    expect(
-      await screen.findByText(/Aún no participas en ninguna junta/),
-    ).toBeOnTheScreen()
+    await waitFor(() => {
+      expect(
+        screen.getByText(/Aún no participas en ninguna junta/),
+      ).toBeOnTheScreen()
+    })
   })
 })

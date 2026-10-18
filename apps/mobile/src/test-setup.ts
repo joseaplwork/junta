@@ -1,4 +1,10 @@
+import { configure } from '@testing-library/react-native'
+
 import { i18n } from '@/mobile/shared/i18n'
+
+// Verify runs mobile tests beside other projects; keep headroom under load.
+jest.setTimeout(20_000)
+configure({ asyncUtilTimeout: 10_000 })
 
 jest.mock('expo-secure-store', () => {
   const store = new Map<string, string>()

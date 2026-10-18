@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react-native'
+import { render, screen, waitFor } from '@testing-library/react-native'
 
 import { meApi } from '@/mobile/shared/api/me-api'
 
@@ -29,7 +29,9 @@ describe('JuntaDetailFeature', () => {
 
     await render(<JuntaDetailFeature id="junta-1" />)
 
-    expect(await screen.findByText('Turno 2 de 2')).toBeOnTheScreen()
+    await waitFor(() => {
+      expect(screen.getByText('Turno 2 de 2')).toBeOnTheScreen()
+    })
     expect(screen.getByText('2 personas en tu grupo')).toBeOnTheScreen()
     expect(screen.getByText('Luz Condori')).toBeOnTheScreen()
   })
