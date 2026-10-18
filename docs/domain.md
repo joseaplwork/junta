@@ -57,6 +57,7 @@ only some paths enforce it, **planned** means the rule is agreed but not built.
 | BR-12 | Permissions derive from roles. A super admin holds every permission. An admin holds all but admin management.               | enforced | `permissions.ts`, `PermissionsGuard`                           |
 | BR-13 | Each junta stores its currency as an ISO 4217 code. Its amounts are whole units of that currency.                           | enforced | `junta-financials.ts`, `CreateJuntaDto`                        |
 | BR-14 | An admin account holds the admin or super admin role. The participant role cannot be its only role.                         | enforced | `permissions.ts`, `AdminsService`                              |
+| BR-15 | A participant sees only the juntas they belong to and the names of their own group. Never phone numbers or other groups.    | enforced | `participant-visibility.ts`, `MeService`                       |
 
 Rule files live in `libs/domain/src/lib/`. Services live in `apps/api/src/app/`.
 
@@ -92,11 +93,11 @@ These double as test cases. Scenario 2 is covered by
 
 ## Roles
 
-| Role          | Can do                                                                                                                                                                                   |
-| ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `superAdmin`  | Everything, including managing admins.                                                                                                                                                   |
-| `admin`       | Everything except managing admins. The generators grant admins the permissions of every new resource.                                                                                    |
-| `participant` | Read juntas and participants. Today only admin accounts hold it, always next to a back-office role (BR-14). Spec 003 gives participants their own accounts, limited to their own juntas. |
+| Role          | Can do                                                                                                                                   |
+| ------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `superAdmin`  | Everything, including managing admins.                                                                                                   |
+| `admin`       | Everything except managing admins. The generators grant admins the permissions of every new resource.                                    |
+| `participant` | Read their own juntas through `/api/me` (`self:read`, BR-15). Participants sign in to the mobile app with their own accounts (spec 003). |
 
 The mapping is `ROLE_PERMISSIONS` in `libs/domain/src/lib/permissions.ts`.
 The admin app is the owner's back office. Participants will use a mobile app,
@@ -148,3 +149,5 @@ Answer these with the product owner before building the related features.
 | Q-10 | Are contributions created with the junta or month by month? What happens to them when groups are edited?                          | No contributions are created. See spec 001.                                                   |
 | Q-11 | Who marks a contribution as paid, and under which permission?                                                                     | No endpoint. See spec 001.                                                                    |
 | Q-12 | Does `overdue` follow a date rule, such as unpaid after day N of the month, or is it set by hand?                                 | No endpoint. See spec 001.                                                                    |
+| Q-15 | How does a group's monthly amount split among its members when it does not divide evenly (BR-04)?                                 | The app shows the group's monthly amount and its size.                                        |
+| Q-16 | Should a self-registered account be linked to an existing participant the owner created, and how is that verified?                | Every account creates a new participant.                                                      |

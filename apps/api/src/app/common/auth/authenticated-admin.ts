@@ -8,6 +8,8 @@ export interface AuthenticatedAdmin {
   email: string
   roles: Role[]
   permissions: Permission[]
+  /** Set for participants signed in through the mobile app (spec 003). */
+  participantId?: string
 }
 
 export type AuthenticatedRequest = Request & { user: AuthenticatedAdmin }

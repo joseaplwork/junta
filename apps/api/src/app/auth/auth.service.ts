@@ -142,7 +142,7 @@ export class AuthService {
       payload = undefined
     }
 
-    if (payload?.type !== 'refresh') {
+    if (payload?.type !== 'refresh' || payload.kind !== undefined) {
       throw new UnauthorizedException('Invalid refresh token')
     }
 

@@ -9,6 +9,8 @@ import { AppConfigModule } from './config/app-config.module'
 import { DatabaseModule } from './database/database.module'
 import { HealthController } from './health/health.controller'
 import { JuntasModule } from './juntas/juntas.module'
+import { MeModule } from './me/me.module'
+import { ParticipantAuthModule } from './participant-auth/participant-auth.module'
 import { ParticipantsModule } from './participants/participants.module'
 
 @Module({
@@ -18,6 +20,8 @@ import { ParticipantsModule } from './participants/participants.module'
     AuthModule,
     AdminsModule,
     JuntasModule,
+    MeModule,
+    ParticipantAuthModule,
     ParticipantsModule,
   ],
   controllers: [HealthController],

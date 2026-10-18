@@ -16,6 +16,8 @@ export interface AccessTokenClaims {
   email: string
   roles: Role[]
   permissions: Permission[]
+  /** Present on participant tokens from `/api/participant-auth` (spec 003). */
+  participantId?: string
 }
 
 export interface AuthProfileResponse {

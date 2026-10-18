@@ -11,4 +11,6 @@ export enum Permission {
   JUNTA_READ = 'junta:read',
   JUNTA_UPDATE = 'junta:update',
   JUNTA_DELETE = 'junta:delete',
+  /** A participant reading their own juntas through `/api/me` (BR-15). */
+  SELF_READ = 'self:read',
 }

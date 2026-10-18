@@ -19,9 +19,10 @@ describe('permissionsForRoles (BR-12)', () => {
     )
   })
 
-  it('grants an admin every permission except admin management', () => {
-    const adminManagement = Object.values(Permission).filter(permission =>
-      permission.startsWith('admin:'),
+  it('grants an admin every permission except admin management and self-service', () => {
+    const adminManagement = Object.values(Permission).filter(
+      permission =>
+        permission.startsWith('admin:') || permission.startsWith('self:'),
     )
 
     expect(permissionsForRoles([Role.ADMIN]).sort()).toEqual(
@@ -33,10 +34,16 @@ describe('permissionsForRoles (BR-12)', () => {
 
   it('merges roles without duplicates', () => {
     expect(
-      permissionsForRoles([Role.ADMIN, Role.PARTICIPANT]).filter(
+      permissionsForRoles([Role.ADMIN, Role.ADMIN]).filter(
         permission => permission === Permission.JUNTA_READ,
       ),
     ).toHaveLength(1)
+  })
+
+  it('limits a participant to their own data (BR-15)', () => {
+    expect(permissionsForRoles([Role.PARTICIPANT])).toEqual([
+      Permission.SELF_READ,
+    ])
   })
 
   it('returns no permissions for no roles', () => {

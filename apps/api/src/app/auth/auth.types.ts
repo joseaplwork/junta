@@ -9,6 +9,8 @@ export interface AccessTokenPayload extends AccessTokenClaims {
 
 export interface RefreshTokenPayload {
   type: 'refresh'
+  /** Set on participant tokens (spec 003). Admin refresh tokens have none. */
+  kind?: 'participant'
   sub: string
   /**
    * The admin's `tokenVersion` when the token was issued. Tokens issued before

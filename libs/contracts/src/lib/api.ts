@@ -9,6 +9,8 @@ export const ApiResource = {
   auth: 'auth',
   health: 'health',
   juntas: 'juntas',
+  me: 'me',
+  participantAuth: 'participant-auth',
   participants: 'participants',
 } as const
 

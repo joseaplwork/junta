@@ -2,6 +2,7 @@ import { Admin } from '@/api/admins/entities/admin.entity'
 import { Group } from '@/api/juntas/entities/group.entity'
 import { Junta } from '@/api/juntas/entities/junta.entity'
 import { ParticipantGroup } from '@/api/juntas/entities/participant-group.entity'
+import { ParticipantAccount } from '@/api/participant-auth/entities/participant-account.entity'
 import { Participant } from '@/api/participants/entities/participant.entity'
 import { Contribution } from '@/api/payments/entities/contribution.entity'
 import { Distribution } from '@/api/payments/entities/distribution.entity'
@@ -20,4 +21,5 @@ export const ENTITIES = [
   Contribution,
   Payout,
   Distribution,
+  ParticipantAccount,
 ]

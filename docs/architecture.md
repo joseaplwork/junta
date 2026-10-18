@@ -88,6 +88,11 @@ refresh fails, the session ends and the admin returns to `/login`.
 - Login, refresh and logout refuse requests whose `Origin` is not in
   `CORS_ORIGIN` (`CookieOriginGuard`), because the refresh cookie is
   `SameSite=None` and a form on another site could otherwise post to them.
+- Participants sign in through `/api/participant-auth` (spec 003). Their
+  tokens travel in the request and response body, never in a cookie, and the
+  app keeps them in the device keychain. Participant access tokens carry
+  `participantId` and only `self:read`; their refresh tokens carry
+  `kind: 'participant'`, so each refresh endpoint refuses the other's tokens.
 - Every route requires an access token unless decorated with `@Public()`.
   `@RequirePermissions(...)` checks the token's permissions. Roles map to
   permissions in `libs/domain` (BR-12).

@@ -18,7 +18,7 @@ export const ROLE_PERMISSIONS: Readonly<Record<Role, readonly Permission[]>> = {
     Permission.PARTICIPANT_UPDATE,
     Permission.PARTICIPANT_DELETE,
   ],
-  [Role.PARTICIPANT]: [Permission.JUNTA_READ, Permission.PARTICIPANT_READ],
+  [Role.PARTICIPANT]: [Permission.SELF_READ],
 }
 
 export function permissionsForRoles(roles: readonly Role[]): Permission[] {
