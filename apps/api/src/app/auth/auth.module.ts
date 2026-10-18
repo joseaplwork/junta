@@ -1,44 +1,36 @@
 import { Module } from '@nestjs/common'
 import { APP_GUARD } from '@nestjs/core'
-import { JwtModule } from '@nestjs/jwt'
+import { JwtModule, JwtModuleOptions } from '@nestjs/jwt'
+import { PassportModule } from '@nestjs/passport'
 
-import { AdminModule } from '@/api/admins/admin.module'
-import { AuthGuard } from '@/api/guards/auth.guard'
-import { PermissionsGuard } from '@/api/guards/permissions.guard'
-import { RolesGuard } from '@/api/guards/roles.guard'
+import { AdminsModule } from '@/api/admins/admins.module'
+import { JwtAuthGuard } from '@/api/common/guards/jwt-auth.guard'
+import { PermissionsGuard } from '@/api/common/guards/permissions.guard'
+import { APP_CONFIG, AppConfig } from '@/api/config/app-config'
 
-import { jwtConstants } from './auth.constants'
 import { AuthController } from './auth.controller'
 import { AuthService } from './auth.service'
-import { JwtStrategy } from './jwt.strategy'
-import { LocalStrategy } from './local.strategy'
+import { JwtStrategy } from './strategies/jwt.strategy'
+import { LocalStrategy } from './strategies/local.strategy'
 
 @Module({
   imports: [
-    AdminModule,
-    JwtModule.register({
-      global: true,
-      secret: jwtConstants.secret,
-      signOptions: { expiresIn: '1m' },
+    AdminsModule,
+    PassportModule,
+    JwtModule.registerAsync({
+      inject: [APP_CONFIG],
+      useFactory: (config: AppConfig): JwtModuleOptions => ({
+        secret: config.auth.jwtSecret,
+      }),
     }),
   ],
+  controllers: [AuthController],
   providers: [
     AuthService,
     LocalStrategy,
     JwtStrategy,
-    {
-      provide: APP_GUARD,
-      useClass: AuthGuard,
-    },
-    {
-      provide: APP_GUARD,
-      useClass: RolesGuard,
-    },
-    {
-      provide: APP_GUARD,
-      useClass: PermissionsGuard,
-    },
+    { provide: APP_GUARD, useClass: JwtAuthGuard },
+    { provide: APP_GUARD, useClass: PermissionsGuard },
   ],
-  controllers: [AuthController],
 })
 export class AuthModule {}

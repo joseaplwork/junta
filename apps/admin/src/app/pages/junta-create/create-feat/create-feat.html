@@ -1,5 +1,5 @@
 <div class="mb-6 flex items-center gap-4">
-  <button mat-icon-button (click)="onCancel()">
+  <button mat-icon-button type="button" aria-label="Back" (click)="cancel()">
     <mat-icon>arrow_back</mat-icon>
   </button>
   <h1 class="text-2xl font-bold">
@@ -8,17 +8,16 @@
 </div>
 
 @if (loading()) {
-<div class="flex justify-center p-8">
-  <p>Loading junta...</p>
-</div>
+  <div class="flex justify-center p-8">
+    <p>Loading junta...</p>
+  </div>
 } @else {
-<ja-junta-form
-  [initialJunta]="initialJunta()"
-  [participants]="participants()"
-  [loadingParticipants]="loadingParticipants()"
-  [submitting]="submitting()"
-  [isEditMode]="isEditMode()"
-  [editId]="editId()"
-  (submitPayload)="onSubmit($event)"
-  (cancelForm)="onCancel()" />
+  <ja-junta-form
+    [initialJunta]="junta()"
+    [participants]="participants()"
+    [loadingParticipants]="loadingParticipants()"
+    [submitting]="submitting()"
+    [submitLabel]="isEditMode() ? 'Update Junta' : 'Create Junta'"
+    (submitRequest)="save($event)"
+    (cancelForm)="cancel()" />
 }

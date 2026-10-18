@@ -7,32 +7,30 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "useDefineForClassFields": false,
     "importHelpers": true,
-    "target": "es2015",
+    "target": "es2022",
     "module": "esnext",
-    "lib": [
-      "es2020",
-      "dom"
-    ],
+    "lib": ["es2022", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
+    "strict": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
     "paths": {
-      "@/admin/*": [
-        "apps/admin/src/app/*"
-      ],
-      "@/api/*": [
-        "apps/api/src/app/*"
-      ],
-      "@junta/shared/enums/*": [
-        "libs/shared/enums/src/lib/*"
-      ]
+      "@/admin/*": ["apps/admin/src/app/*"],
+      "@/api/*": ["apps/api/src/app/*"],
+      "@junta/contracts": ["libs/contracts/src/index.ts"],
+      "@junta/domain": ["libs/domain/src/index.ts"],
+      "@junta/nx-plugin": ["tools/nx-plugin/src/index.ts"]
     }
   },
-  "exclude": [
-    "node_modules",
-    "tmp"
-  ]
+  "exclude": ["node_modules", "tmp"]
 }

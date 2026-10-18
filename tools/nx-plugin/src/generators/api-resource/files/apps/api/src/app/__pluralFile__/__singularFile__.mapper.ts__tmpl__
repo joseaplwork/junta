@@ -1,0 +1,14 @@
+import { <%- singularClass %>Response } from '@junta/contracts'
+
+import { <%- singularClass %> } from './entities/<%- singularFile %>.entity'
+
+export function to<%- singularClass %>Response(
+  <%- singularProperty %>: <%- singularClass %>,
+): <%- singularClass %>Response {
+  return {
+    id: <%- singularProperty %>.id,
+<%_ for (const field of fields) { _%>
+    <%- field.name %>: <%- render.responseValue(field, singularProperty) %>,
+<%_ } _%>
+  }
+}

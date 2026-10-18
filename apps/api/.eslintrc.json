@@ -2,18 +2,31 @@
   "extends": ["../../.eslintrc.json"],
   "ignorePatterns": ["!**/*", "webpack.config.js"],
   "parserOptions": {
-    "project": ["apps/api/tsconfig*.json"]
+    "project": ["apps/api/tsconfig.app.json", "apps/api/tsconfig.spec.json"]
   },
   "overrides": [
     {
-      "files": ["*.ts"],
-      "extends": [
-        "plugin:@typescript-eslint/recommended",
-        "plugin:@typescript-eslint/stylistic",
-        "plugin:prettier/recommended"
-      ],
+      "files": ["*.controller.ts"],
       "rules": {
-        "prettier/prettier": "error"
+        "no-restricted-imports": [
+          "error",
+          {
+            "paths": [
+              {
+                "name": "typeorm",
+                "message": "Controllers stay thin: persistence belongs in the feature service."
+              },
+              {
+                "name": "@nestjs/typeorm",
+                "message": "Controllers stay thin: persistence belongs in the feature service."
+              },
+              {
+                "name": "@junta/domain",
+                "message": "Controllers stay thin: business rules are applied in the feature service."
+              }
+            ]
+          }
+        ]
       }
     }
   ]

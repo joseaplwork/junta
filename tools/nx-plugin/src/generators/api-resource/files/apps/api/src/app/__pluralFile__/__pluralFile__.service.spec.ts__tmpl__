@@ -1,0 +1,83 @@
+import { NotFoundException } from '@nestjs/common'
+import { Test } from '@nestjs/testing'
+import { getRepositoryToken } from '@nestjs/typeorm'
+
+import { Create<%- singularClass %>Dto } from './dto/create-<%- singularFile %>.dto'
+import { <%- singularClass %> } from './entities/<%- singularFile %>.entity'
+import { <%- pluralClass %>Service } from './<%- pluralFile %>.service'
+
+const createDto: Create<%- singularClass %>Dto = {
+<%_ for (const field of fields) { _%>
+  <%- field.name %>: <%- render.sampleValue(field) %>,
+<%_ } _%>
+}
+
+const build<%- singularClass %> = (overrides: Partial<<%- singularClass %>> = {}): <%- singularClass %> =>
+  Object.assign(new <%- singularClass %>(), {
+    id: '<%- singularFile %>-1',
+<%_ for (const field of fields) { _%>
+    <%- field.name %>: <%- render.entityValue(field, 'createDto') %>,
+<%_ } _%>
+    ...overrides,
+  })
+
+describe('<%- pluralClass %>Service', () => {
+  let service: <%- pluralClass %>Service
+  const <%- pluralProperty %> = {
+    create: jest.fn((input: Partial<<%- singularClass %>>) => build<%- singularClass %>(input)),
+    save: jest.fn(async (<%- singularProperty %>: <%- singularClass %>) => <%- singularProperty %>),
+    find: jest.fn(),
+    findOneBy: jest.fn(),
+    remove: jest.fn(),
+  }
+
+  beforeEach(async () => {
+    jest.clearAllMocks()
+
+    const moduleRef = await Test.createTestingModule({
+      providers: [
+        <%- pluralClass %>Service,
+        { provide: getRepositoryToken(<%- singularClass %>), useValue: <%- pluralProperty %> },
+      ],
+    }).compile()
+
+    service = moduleRef.get(<%- pluralClass %>Service)
+  })
+
+  it('creates a <%- singularLabel.toLowerCase() %> and returns the response contract', async () => {
+    await expect(service.create(createDto)).resolves.toEqual({
+      id: '<%- singularFile %>-1',
+      ...createDto,
+    })
+  })
+
+  it('throws NotFoundException for an unknown id', async () => {
+    <%- pluralProperty %>.findOneBy.mockResolvedValue(null)
+
+    await expect(service.findOne('missing')).rejects.toBeInstanceOf(
+      NotFoundException,
+    )
+  })
+
+  it('updates only the provided fields', async () => {
+    <%- pluralProperty %>.findOneBy.mockResolvedValue(build<%- singularClass %>())
+
+    await expect(
+      service.update('<%- singularFile %>-1', { <%- fields[0].name %>: <%- render.changedSampleValue(fields[0]) %> }),
+    ).resolves.toEqual({
+      id: '<%- singularFile %>-1',
+      ...createDto,
+      <%- fields[0].name %>: <%- render.changedSampleValue(fields[0]) %>,
+    })
+  })
+
+  it('removes an existing <%- singularLabel.toLowerCase() %>', async () => {
+    const <%- singularProperty %> = build<%- singularClass %>()
+
+    <%- pluralProperty %>.findOneBy.mockResolvedValue(<%- singularProperty %>)
+
+    await service.remove('<%- singularFile %>-1')
+
+    expect(<%- pluralProperty %>.remove).toHaveBeenCalledWith(<%- singularProperty %>)
+  })
+})

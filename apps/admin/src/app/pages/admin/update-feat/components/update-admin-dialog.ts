@@ -1,72 +1,67 @@
-import { TitleCasePipe } from '@angular/common'
-import { Component, inject, signal } from '@angular/core'
 import {
-  FormArray,
-  FormBuilder,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms'
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  signal,
+} from '@angular/core'
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
 import { MatCheckboxModule } from '@angular/material/checkbox'
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog'
 import { MatFormFieldModule } from '@angular/material/form-field'
 import { MatInputModule } from '@angular/material/input'
 
-import { Role } from '@junta/shared/enums/role'
+import { AdminResponse, Role, UpdateAdminRequest } from '@junta/contracts'
 
 import { CrudDialogShell } from '@/admin/shared/components/crud'
-import { Admin } from '@/admin/shared/interfaces/admin'
 
-import { UpdatePayload } from '../interfaces/update-payload'
+import {
+  ASSIGNABLE_ROLES,
+  ROLE_LABELS,
+  toggleRole,
+} from '../../constants/admin-roles'
+
+export interface UpdateAdminDialogData {
+  admin: AdminResponse
+  /** Resolves true when saved. The dialog stays open otherwise. */
+  handleSubmit: (request: UpdateAdminRequest) => Promise<boolean>
+}
 
 @Component({
+  templateUrl: './update-admin-dialog.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    TitleCasePipe,
     ReactiveFormsModule,
     MatCheckboxModule,
     MatFormFieldModule,
     MatInputModule,
     CrudDialogShell,
   ],
-  templateUrl: './update-admin-dialog.html',
 })
 export class UpdateAdminDialog {
   private readonly _dialogRef = inject(MatDialogRef<UpdateAdminDialog>)
-  private readonly _fb = inject(FormBuilder)
+  private readonly _fb = inject(FormBuilder).nonNullable
 
+  readonly data = inject<UpdateAdminDialogData>(MAT_DIALOG_DATA)
+  readonly roles = ASSIGNABLE_ROLES
+  readonly roleLabels = ROLE_LABELS
   readonly submitting = signal(false)
-  readonly data = inject<{
-    admin: Admin
-    handleUpdate: (id: string, payload: UpdatePayload) => Promise<void>
-  }>(MAT_DIALOG_DATA)
-
-  form = this._fb.group({
+  readonly form = this._fb.group({
     email: [this.data.admin.email, [Validators.required, Validators.email]],
-    roles: this._fb.array(
-      this.data.admin.roles.map(role => this._fb.control(role)),
-      [Validators.required],
+    roles: this._fb.control<Role[]>(
+      [...this.data.admin.roles],
+      Validators.required,
     ),
   })
 
-  get rolesFormArray(): FormArray {
-    return this.form.get('roles') as FormArray
+  hasRole(role: Role): boolean {
+    return this.form.controls.roles.value.includes(role)
   }
 
-  readonly availableRoles = [Role.SUPER_ADMIN, Role.ADMIN, Role.PARTICIPANT]
+  toggleRole(role: Role): void {
+    const control = this.form.controls.roles
 
-  isRoleSelected(role: string): boolean {
-    return this.rolesFormArray.value.includes(role)
-  }
-
-  toggleRole(role: string): void {
-    const currentRoles = this.rolesFormArray.value
-
-    if (this.isRoleSelected(role)) {
-      const index = currentRoles.indexOf(role)
-
-      this.rolesFormArray.removeAt(index)
-    } else {
-      this.rolesFormArray.push(this._fb.control(role))
-    }
+    control.setValue(toggleRole(control.value, role))
+    control.markAsTouched()
   }
 
   async onSubmit(): Promise<void> {
@@ -74,21 +69,14 @@ export class UpdateAdminDialog {
 
     this.submitting.set(true)
 
-    try {
-      const formValue = this.form.value
-      const payload: UpdatePayload = {
-        email: formValue.email!,
-        roles: formValue.roles!.filter(Boolean) as Role[],
-      }
+    const saved = await this.data.handleSubmit(this.form.getRawValue())
 
-      await this.data.handleUpdate(this.data.admin.id, payload)
-      this._dialogRef.close(true)
-    } finally {
-      this.submitting.set(false)
-    }
+    this.submitting.set(false)
+
+    if (saved) this._dialogRef.close()
   }
 
   onCancel(): void {
-    this._dialogRef.close(false)
+    this._dialogRef.close()
   }
 }

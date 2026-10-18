@@ -1,0 +1,15 @@
+import { <%- render.validatorImports(fields).join(', ') %> } from 'class-validator'
+
+import { Create<%- singularClass %>Request } from '@junta/contracts'
+
+export class Create<%- singularClass %>Dto implements Create<%- singularClass %>Request {
+<%_ fields.forEach((field, index) => { _%>
+<%_ if (index > 0) { _%>
+
+<%_ } _%>
+<%_ for (const decorator of render.dtoDecorators(field)) { _%>
+  <%- decorator %>
+<%_ } _%>
+  <%- render.requestProperty(field) %>
+<%_ }) _%>
+}

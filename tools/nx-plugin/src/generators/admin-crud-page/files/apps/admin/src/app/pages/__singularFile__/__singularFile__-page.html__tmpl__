@@ -1,0 +1,10 @@
+<div class="p-6">
+  <div class="mb-6">
+    <h1 class="text-2xl font-bold"><%- pluralTitle %></h1>
+  </div>
+
+  <ja-<%- singularFile %>-list-feat />
+  <ja-<%- singularFile %>-create-feat />
+  <ja-<%- singularFile %>-update-feat />
+  <ja-<%- singularFile %>-delete-feat />
+</div>

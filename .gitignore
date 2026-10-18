@@ -1,5 +1,3 @@
-# See http://help.github.com/ignore-files/ for more about ignoring files.
-
 # compiled output
 dist
 tmp
@@ -7,6 +5,11 @@ tmp
 
 # dependencies
 node_modules
+
+# local environment: copy the matching .env.example
+.env
+.env.*
+!.env.example
 
 # IDEs and editors
 .project
@@ -18,11 +21,16 @@ node_modules
 
 # IDE - VSCode
 .vscode/*
-!.vscode/mcp.json
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
+# AI tooling: shared config is committed, personal overrides stay local
+.claude/settings.local.json
+.claude/worktrees/
+.cursor/rules/nx-rules.mdc
+.github/instructions/nx.instructions.md
 
 # misc
 /.sass-cache
@@ -38,12 +46,7 @@ testem.log
 .DS_Store
 Thumbs.db
 
+# Nx and Angular caches
 .nx/cache
-
+.nx/workspace-data*
 .angular
-.nx/workspace-data
-
-vite.config.*.timestamptz*
-vitest.config.*.timestamptz*
-.cursor/rules/nx-rules.mdc
-.github/instructions/nx.instructions.md

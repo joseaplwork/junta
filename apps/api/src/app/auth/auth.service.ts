@@ -1,87 +1,122 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common'
+import { Inject, Injectable, UnauthorizedException } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import * as bcrypt from 'bcrypt'
 import { randomUUID } from 'crypto'
 
-import { RolePermissionMapping } from '@junta/shared/enums/role-permission'
+import { permissionsForRoles } from '@junta/domain'
 
-import { Admin } from '@/api/admins/admin.entity'
-import { AdminService } from '@/api/admins/admin.service'
+import { AdminsService } from '@/api/admins/admins.service'
+import { Admin } from '@/api/admins/entities/admin.entity'
+import { AuthenticatedAdmin } from '@/api/common/auth/authenticated-admin'
+import { APP_CONFIG, AppConfig } from '@/api/config/app-config'
 
-import { AuthTokenPayload } from './auth.interface'
+import {
+  AccessTokenPayload,
+  IssuedTokens,
+  RefreshTokenPayload,
+} from './auth.types'
+
+/** Compared against when the email is unknown, so both failures take the same time. */
+const DUMMY_PASSWORD_HASH = bcrypt.hashSync(randomUUID(), 10)
+
+export function toAuthenticatedAdmin(
+  admin: Pick<Admin, 'id' | 'email' | 'roles'>,
+): AuthenticatedAdmin {
+  return {
+    id: admin.id,
+    email: admin.email,
+    roles: admin.roles,
+    permissions: permissionsForRoles(admin.roles),
+  }
+}
 
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly _admin: AdminService,
-    private readonly _jwt: JwtService,
+    private readonly adminsService: AdminsService,
+    private readonly jwtService: JwtService,
+    @Inject(APP_CONFIG) private readonly config: AppConfig,
   ) {}
 
-  async validateAdmin(email: string, password: string) {
-    const admin = await this._admin.findOne(email)
-
-    if (!admin) {
+  /**
+   * Unknown emails, wrong passwords and malformed credentials all fail with the
+   * same 401 after a bcrypt comparison, so responses cannot reveal which emails exist.
+   */
+  async validateCredentials(
+    email: unknown,
+    password: unknown,
+  ): Promise<AuthenticatedAdmin> {
+    if (typeof email !== 'string' || typeof password !== 'string') {
       throw new UnauthorizedException('Invalid credentials')
     }
 
-    const passwordValid = await bcrypt.compare(password, admin.password)
-
-    if (admin && passwordValid) {
-      return admin
-    }
-
-    return null
-  }
-
-  async decodeRefreshToken(token: string): Promise<AuthTokenPayload> {
-    try {
-      const { email, sub, roles, permissions } = await this._jwt.verify(token)
-
-      return {
-        email,
-        sub,
-        roles,
-        permissions,
-      }
-    } catch {
-      throw new UnauthorizedException('Invalid refresh token')
-    }
-  }
-
-  login(admin: Admin) {
-    const permissions = new Set(
-      admin.roles.map(role => RolePermissionMapping[role]).flat(),
+    const admin = await this.adminsService.findByEmailWithPassword(email)
+    const passwordMatches = await bcrypt.compare(
+      password,
+      admin?.password ?? DUMMY_PASSWORD_HASH,
     )
 
-    const payload = {
-      email: admin.email,
+    if (!admin || !passwordMatches) {
+      throw new UnauthorizedException('Invalid credentials')
+    }
+
+    return toAuthenticatedAdmin(admin)
+  }
+
+  issueTokens(admin: AuthenticatedAdmin): IssuedTokens {
+    const accessPayload: AccessTokenPayload = {
+      type: 'access',
       sub: admin.id,
+      email: admin.email,
       roles: admin.roles,
-      permissions: [...permissions],
+      permissions: admin.permissions,
+    }
+    const refreshPayload: RefreshTokenPayload = {
+      type: 'refresh',
+      sub: admin.id,
     }
 
     return {
-      accessToken: this.createAccessToken(payload),
-      refreshToken: this.createRefreshToken(payload),
+      accessToken: this.jwtService.sign(accessPayload, {
+        expiresIn: this.config.auth.accessTokenTtl,
+        jwtid: randomUUID(),
+      }),
+      refreshToken: this.jwtService.sign(refreshPayload, {
+        expiresIn: this.config.auth.refreshTokenTtl,
+        jwtid: randomUUID(),
+      }),
     }
   }
 
-  createAccessToken(payload: AuthTokenPayload) {
-    const { tokenId, iat } = this._getRandomTokenAndIat()
+  /** Reloads the admin so role changes and deletions apply at the next refresh. */
+  async refresh(refreshToken: string | undefined): Promise<IssuedTokens> {
+    const payload = this.verifyRefreshToken(refreshToken)
+    const admin = await this.adminsService.findEntityById(payload.sub)
 
-    return this._jwt.sign({ ...payload, tokenId, iat })
+    if (!admin) {
+      throw new UnauthorizedException('Invalid refresh token')
+    }
+
+    return this.issueTokens(toAuthenticatedAdmin(admin))
   }
 
-  createRefreshToken(payload: AuthTokenPayload) {
-    const { tokenId, iat } = this._getRandomTokenAndIat()
+  private verifyRefreshToken(token: string | undefined): RefreshTokenPayload {
+    if (!token) {
+      throw new UnauthorizedException('Missing refresh token')
+    }
 
-    return this._jwt.sign({ ...payload, tokenId, iat }, { expiresIn: '7d' })
-  }
+    let payload: RefreshTokenPayload | undefined
 
-  private _getRandomTokenAndIat() {
-    const tokenId = randomUUID()
-    const iat = Math.floor(Date.now() / 1000)
+    try {
+      payload = this.jwtService.verify<RefreshTokenPayload>(token)
+    } catch {
+      payload = undefined
+    }
 
-    return { tokenId, iat }
+    if (payload?.type !== 'refresh') {
+      throw new UnauthorizedException('Invalid refresh token')
+    }
+
+    return payload
   }
 }

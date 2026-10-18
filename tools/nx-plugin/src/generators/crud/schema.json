@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/schema",
+  "$id": "Crud",
+  "title": "CRUD resource",
+  "description": "Runs api-resource and admin-crud-page with the same options.",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Singular resource name, e.g. payment or payment-reminder.",
+      "$default": { "$source": "argv", "index": 0 },
+      "x-prompt": "Singular resource name (e.g. payment)"
+    },
+    "fields": {
+      "type": "string",
+      "description": "Comma-separated fields as name:type or name?:type (optional). Types: string, int, decimal, boolean, date.",
+      "x-prompt": "Fields (e.g. title:string,amount:decimal,dueDate?:date)"
+    },
+    "plural": {
+      "type": "string",
+      "description": "Plural name, only when appending s/es/ies is wrong."
+    },
+    "icon": {
+      "type": "string",
+      "default": "list",
+      "description": "Material icon name for the sidebar entry."
+    },
+    "skipFormat": {
+      "type": "boolean",
+      "default": false,
+      "description": "Skip formatting the generated files."
+    }
+  },
+  "required": ["name", "fields"],
+  "additionalProperties": false
+}

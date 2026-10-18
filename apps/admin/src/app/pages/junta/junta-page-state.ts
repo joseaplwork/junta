@@ -1,19 +1,24 @@
-import { signal } from '@angular/core'
+import { Injectable, signal } from '@angular/core'
 
-import { Junta } from '@/admin/shared/interfaces/junta'
+import { JuntaResponse } from '@junta/contracts'
 
-export class JuntaState {
-  private readonly _deleteJunta = signal<Junta | null>(null)
-  private readonly _juntaDeleted = signal<Junta | null>(null)
+/**
+ * Lets the page features talk without importing each other.
+ * Create and edit live on their own pages, so only deletion goes through state.
+ */
+@Injectable()
+export class JuntaPageState {
+  private readonly _deleteRequest = signal<JuntaResponse | null>(null)
+  private readonly _deleted = signal<JuntaResponse | null>(null)
 
-  readonly deleteJunta = this._deleteJunta.asReadonly()
-  readonly juntaDeleted = this._juntaDeleted.asReadonly()
+  readonly deleteRequest = this._deleteRequest.asReadonly()
+  readonly deleted = this._deleted.asReadonly()
 
-  emitDeleteJunta(junta: Junta | null): void {
-    this._deleteJunta.set(junta)
+  requestDelete(junta: JuntaResponse | null): void {
+    this._deleteRequest.set(junta)
   }
 
-  emitJuntaDeleted(junta: Junta): void {
-    this._juntaDeleted.set(junta)
+  emitDeleted(junta: JuntaResponse): void {
+    this._deleted.set(junta)
   }
 }

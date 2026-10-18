@@ -1,64 +1,103 @@
-import { HttpClient } from '@angular/common/http'
-import { Injectable, inject } from '@angular/core'
+import { Injectable, inject, signal } from '@angular/core'
 import { jwtDecode } from 'jwt-decode'
-import { Observable, map, tap } from 'rxjs'
 
-import { Config } from './config'
+import { AuthApi } from '@/admin/shared/api/auth-api'
 
-@Injectable({
-  providedIn: 'root',
-})
+const ACCESS_TOKEN_KEY = 'accessToken'
+
+/**
+ * Owns the access token: storage, expiry checks and a single-flight refresh.
+ * Starting or clearing a session invalidates any refresh still in flight, so a
+ * late refresh response can never bring back a token after logout or re-login.
+ */
+@Injectable({ providedIn: 'root' })
 export class AccessTokenManager {
-  private readonly _http = inject(HttpClient)
-  private readonly _config = inject(Config)
+  private readonly _authApi = inject(AuthApi)
+  private readonly _token = signal<string | null>(
+    sessionStorage.getItem(ACCESS_TOKEN_KEY),
+  )
 
-  private ACCESS_TOKEN_KEY = 'accessToken'
+  private _session = 0
+  private _pendingRefresh: Promise<string> | null = null
 
-  getAccessToken(): string | null {
-    return sessionStorage.getItem(this.ACCESS_TOKEN_KEY)
+  readonly token = this._token.asReadonly()
+
+  get(): string | null {
+    return this._token()
   }
 
-  setAccessToken = (accessToken: string): void => {
-    sessionStorage.setItem(this.ACCESS_TOKEN_KEY, accessToken)
+  /** Begins a new session with the token returned by login. */
+  start(accessToken: string): void {
+    this._newSession()
+    this._store(accessToken)
   }
 
-  removeAccessToken() {
-    sessionStorage.removeItem(this.ACCESS_TOKEN_KEY)
+  clear(): void {
+    this._newSession()
+    this._store(null)
   }
 
-  isAccessTokenExpired(token = this.getAccessToken()): boolean {
+  isExpired(token = this.get()): boolean {
     if (!token) return true
 
-    const date = this._getAccessTokenExpirationDate(token)
+    try {
+      const { exp } = jwtDecode(token)
 
-    if (date === undefined || date === null) return false
-
-    return !(date.valueOf() > new Date().valueOf())
+      return exp !== undefined && exp * 1000 <= Date.now()
+    } catch {
+      return true
+    }
   }
 
-  refreshAccessToken(): Observable<string> {
-    return this._http
-      .post<{
-        accessToken: string
-      }>(`${this._config.api.auth}/refresh`, null, {
-        withCredentials: true,
+  /** Concurrent callers share one request, so parallel 401s refresh only once. */
+  refresh(): Promise<string> {
+    if (this._pendingRefresh) return this._pendingRefresh
+
+    const session = this._session
+    const pending = this._authApi
+      .refresh()
+      .then(({ accessToken }) => {
+        if (session !== this._session) {
+          throw new Error('The session changed while the token was refreshing')
+        }
+
+        this._store(accessToken)
+
+        return accessToken
       })
-      .pipe(map(this._mapToAccessToken), tap(this.setAccessToken))
+      .finally(() => {
+        if (this._pendingRefresh === pending) this._pendingRefresh = null
+      })
+
+    this._pendingRefresh = pending
+
+    return pending
   }
 
-  private _getAccessTokenExpirationDate(token: string): Date | null {
-    const decoded = jwtDecode(token)
+  /** Resolves once the refresh in flight right now, if any, has settled. */
+  settled(): Promise<void> {
+    const pending = this._pendingRefresh
 
-    if (decoded.exp === undefined) return null
-
-    const date = new Date(0)
-
-    date.setUTCSeconds(decoded.exp)
-
-    return date
+    return pending
+      ? pending.then(
+          () => undefined,
+          () => undefined,
+        )
+      : Promise.resolve()
   }
 
-  private _mapToAccessToken = (response: { accessToken: string }): string => {
-    return response.accessToken
+  private _newSession(): void {
+    this._session++
+    this._pendingRefresh = null
+  }
+
+  private _store(accessToken: string | null): void {
+    if (accessToken) {
+      sessionStorage.setItem(ACCESS_TOKEN_KEY, accessToken)
+    } else {
+      sessionStorage.removeItem(ACCESS_TOKEN_KEY)
+    }
+
+    this._token.set(accessToken)
   }
 }

@@ -1,12 +1,13 @@
-import { Component } from '@angular/core'
+import { ChangeDetectionStrategy, Component } from '@angular/core'
 
 import { DeleteFeat } from './delete-feat/delete-feat'
-import { JuntaState } from './junta-page-state'
+import { JuntaPageState } from './junta-page-state'
 import { ListFeat } from './list-feat/list-feat'
 
 @Component({
   templateUrl: './junta-page.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [ListFeat, DeleteFeat],
-  providers: [JuntaState],
+  providers: [JuntaPageState],
 })
 export class JuntaPage {}

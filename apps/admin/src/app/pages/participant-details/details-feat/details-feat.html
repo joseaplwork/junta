@@ -1,116 +1,126 @@
 @if (loading()) {
-<div class="flex justify-center p-8">
-  <p>Loading participant...</p>
-</div>
+  <div class="flex justify-center p-8">
+    <p>Loading participant...</p>
+  </div>
 } @else if (error()) {
-<div
-  class="border-error bg-error-container text-error-on mb-4 rounded border px-4 py-3">
-  {{ error() }}
-</div>
-} @else if (participant()) {
-<div class="mb-6 flex items-center gap-4">
-  <button mat-icon-button (click)="goBack()">
-    <mat-icon>arrow_back</mat-icon>
-  </button>
-  <h1 class="text-2xl font-bold">
-    {{ participant()!.name }} {{ participant()!.surname }}
-  </h1>
-</div>
+  <div
+    class="border-error bg-error-container text-error-on mb-4 rounded border px-4 py-3">
+    {{ error() }}
+  </div>
+} @else {
+  @if (participant(); as current) {
+    <div class="mb-6 flex items-center gap-4">
+      <button
+        mat-icon-button
+        type="button"
+        aria-label="Back"
+        (click)="goBack()">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <h1 class="text-2xl font-bold">
+        {{ current.name }} {{ current.surname }}
+      </h1>
+    </div>
 
-<div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-  <mat-card>
-    <mat-card-header>
-      <mat-card-title>Personal Information</mat-card-title>
-    </mat-card-header>
-    <mat-card-content class="pt-4">
-      <div class="space-y-4">
-        <div>
-          <p class="text-muted text-sm">Name</p>
-          <p class="text-lg font-semibold">{{ participant()!.name }}</p>
-        </div>
-        <mat-divider />
-        <div>
-          <p class="text-muted text-sm">Surname</p>
-          <p class="text-lg font-semibold">{{ participant()!.surname }}</p>
-        </div>
-        <mat-divider />
-        <div>
-          <p class="text-muted text-sm">Phone Number</p>
-          <p class="text-lg font-semibold">{{ participant()!.phoneNumber }}</p>
-        </div>
-      </div>
-    </mat-card-content>
-  </mat-card>
-
-  <mat-card>
-    <mat-card-header>
-      <mat-card-title>Participant ID</mat-card-title>
-    </mat-card-header>
-    <mat-card-content class="pt-4">
-      <div>
-        <p class="text-muted text-sm">Unique Identifier</p>
-        <p class="font-mono text-lg font-semibold">{{ participant()!.id }}</p>
-      </div>
-    </mat-card-content>
-  </mat-card>
-</div>
-
-<div class="mt-8">
-  <mat-card>
-    <mat-card-header>
-      <mat-card-title>Juntas</mat-card-title>
-    </mat-card-header>
-    <mat-card-content class="pt-4">
-      @if (juntas().length === 0) {
-      <div class="text-muted flex flex-col items-center justify-center py-8">
-        <mat-icon class="!h-16 !w-16 !text-6xl">groups</mat-icon>
-        <p class="mt-4 text-lg">No juntas found</p>
-        <p class="text-sm">This participant is not part of any junta yet</p>
-      </div>
-      } @else {
-      <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-        @for (junta of juntas(); track junta.id) {
-        <mat-card
-          class="cursor-pointer transition-shadow hover:shadow-lg"
-          (click)="goToJuntaDetails(junta.id)">
-          <mat-card-header>
-            <div class="flex w-full items-center justify-between">
-              <mat-card-title class="!mb-0">{{ junta.name }}</mat-card-title>
-              @if (junta.active) {
-              <mat-chip>Active</mat-chip>
-              } @else {
-              <mat-chip>Finished</mat-chip>
-              }
+    <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Personal Information</mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="pt-4">
+          <div class="space-y-4">
+            <div>
+              <p class="text-muted text-sm">Name</p>
+              <p class="text-lg font-semibold">{{ current.name }}</p>
             </div>
-          </mat-card-header>
-          <mat-card-content class="pt-4">
-            <div class="space-y-3">
-              <div>
-                <p class="text-muted text-sm">Total Amount</p>
-                <p class="text-lg font-semibold">
-                  {{ formatCurrency(junta.amount) }}
+            <mat-divider />
+            <div>
+              <p class="text-muted text-sm">Surname</p>
+              <p class="text-lg font-semibold">{{ current.surname }}</p>
+            </div>
+            <mat-divider />
+            <div>
+              <p class="text-muted text-sm">Phone Number</p>
+              <p class="text-lg font-semibold">{{ current.phoneNumber }}</p>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Participant ID</mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="pt-4">
+          <p class="text-muted text-sm">Unique Identifier</p>
+          <p class="font-mono text-lg font-semibold">{{ current.id }}</p>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div class="mt-8">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Juntas</mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="pt-4">
+          <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+            @for (junta of juntas(); track junta.id) {
+              <mat-card class="transition-shadow hover:shadow-lg">
+                <mat-card-header>
+                  <div class="flex w-full items-center justify-between">
+                    <mat-card-title class="!mb-0">{{
+                      junta.name
+                    }}</mat-card-title>
+                    <mat-chip>{{
+                      junta.active ? 'Active' : 'Finished'
+                    }}</mat-chip>
+                  </div>
+                </mat-card-header>
+                <mat-card-content class="pt-4">
+                  <div class="space-y-3">
+                    <div>
+                      <p class="text-muted text-sm">Total Amount</p>
+                      <p class="text-lg font-semibold">
+                        {{ junta.amount | money }}
+                      </p>
+                    </div>
+                    <mat-divider />
+                    <div>
+                      <p class="text-muted text-sm">Period</p>
+                      <p class="text-sm font-medium">
+                        {{ junta.startDate | date: 'MMM d, y' }} -
+                        {{ junta.endDate | date: 'MMM d, y' }}
+                      </p>
+                    </div>
+                    <mat-divider />
+                    <div>
+                      <p class="text-muted text-sm">Groups</p>
+                      <p class="text-lg font-semibold">
+                        {{ junta.groupCount }}
+                      </p>
+                    </div>
+                  </div>
+                </mat-card-content>
+                <mat-card-actions align="end">
+                  <button mat-button type="button" (click)="goToJunta(junta)">
+                    View junta
+                  </button>
+                </mat-card-actions>
+              </mat-card>
+            } @empty {
+              <div
+                class="text-muted col-span-full flex flex-col items-center justify-center py-8">
+                <mat-icon class="!h-16 !w-16 !text-6xl">groups</mat-icon>
+                <p class="mt-4 text-lg">No juntas found</p>
+                <p class="text-sm">
+                  This participant is not part of any junta yet
                 </p>
               </div>
-              <mat-divider />
-              <div>
-                <p class="text-muted text-sm">Period</p>
-                <p class="text-sm font-medium">
-                  {{ junta.startDate | date: 'MMM d, y' }} - {{ junta.endDate |
-                  date: 'MMM d, y' }}
-                </p>
-              </div>
-              <mat-divider />
-              <div>
-                <p class="text-muted text-sm">Groups</p>
-                <p class="text-lg font-semibold">{{ junta.groups }}</p>
-              </div>
-            </div>
-          </mat-card-content>
-        </mat-card>
-        }
-      </div>
-      }
-    </mat-card-content>
-  </mat-card>
-</div>
+            }
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  }
 }

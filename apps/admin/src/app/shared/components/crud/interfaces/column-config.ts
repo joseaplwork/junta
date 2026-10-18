@@ -1,23 +1,18 @@
-export type ColumnType =
-  | 'text'
-  | 'currency'
-  | 'date'
-  | 'chip'
-  | 'combined'
-  | 'tags'
+export type ColumnType = 'text' | 'currency' | 'date' | 'chip' | 'tags'
 
-export interface ColumnConfig {
+export type ChipColor = 'green' | 'gray' | 'red' | 'yellow'
+
+export type TagColor = 'primary' | 'purple' | 'green' | 'blue'
+
+export interface ColumnConfig<Row> {
+  /** Row property to display, or a unique id when `value` computes the cell. */
   key: string
   header: string
   type: ColumnType
-  combineWith?: string
-  combineFormat?: string
-  chipColor?: (value: unknown) => 'green' | 'gray' | 'red' | 'yellow'
+  value?: (row: Row) => unknown
+  chipColor?: (value: unknown) => ChipColor
   chipLabel?: (value: unknown) => string
-  tagColor?: (tag: string) => 'primary' | 'purple' | 'green' | 'blue'
+  tagColor?: (tag: string) => TagColor
   tagLabel?: (tag: string) => string
-  currencyLocale?: string
-  currencyCode?: string
   dateFormat?: string
-  getValue?: (row: unknown) => unknown
 }

@@ -1,59 +1,63 @@
-import { Component, effect, inject } from '@angular/core'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  effect,
+  inject,
+} from '@angular/core'
 
-import { CrudDeleteDialog } from '@/admin/shared/components/crud'
-import { Junta } from '@/admin/shared/interfaces/junta'
+import { JuntaResponse } from '@junta/contracts'
+
+import { JuntasApi } from '@/admin/shared/api/juntas-api'
+import {
+  CrudDeleteDialog,
+  DeleteDialogData,
+} from '@/admin/shared/components/crud'
 import { Dialog } from '@/admin/shared/services/dialog'
 import { Snackbar } from '@/admin/shared/services/snackbar'
 
-import { JuntaState } from '../junta-page-state'
-
-import { JuntaDelete } from './services/junta-delete'
+import { JuntaPageState } from '../junta-page-state'
 
 @Component({
   selector: 'ja-junta-delete-feat',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: '',
 })
 export class DeleteFeat {
   private readonly _dialog = inject(Dialog)
-  private readonly _juntaDelete = inject(JuntaDelete)
+  private readonly _juntasApi = inject(JuntasApi)
+  private readonly _state = inject(JuntaPageState)
   private readonly _snackbar = inject(Snackbar)
-  private readonly _state = inject(JuntaState)
-
-  private _currentJunta: Junta | null = null
 
   constructor() {
-    effect(this._listenForJuntaDelete)
-  }
+    effect(() => {
+      const junta = this._state.deleteRequest()
 
-  private _listenForJuntaDelete = () => {
-    const junta = this._state.deleteJunta()
+      if (!junta) return
 
-    if (junta) {
-      this._openDeleteDialog(junta)
-      this._state.emitDeleteJunta(null)
-    }
-  }
-
-  private _openDeleteDialog(junta: Junta): void {
-    this._currentJunta = junta
-
-    this._dialog.open(CrudDeleteDialog, {
-      entityName: 'Junta',
-      displayName: junta.name,
-      handleDelete: this._handleDelete,
+      this._state.requestDelete(null)
+      this._openDialog(junta)
     })
   }
 
-  private _handleDelete = async (): Promise<void> => {
-    if (!this._currentJunta) return
+  private _openDialog(junta: JuntaResponse): void {
+    this._dialog.open<CrudDeleteDialog, DeleteDialogData>(CrudDeleteDialog, {
+      entityName: 'Junta',
+      displayName: junta.name,
+      handleDelete: () => this._delete(junta),
+    })
+  }
 
+  private async _delete(junta: JuntaResponse): Promise<boolean> {
     try {
-      await this._juntaDelete.delete(this._currentJunta.id)
+      await this._juntasApi.remove(junta.id)
+      this._state.emitDeleted(junta)
+      this._snackbar.success('Junta deleted')
 
-      this._state.emitJuntaDeleted(this._currentJunta)
-      this._snackbar.success('Junta deleted successfully')
+      return true
     } catch {
       this._snackbar.error('Failed to delete junta')
+
+      return false
     }
   }
 }

@@ -1,59 +1,69 @@
-import { Component, effect, inject } from '@angular/core'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  effect,
+  inject,
+} from '@angular/core'
 
-import { Participant } from '@/admin/shared/interfaces/participant'
+import { ParticipantResponse, UpdateParticipantRequest } from '@junta/contracts'
+
+import { ParticipantsApi } from '@/admin/shared/api/participants-api'
 import { Dialog } from '@/admin/shared/services/dialog'
 import { Snackbar } from '@/admin/shared/services/snackbar'
 
-import { ParticipantState } from '../participant-page-state'
-
-import { UpdateParticipantDialog } from './components/update-participant-dialog'
-import { UpdatePayload } from './interfaces/update-payload'
-import { ParticipantUpdate } from './services/participant-update'
+import {
+  ParticipantFormDialog,
+  ParticipantFormDialogData,
+} from '../components/participant-form-dialog/participant-form-dialog'
+import { ParticipantPageState } from '../participant-page-state'
 
 @Component({
   selector: 'ja-participant-update-feat',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: '',
 })
 export class UpdateFeat {
   private readonly _dialog = inject(Dialog)
-  private readonly _participantUpdate = inject(ParticipantUpdate)
+  private readonly _participantsApi = inject(ParticipantsApi)
+  private readonly _state = inject(ParticipantPageState)
   private readonly _snackbar = inject(Snackbar)
-  private readonly _state = inject(ParticipantState)
 
   constructor() {
-    effect(this._listenForParticipantUpdate)
-  }
+    effect(() => {
+      const participant = this._state.updateRequest()
 
-  private _listenForParticipantUpdate = () => {
-    const participant = this._state.updateParticipant()
+      if (!participant) return
 
-    if (participant) {
-      this.openUpdateDialog(participant)
-      this._state.emitUpdateParticipant(null)
-    }
-  }
-
-  private async openUpdateDialog(participant: Participant): Promise<void> {
-    this._dialog.open(UpdateParticipantDialog, {
-      participant,
-      handleUpdate: this._handleUpdate,
+      this._state.requestUpdate(null)
+      this._openDialog(participant)
     })
   }
 
-  private _handleUpdate = async (
-    id: string,
-    payload: UpdatePayload,
-  ): Promise<void> => {
-    try {
-      const updatedParticipant = await this._participantUpdate.update(
-        id,
-        payload,
-      )
+  private _openDialog(participant: ParticipantResponse): void {
+    this._dialog.open<ParticipantFormDialog, ParticipantFormDialogData>(
+      ParticipantFormDialog,
+      {
+        title: 'Update Participant',
+        submitLabel: 'Save',
+        participant,
+        handleSubmit: request => this._update(participant.id, request),
+      },
+    )
+  }
 
-      this._state.emitParticipantUpdated(updatedParticipant)
-      this._snackbar.success('Participant updated successfully')
+  private async _update(
+    id: string,
+    request: UpdateParticipantRequest,
+  ): Promise<boolean> {
+    try {
+      this._state.emitUpdated(await this._participantsApi.update(id, request))
+      this._snackbar.success('Participant updated')
+
+      return true
     } catch {
       this._snackbar.error('Failed to update participant')
+
+      return false
     }
   }
 }

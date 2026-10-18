@@ -1,133 +1,104 @@
-import { Component, effect, inject, signal } from '@angular/core'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  effect,
+  inject,
+  signal,
+} from '@angular/core'
 
-import { Role } from '@junta/shared/enums/role'
+import { AdminResponse, Role } from '@junta/contracts'
 
+import { AdminsApi } from '@/admin/shared/api/admins-api'
 import {
   ActionConfig,
   ColumnConfig,
   CrudDataTable,
 } from '@/admin/shared/components/crud'
-import { Admin } from '@/admin/shared/interfaces/admin'
 import { Snackbar } from '@/admin/shared/services/snackbar'
 
 import { AdminPageState } from '../admin-page-state'
-
-import { AdminData } from './services/admin-data'
+import { ROLE_LABELS, ROLE_TAG_COLORS } from '../constants/admin-roles'
 
 @Component({
   selector: 'ja-admin-list-feat',
-  imports: [CrudDataTable],
   templateUrl: './list-feat.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [CrudDataTable],
 })
 export class ListFeat {
   private readonly _state = inject(AdminPageState)
-  private readonly _adminData = inject(AdminData)
+  private readonly _adminsApi = inject(AdminsApi)
   private readonly _snackbar = inject(Snackbar)
 
-  columns: ColumnConfig[] = [
+  readonly columns: ColumnConfig<AdminResponse>[] = [
     { key: 'email', header: 'Email', type: 'text' },
     {
       key: 'roles',
       header: 'Roles',
       type: 'tags',
-      tagColor: (tag: string) => {
-        switch (tag) {
-          case Role.SUPER_ADMIN:
-            return 'purple'
-          case Role.ADMIN:
-            return 'green'
-          case Role.PARTICIPANT:
-            return 'blue'
-          default:
-            return 'primary'
-        }
-      },
-      tagLabel: (tag: string) => {
-        switch (tag) {
-          case Role.SUPER_ADMIN:
-            return 'Super Admin'
-          case Role.ADMIN:
-            return 'Admin'
-          case Role.PARTICIPANT:
-            return 'Participant'
-          default:
-            return tag
-        }
-      },
+      tagColor: tag => ROLE_TAG_COLORS[tag as Role] ?? 'primary',
+      tagLabel: tag => ROLE_LABELS[tag as Role] ?? tag,
     },
     {
       key: 'name',
       header: 'Name',
       type: 'text',
-      getValue: (row: unknown) => {
-        const admin = row as Admin
-
-        return `${admin.participant.name} ${admin.participant.surname}`
-      },
+      value: admin => `${admin.participant.name} ${admin.participant.surname}`,
     },
   ]
 
-  actions: ActionConfig = { edit: true, delete: true }
-
-  admins = signal<Admin[]>([])
-  loading = signal(false)
-  error = signal<string | null>(null)
+  readonly actions: ActionConfig = { edit: true, delete: true }
+  readonly admins = signal<AdminResponse[]>([])
+  readonly loading = signal(false)
+  readonly error = signal<string | null>(null)
 
   constructor() {
-    this._loadAdmins()
+    void this._load()
 
-    effect(this._listenForNewAdmin)
-    effect(this._listenForDeletedAdmin)
-    effect(this._listenForUpdatedAdmin)
+    effect(() => {
+      const created = this._state.created()
+
+      if (created) this.admins.update(list => [...list, created])
+    })
+
+    effect(() => {
+      const updated = this._state.updated()
+
+      if (updated) {
+        this.admins.update(list =>
+          list.map(item => (item.id === updated.id ? updated : item)),
+        )
+      }
+    })
+
+    effect(() => {
+      const deleted = this._state.deleted()
+
+      if (deleted) {
+        this.admins.update(list => list.filter(item => item.id !== deleted.id))
+      }
+    })
   }
 
-  editAdmin(admin: Admin): void {
-    this._state.emitUpdateAdmin(admin)
+  edit(admin: AdminResponse): void {
+    this._state.requestUpdate(admin)
   }
 
-  deleteAdmin(admin: Admin): void {
-    this._state.emitDeleteAdmin(admin)
+  remove(admin: AdminResponse): void {
+    this._state.requestDelete(admin)
   }
 
-  private async _loadAdmins(): Promise<void> {
+  private async _load(): Promise<void> {
     this.loading.set(true)
     this.error.set(null)
 
     try {
-      const admins = await this._adminData.fetchAll()
-
-      this.admins.set(admins)
+      this.admins.set(await this._adminsApi.list())
     } catch {
       this.error.set('Failed to load admins')
       this._snackbar.error('Failed to load admins')
     } finally {
       this.loading.set(false)
-    }
-  }
-
-  private _listenForNewAdmin = () => {
-    const admin = this._state.adminCreated()
-
-    if (admin) {
-      this.admins.update(current => [...current, admin])
-    }
-  }
-
-  private _listenForDeletedAdmin = () => {
-    const admin = this._state.adminDeleted()
-
-    if (admin) {
-      this.admins.update(current => current.filter(a => a.id !== admin.id))
-    }
-  }
-
-  private _listenForUpdatedAdmin = () => {
-    const updatedAdmin = this._state.adminUpdated()
-
-    if (updatedAdmin) {
-      this.admins.update(current =>
-        current.map(a => (a.id === updatedAdmin.id ? updatedAdmin : a)),
-      )
     }
   }
 }

@@ -1,0 +1,53 @@
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core'
+import { MatButtonModule } from '@angular/material/button'
+import { MatIconModule } from '@angular/material/icon'
+
+import { Create<%- singularClass %>Request } from '@junta/contracts'
+
+import { <%- pluralClass %>Api } from '@/admin/shared/api/<%- pluralFile %>-api'
+import { Dialog } from '@/admin/shared/services/dialog'
+import { Snackbar } from '@/admin/shared/services/snackbar'
+
+import { <%- singularClass %>PageState } from '../<%- singularFile %>-page-state'
+import {
+  <%- singularClass %>FormDialog,
+  <%- singularClass %>FormDialogData,
+} from '../components/<%- singularFile %>-form-dialog/<%- singularFile %>-form-dialog'
+
+@Component({
+  selector: 'ja-<%- singularFile %>-create-feat',
+  templateUrl: './create-feat.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [MatButtonModule, MatIconModule],
+})
+export class CreateFeat {
+  private readonly _dialog = inject(Dialog)
+  private readonly _<%- pluralProperty %>Api = inject(<%- pluralClass %>Api)
+  private readonly _state = inject(<%- singularClass %>PageState)
+  private readonly _snackbar = inject(Snackbar)
+
+  openDialog(): void {
+    this._dialog.open<<%- singularClass %>FormDialog, <%- singularClass %>FormDialogData>(
+      <%- singularClass %>FormDialog,
+      {
+        title: 'Create <%- singularTitle %>',
+        submitLabel: 'Create',
+        <%- singularProperty %>: null,
+        handleSubmit: request => this._create(request),
+      },
+    )
+  }
+
+  private async _create(request: Create<%- singularClass %>Request): Promise<boolean> {
+    try {
+      this._state.emitCreated(await this._<%- pluralProperty %>Api.create(request))
+      this._snackbar.success('<%- singularLabel %> created')
+
+      return true
+    } catch {
+      this._snackbar.error('Failed to create <%- singularLabel.toLowerCase() %>')
+
+      return false
+    }
+  }
+}

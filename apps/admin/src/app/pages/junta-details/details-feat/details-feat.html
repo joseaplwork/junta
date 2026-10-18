@@ -1,135 +1,131 @@
 @if (loading()) {
-<div class="flex justify-center p-8">
-  <p>Loading junta...</p>
-</div>
+  <div class="flex justify-center p-8">
+    <p>Loading junta...</p>
+  </div>
 } @else if (error()) {
-<div
-  class="border-error bg-error-container text-error-on mb-4 rounded border px-4 py-3">
-  {{ error() }}
-</div>
-} @else if (junta()) {
-<div class="mb-6 flex items-center gap-4">
-  <button mat-icon-button (click)="goBack()">
-    <mat-icon>arrow_back</mat-icon>
-  </button>
-  <h1 class="text-2xl font-bold">{{ junta()!.name }}</h1>
-  @if (junta()!.active) {
-  <mat-chip>Active</mat-chip>
-  } @else {
-  <mat-chip>Finished</mat-chip>
-  }
-</div>
+  <div
+    class="border-error bg-error-container text-error-on mb-4 rounded border px-4 py-3">
+    {{ error() }}
+  </div>
+} @else {
+  @if (junta(); as current) {
+    <div class="mb-6 flex items-center gap-4">
+      <button
+        mat-icon-button
+        type="button"
+        aria-label="Back"
+        (click)="goBack()">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <h1 class="text-2xl font-bold">{{ current.name }}</h1>
+      <mat-chip>{{ current.active ? 'Active' : 'Finished' }}</mat-chip>
+    </div>
 
-<div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-  <mat-card>
-    <mat-card-header>
-      <mat-card-title>Financial Details</mat-card-title>
-    </mat-card-header>
-    <mat-card-content class="pt-4">
-      <div class="space-y-4">
-        <div>
-          <p class="text-muted text-sm">Total Amount</p>
-          <p class="text-2xl font-bold">
-            {{ formatCurrency(junta()!.amount) }}
-          </p>
-        </div>
-        <mat-divider />
-        <div>
-          <p class="text-muted text-sm">Per Group Amount</p>
-          <p class="text-xl font-semibold">
-            {{ formatCurrency(junta()!.partialAmount) }}
-          </p>
-        </div>
-      </div>
-    </mat-card-content>
-  </mat-card>
+    <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Financial Details</mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="pt-4">
+          <div class="space-y-4">
+            <div>
+              <p class="text-muted text-sm">Total Amount</p>
+              <p class="text-2xl font-bold">{{ current.amount | money }}</p>
+            </div>
+            <mat-divider />
+            <div>
+              <p class="text-muted text-sm">Per Group Amount</p>
+              <p class="text-xl font-semibold">
+                {{ current.groupAmount | money }}
+              </p>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
 
-  <mat-card>
-    <mat-card-header>
-      <mat-card-title>Participation</mat-card-title>
-    </mat-card-header>
-    <mat-card-content class="pt-4">
-      <div class="space-y-4">
-        <div>
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Participation</mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="pt-4">
           <p class="text-muted text-sm">Total Groups</p>
-          <p class="text-2xl font-bold">{{ junta()!.groups }}</p>
-        </div>
-      </div>
-    </mat-card-content>
-  </mat-card>
+          <p class="text-2xl font-bold">{{ current.groupCount }}</p>
+        </mat-card-content>
+      </mat-card>
 
-  <mat-card>
-    <mat-card-header>
-      <mat-card-title>Period</mat-card-title>
-    </mat-card-header>
-    <mat-card-content class="pt-4">
-      <div class="space-y-4">
-        <div>
-          <p class="text-muted text-sm">Start Date</p>
-          <p class="text-lg font-semibold">
-            {{ junta()!.startDate | date: 'MMMM d, y' }}
-          </p>
-        </div>
-        <mat-divider />
-        <div>
-          <p class="text-muted text-sm">End Date</p>
-          <p class="text-lg font-semibold">
-            {{ junta()!.endDate | date: 'MMMM d, y' }}
-          </p>
-        </div>
-      </div>
-    </mat-card-content>
-  </mat-card>
-</div>
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Period</mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="pt-4">
+          <div class="space-y-4">
+            <div>
+              <p class="text-muted text-sm">Start Date</p>
+              <p class="text-lg font-semibold">
+                {{ current.startDate | date: 'MMMM d, y' }}
+              </p>
+            </div>
+            <mat-divider />
+            <div>
+              <p class="text-muted text-sm">End Date</p>
+              <p class="text-lg font-semibold">
+                {{ current.endDate | date: 'MMMM d, y' }}
+              </p>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
 
-<div class="mt-8">
-  <mat-card>
-    <mat-card-header>
-      <mat-card-title>Groups & Participants</mat-card-title>
-    </mat-card-header>
-    <mat-card-content class="pt-4">
-      @if (junta()!.groupList.length === 0) {
-      <div class="text-muted flex flex-col items-center justify-center py-8">
-        <mat-icon class="!h-16 !w-16 !text-6xl">groups</mat-icon>
-        <p class="mt-4 text-lg">No groups configured</p>
-        <p class="text-sm">This junta has no groups assigned yet</p>
-      </div>
-      } @else {
-      <div class="space-y-4">
-        @for (group of junta()!.groupList; track group.order) {
-        <mat-expansion-panel>
-          <mat-expansion-panel-header>
-            <mat-panel-title>
-              <div class="flex items-center gap-2">
-                <span>Group {{ group.order }}</span>
-                @if (group.name) {
-                <span class="text-muted">- {{ group.name }}</span>
-                }
+    <div class="mt-8">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Groups & Participants</mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="pt-4">
+          <div class="space-y-4">
+            @for (group of current.groups; track group.id) {
+              <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    <div class="flex items-center gap-2">
+                      <span>Group {{ group.order }}</span>
+                      @if (group.name) {
+                        <span class="text-muted">- {{ group.name }}</span>
+                      }
+                    </div>
+                  </mat-panel-title>
+                  <mat-panel-description>
+                    {{ group.members.length }}
+                    {{
+                      group.members.length === 1
+                        ? 'participant'
+                        : 'participants'
+                    }}
+                  </mat-panel-description>
+                </mat-expansion-panel-header>
+
+                <div class="flex flex-wrap gap-2 pt-2">
+                  @for (member of group.members; track member.id) {
+                    <mat-chip>{{ member.name }} {{ member.surname }}</mat-chip>
+                  } @empty {
+                    <p class="text-muted py-2 text-sm">
+                      No participants assigned
+                    </p>
+                  }
+                </div>
+              </mat-expansion-panel>
+            } @empty {
+              <div
+                class="text-muted flex flex-col items-center justify-center py-8">
+                <mat-icon class="!h-16 !w-16 !text-6xl">groups</mat-icon>
+                <p class="mt-4 text-lg">No groups configured</p>
+                <p class="text-sm">This junta has no groups assigned yet</p>
               </div>
-            </mat-panel-title>
-            <mat-panel-description>
-              {{ group.participants.length }} participant{{
-                group.participants.length !== 1 ? 's' : ''
-              }}
-            </mat-panel-description>
-          </mat-expansion-panel-header>
-
-          @if (group.participants.length === 0) {
-          <p class="text-muted text-sm py-2">No participants assigned</p>
-          } @else {
-          <div class="flex flex-wrap gap-2 pt-2">
-            @for (participant of group.participants; track participant.id) {
-            <mat-chip>
-              {{ participant.name }} {{ participant.surname }}
-            </mat-chip>
             }
           </div>
-          }
-        </mat-expansion-panel>
-        }
-      </div>
-      }
-    </mat-card-content>
-  </mat-card>
-</div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  }
 }

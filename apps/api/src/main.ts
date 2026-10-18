@@ -1,27 +1,23 @@
-/**
- * This is not a production server yet!
- * This is only a minimal backend to get started.
- */
 import { Logger } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
-import cookieParser from 'cookie-parser'
+
+import { API_PREFIX } from '@junta/contracts'
 
 import { AppModule } from './app/app.module'
+import { APP_CONFIG, AppConfig } from './app/config/app-config'
+import { configureApp } from './app/configure-app'
 
-async function bootstrap() {
+async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule)
-  const globalPrefix = 'api'
-  app.setGlobalPrefix(globalPrefix)
-  app.enableCors({
-    origin: 'http://localhost:4200',
-    credentials: true,
-  })
-  app.use(cookieParser())
-  const port = process.env.PORT || 3000
-  await app.listen(port)
+  const config = app.get<AppConfig>(APP_CONFIG)
+
+  configureApp(app, config)
+  await app.listen(config.port)
+
   Logger.log(
-    `🚀 Application is running on: http://localhost:${port}/${globalPrefix}`,
+    `API listening on http://localhost:${config.port}/${API_PREFIX}`,
+    'Bootstrap',
   )
 }
 
-bootstrap()
+void bootstrap()

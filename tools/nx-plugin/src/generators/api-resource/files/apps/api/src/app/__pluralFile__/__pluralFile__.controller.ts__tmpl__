@@ -1,0 +1,63 @@
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  ParseUUIDPipe,
+  Patch,
+  Post,
+} from '@nestjs/common'
+
+import {
+  ApiResource,
+  Permission,
+  <%- singularClass %>Response,
+} from '@junta/contracts'
+
+import { RequirePermissions } from '@/api/common/decorators/require-permissions.decorator'
+
+import { Create<%- singularClass %>Dto } from './dto/create-<%- singularFile %>.dto'
+import { Update<%- singularClass %>Dto } from './dto/update-<%- singularFile %>.dto'
+import { <%- pluralClass %>Service } from './<%- pluralFile %>.service'
+
+@Controller(ApiResource.<%- pluralProperty %>)
+export class <%- pluralClass %>Controller {
+  constructor(private readonly <%- pluralProperty %>Service: <%- pluralClass %>Service) {}
+
+  @Post()
+  @RequirePermissions(Permission.<%- singularConstant %>_CREATE)
+  create(@Body() dto: Create<%- singularClass %>Dto): Promise<<%- singularClass %>Response> {
+    return this.<%- pluralProperty %>Service.create(dto)
+  }
+
+  @Get()
+  @RequirePermissions(Permission.<%- singularConstant %>_READ)
+  findAll(): Promise<<%- singularClass %>Response[]> {
+    return this.<%- pluralProperty %>Service.findAll()
+  }
+
+  @Get(':id')
+  @RequirePermissions(Permission.<%- singularConstant %>_READ)
+  findOne(@Param('id', ParseUUIDPipe) id: string): Promise<<%- singularClass %>Response> {
+    return this.<%- pluralProperty %>Service.findOne(id)
+  }
+
+  @Patch(':id')
+  @RequirePermissions(Permission.<%- singularConstant %>_UPDATE)
+  update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() dto: Update<%- singularClass %>Dto,
+  ): Promise<<%- singularClass %>Response> {
+    return this.<%- pluralProperty %>Service.update(id, dto)
+  }
+
+  @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @RequirePermissions(Permission.<%- singularConstant %>_DELETE)
+  remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
+    return this.<%- pluralProperty %>Service.remove(id)
+  }
+}

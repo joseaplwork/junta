@@ -1,0 +1,9 @@
+import { PartialType } from '@nestjs/mapped-types'
+
+import { Update<%- singularClass %>Request } from '@junta/contracts'
+
+import { Create<%- singularClass %>Dto } from './create-<%- singularFile %>.dto'
+
+export class Update<%- singularClass %>Dto
+  extends PartialType(Create<%- singularClass %>Dto, { skipNullProperties: false })
+  implements Update<%- singularClass %>Request {}

@@ -25,5 +25,11 @@
     "prettier-plugin-tailwindcss"
   ],
   "importOrderSeparation": true,
-  "importOrderSortSpecifiers": true
+  "importOrderSortSpecifiers": true,
+  "overrides": [
+    {
+      "files": "apps/admin/src/**/*.html",
+      "options": { "parser": "angular" }
+    }
+  ]
 }

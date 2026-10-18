@@ -1,0 +1,42 @@
+import { Injectable, signal } from '@angular/core'
+
+import { <%- singularClass %>Response } from '@junta/contracts'
+
+/**
+ * Lets the page features talk without importing each other.
+ * Requests (`updateRequest`, `deleteRequest`) are cleared by the feature that handles them.
+ */
+@Injectable()
+export class <%- singularClass %>PageState {
+  private readonly _updateRequest = signal<<%- singularClass %>Response | null>(null)
+  private readonly _deleteRequest = signal<<%- singularClass %>Response | null>(null)
+  private readonly _created = signal<<%- singularClass %>Response | null>(null)
+  private readonly _updated = signal<<%- singularClass %>Response | null>(null)
+  private readonly _deleted = signal<<%- singularClass %>Response | null>(null)
+
+  readonly updateRequest = this._updateRequest.asReadonly()
+  readonly deleteRequest = this._deleteRequest.asReadonly()
+  readonly created = this._created.asReadonly()
+  readonly updated = this._updated.asReadonly()
+  readonly deleted = this._deleted.asReadonly()
+
+  requestUpdate(<%- singularProperty %>: <%- singularClass %>Response | null): void {
+    this._updateRequest.set(<%- singularProperty %>)
+  }
+
+  requestDelete(<%- singularProperty %>: <%- singularClass %>Response | null): void {
+    this._deleteRequest.set(<%- singularProperty %>)
+  }
+
+  emitCreated(<%- singularProperty %>: <%- singularClass %>Response): void {
+    this._created.set(<%- singularProperty %>)
+  }
+
+  emitUpdated(<%- singularProperty %>: <%- singularClass %>Response): void {
+    this._updated.set(<%- singularProperty %>)
+  }
+
+  emitDeleted(<%- singularProperty %>: <%- singularClass %>Response): void {
+    this._deleted.set(<%- singularProperty %>)
+  }
+}

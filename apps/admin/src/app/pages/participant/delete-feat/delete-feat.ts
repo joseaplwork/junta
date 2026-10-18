@@ -1,59 +1,63 @@
-import { Component, effect, inject } from '@angular/core'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  effect,
+  inject,
+} from '@angular/core'
 
-import { CrudDeleteDialog } from '@/admin/shared/components/crud'
-import { Participant } from '@/admin/shared/interfaces/participant'
+import { ParticipantResponse } from '@junta/contracts'
+
+import { ParticipantsApi } from '@/admin/shared/api/participants-api'
+import {
+  CrudDeleteDialog,
+  DeleteDialogData,
+} from '@/admin/shared/components/crud'
 import { Dialog } from '@/admin/shared/services/dialog'
 import { Snackbar } from '@/admin/shared/services/snackbar'
 
-import { ParticipantState } from '../participant-page-state'
-
-import { ParticipantDelete } from './services/participant-delete'
+import { ParticipantPageState } from '../participant-page-state'
 
 @Component({
   selector: 'ja-participant-delete-feat',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: '',
 })
 export class DeleteFeat {
   private readonly _dialog = inject(Dialog)
-  private readonly _participantDelete = inject(ParticipantDelete)
+  private readonly _participantsApi = inject(ParticipantsApi)
+  private readonly _state = inject(ParticipantPageState)
   private readonly _snackbar = inject(Snackbar)
-  private readonly _state = inject(ParticipantState)
-
-  private _currentParticipant: Participant | null = null
 
   constructor() {
-    effect(this._listenForParticipantDelete)
-  }
+    effect(() => {
+      const participant = this._state.deleteRequest()
 
-  private _listenForParticipantDelete = () => {
-    const participant = this._state.deleteParticipant()
+      if (!participant) return
 
-    if (participant) {
-      this._openDeleteDialog(participant)
-      this._state.emitDeleteParticipant(null)
-    }
-  }
-
-  private _openDeleteDialog(participant: Participant): void {
-    this._currentParticipant = participant
-
-    this._dialog.open(CrudDeleteDialog, {
-      entityName: 'Participant',
-      displayName: `${participant.name} ${participant.surname}`,
-      handleDelete: this._handleDelete,
+      this._state.requestDelete(null)
+      this._openDialog(participant)
     })
   }
 
-  private _handleDelete = async (): Promise<void> => {
-    if (!this._currentParticipant) return
+  private _openDialog(participant: ParticipantResponse): void {
+    this._dialog.open<CrudDeleteDialog, DeleteDialogData>(CrudDeleteDialog, {
+      entityName: 'Participant',
+      displayName: `${participant.name} ${participant.surname}`,
+      handleDelete: () => this._delete(participant),
+    })
+  }
 
+  private async _delete(participant: ParticipantResponse): Promise<boolean> {
     try {
-      await this._participantDelete.delete(this._currentParticipant.id)
+      await this._participantsApi.remove(participant.id)
+      this._state.emitDeleted(participant)
+      this._snackbar.success('Participant deleted')
 
-      this._state.emitParticipantDeleted(this._currentParticipant)
-      this._snackbar.success('Participant deleted successfully')
+      return true
     } catch {
       this._snackbar.error('Failed to delete participant')
+
+      return false
     }
   }
 }

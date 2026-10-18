@@ -1,7 +1,8 @@
 import {
   Controller,
   Get,
-  Request as NestRequest,
+  HttpCode,
+  HttpStatus,
   Post,
   Req,
   Res,
@@ -9,69 +10,80 @@ import {
 } from '@nestjs/common'
 import { Request, Response } from 'express'
 
-import { Role } from '@junta/shared/enums/role'
-
-import { Public } from '@/api/decorators/is-public.decorator'
-import { Roles } from '@/api/decorators/roles.decorator'
 import {
-  RequestWithAdmin,
-  RequestWithAuthenticatedAdmin,
-} from '@/api/interfaces/request.interface'
+  AccessTokenResponse,
+  ApiResource,
+  AuthProfileResponse,
+} from '@junta/contracts'
+
+import { AuthenticatedAdmin } from '@/api/common/auth/authenticated-admin'
+import { CurrentAdmin } from '@/api/common/decorators/current-admin.decorator'
+import { Public } from '@/api/common/decorators/public.decorator'
 
 import { AuthService } from './auth.service'
-import { LocalAuthGuard } from './local-auth.guard'
+import { IssuedTokens } from './auth.types'
+import { LocalAuthGuard } from './guards/local-auth.guard'
+import {
+  REFRESH_TOKEN_COOKIE,
+  REFRESH_TOKEN_COOKIE_OPTIONS,
+} from './refresh-token.cookie'
 
-@Controller('auth')
+@Controller(ApiResource.auth)
 export class AuthController {
-  constructor(private readonly _auth: AuthService) {}
+  constructor(private readonly authService: AuthService) {}
 
   @Public()
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  login(@Res() res: Response, @NestRequest() req: RequestWithAdmin) {
-    const { accessToken, refreshToken } = this._auth.login(req.admin)
-
-    res.cookie('refreshToken', refreshToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'none',
-    })
-
-    return res.send({ accessToken })
+  @HttpCode(HttpStatus.OK)
+  login(
+    @CurrentAdmin() admin: AuthenticatedAdmin,
+    @Res({ passthrough: true }) response: Response,
+  ): AccessTokenResponse {
+    return this.startSession(response, this.authService.issueTokens(admin))
   }
 
   @Public()
   @Post('refresh')
-  async refresh(@Res() res: Response, @Req() req: Request) {
-    const actualRefreshToken = req.cookies.refreshToken
-    const admin = await this._auth.decodeRefreshToken(actualRefreshToken)
-    const newAccessToken = this._auth.createAccessToken(admin)
-    const newRefreshToken = this._auth.createRefreshToken(admin)
+  @HttpCode(HttpStatus.OK)
+  async refresh(
+    @Req() request: Request,
+    @Res({ passthrough: true }) response: Response,
+  ): Promise<AccessTokenResponse> {
+    const tokens = await this.authService.refresh(
+      request.cookies?.[REFRESH_TOKEN_COOKIE],
+    )
 
-    res.cookie('refreshToken', newRefreshToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'none',
-    })
-
-    return res.send({ accessToken: newAccessToken })
+    return this.startSession(response, tokens)
   }
 
   @Get('profile')
-  @Roles(Role.ADMIN)
-  getProfile(@NestRequest() req: RequestWithAuthenticatedAdmin) {
-    return req.admin
+  profile(@CurrentAdmin() admin: AuthenticatedAdmin): AuthProfileResponse {
+    return {
+      id: admin.id,
+      email: admin.email,
+      roles: admin.roles,
+      permissions: admin.permissions,
+    }
   }
 
-  @Get('logout')
-  @Roles(Role.ADMIN)
-  logout(@Res() res: Response) {
-    res.clearCookie('refreshToken', {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'none',
-    })
+  @Public()
+  @Post('logout')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  logout(@Res({ passthrough: true }) response: Response): void {
+    response.clearCookie(REFRESH_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE_OPTIONS)
+  }
 
-    res.send({ message: 'Cookie cleared successfully' })
+  private startSession(
+    response: Response,
+    tokens: IssuedTokens,
+  ): AccessTokenResponse {
+    response.cookie(
+      REFRESH_TOKEN_COOKIE,
+      tokens.refreshToken,
+      REFRESH_TOKEN_COOKIE_OPTIONS,
+    )
+
+    return { accessToken: tokens.accessToken }
   }
 }

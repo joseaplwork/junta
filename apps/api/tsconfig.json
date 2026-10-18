@@ -3,14 +3,12 @@
   "files": [],
   "include": [],
   "references": [
-    {
-      "path": "./tsconfig.app.json"
-    },
-    {
-      "path": "./tsconfig.spec.json"
-    }
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.spec.json" }
   ],
   "compilerOptions": {
-    "esModuleInterop": true
+    "module": "commonjs",
+    "target": "es2022",
+    "strictPropertyInitialization": false
   }
 }

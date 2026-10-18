@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/schema",
+  "$id": "AdminCrudPage",
+  "title": "Admin CRUD page",
+  "description": "Generates an admin page that follows apps/admin/AGENTS.md exactly. Requires the API resource contract.",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Singular resource name, the same one given to api-resource.",
+      "$default": { "$source": "argv", "index": 0 },
+      "x-prompt": "Singular resource name (e.g. payment)"
+    },
+    "fields": {
+      "type": "string",
+      "description": "The same --fields given to api-resource.",
+      "x-prompt": "Fields (e.g. title:string,amount:decimal,dueDate?:date)"
+    },
+    "plural": {
+      "type": "string",
+      "description": "Plural name, only when appending s/es/ies is wrong."
+    },
+    "icon": {
+      "type": "string",
+      "default": "list",
+      "description": "Material icon name for the sidebar entry."
+    },
+    "skipFormat": {
+      "type": "boolean",
+      "default": false,
+      "description": "Skip formatting the generated files."
+    }
+  },
+  "required": ["name", "fields"],
+  "additionalProperties": false
+}

@@ -1,58 +1,34 @@
-import { Injectable, inject, signal } from '@angular/core'
-import { JwtPayload, jwtDecode } from 'jwt-decode'
+import { Injectable, computed, inject } from '@angular/core'
+import { jwtDecode } from 'jwt-decode'
 
-import { Permission } from '@junta/shared/enums/permission'
-
-import { Profile } from '@/admin/shared/interfaces/profile'
+import { AccessTokenClaims, Permission, Role } from '@junta/contracts'
 
 import { AccessTokenManager } from './access-token-manager'
 
-@Injectable({
-  providedIn: 'root',
-})
-export class AdminProfile implements Profile {
-  private readonly _auth = inject(AccessTokenManager)
-  private _id = signal<string>('')
-  private _email = signal<string>('')
-  private _permissions = signal<string[]>([])
-  private _roles = signal<string[]>([])
+function decodeClaims(token: string | null): AccessTokenClaims | null {
+  if (!token) return null
 
-  set() {
-    const { sub, email, permissions, roles } = this._decodeProfile()
-
-    this._id.set(sub || '')
-    this._email.set(email)
-    this._permissions.set(permissions)
-    this._roles.set(roles)
+  try {
+    return jwtDecode<AccessTokenClaims>(token)
+  } catch {
+    return null
   }
+}
 
-  get id() {
-    return this._id.asReadonly()
-  }
+/** The signed-in admin, derived from the access token. Updates whenever the token changes. */
+@Injectable({ providedIn: 'root' })
+export class AdminProfile {
+  private readonly _tokens = inject(AccessTokenManager)
+  private readonly _claims = computed(() => decodeClaims(this._tokens.token()))
 
-  get email() {
-    return this._email.asReadonly()
-  }
+  readonly id = computed(() => this._claims()?.sub ?? '')
+  readonly email = computed(() => this._claims()?.email ?? '')
+  readonly roles = computed<Role[]>(() => this._claims()?.roles ?? [])
+  readonly permissions = computed<Permission[]>(
+    () => this._claims()?.permissions ?? [],
+  )
 
-  get permissions() {
-    return this._permissions.asReadonly()
-  }
-
-  get roles() {
-    return this._roles.asReadonly()
-  }
-
-  hasPermission(requiredPermission: Permission): boolean {
-    return this.permissions().includes(requiredPermission)
-  }
-
-  private _decodeProfile() {
-    type Payload = JwtPayload & {
-      email: string
-      roles: string[]
-      permissions: string[]
-    }
-
-    return jwtDecode<Payload>(this._auth.getAccessToken() || '')
+  hasPermission(permission: Permission): boolean {
+    return this.permissions().includes(permission)
   }
 }

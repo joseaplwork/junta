@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "hooks": {
+    "afterFileEdit": [
+      {
+        "command": "node tools/ai/hooks/format-file.mjs"
+      }
+    ],
+    "stop": [
+      {
+        "command": "node tools/ai/hooks/verify-on-stop.mjs --agent=cursor",
+        "timeout": 900,
+        "loop_limit": 1
+      }
+    ]
+  }
+}

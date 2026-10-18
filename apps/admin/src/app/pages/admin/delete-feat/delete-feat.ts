@@ -1,59 +1,63 @@
-import { Component, effect, inject } from '@angular/core'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  effect,
+  inject,
+} from '@angular/core'
 
-import { CrudDeleteDialog } from '@/admin/shared/components/crud'
-import { Admin } from '@/admin/shared/interfaces/admin'
+import { AdminResponse } from '@junta/contracts'
+
+import { AdminsApi } from '@/admin/shared/api/admins-api'
+import {
+  CrudDeleteDialog,
+  DeleteDialogData,
+} from '@/admin/shared/components/crud'
 import { Dialog } from '@/admin/shared/services/dialog'
 import { Snackbar } from '@/admin/shared/services/snackbar'
 
 import { AdminPageState } from '../admin-page-state'
 
-import { AdminDelete } from './services/admin-delete'
-
 @Component({
   selector: 'ja-admin-delete-feat',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: '',
 })
 export class DeleteFeat {
   private readonly _dialog = inject(Dialog)
-  private readonly _adminDelete = inject(AdminDelete)
-  private readonly _snackbar = inject(Snackbar)
+  private readonly _adminsApi = inject(AdminsApi)
   private readonly _state = inject(AdminPageState)
-
-  private _currentAdmin: Admin | null = null
+  private readonly _snackbar = inject(Snackbar)
 
   constructor() {
-    effect(this._listenForAdminDelete)
-  }
+    effect(() => {
+      const admin = this._state.deleteRequest()
 
-  private _listenForAdminDelete = () => {
-    const admin = this._state.deleteAdmin()
+      if (!admin) return
 
-    if (admin) {
-      this._openDeleteDialog(admin)
-      this._state.emitDeleteAdmin(null)
-    }
-  }
-
-  private _openDeleteDialog(admin: Admin): void {
-    this._currentAdmin = admin
-
-    this._dialog.open(CrudDeleteDialog, {
-      entityName: 'Admin',
-      displayName: admin.email,
-      handleDelete: this._handleDelete,
+      this._state.requestDelete(null)
+      this._openDialog(admin)
     })
   }
 
-  private _handleDelete = async (): Promise<void> => {
-    if (!this._currentAdmin) return
+  private _openDialog(admin: AdminResponse): void {
+    this._dialog.open<CrudDeleteDialog, DeleteDialogData>(CrudDeleteDialog, {
+      entityName: 'Admin',
+      displayName: admin.email,
+      handleDelete: () => this._delete(admin),
+    })
+  }
 
+  private async _delete(admin: AdminResponse): Promise<boolean> {
     try {
-      await this._adminDelete.delete(this._currentAdmin.id)
+      await this._adminsApi.remove(admin.id)
+      this._state.emitDeleted(admin)
+      this._snackbar.success('Admin deleted')
 
-      this._state.emitAdminDeleted(this._currentAdmin)
-      this._snackbar.success('Admin deleted successfully')
+      return true
     } catch {
       this._snackbar.error('Failed to delete admin')
+
+      return false
     }
   }
 }

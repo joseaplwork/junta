@@ -1,15 +1,38 @@
 import { DatePipe } from '@angular/common'
-import { Component, EventEmitter, Input, Output } from '@angular/core'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  input,
+  output,
+} from '@angular/core'
 import { MatButtonModule } from '@angular/material/button'
 import { MatChipsModule } from '@angular/material/chips'
 import { MatIconModule } from '@angular/material/icon'
 import { MatTableModule } from '@angular/material/table'
 
-import { ActionConfig, ColumnConfig } from '../interfaces'
+import { formatMoney } from '@/admin/shared/pipes/money-pipe'
+
+import { ActionConfig, ChipColor, ColumnConfig, TagColor } from '../interfaces'
+
+const CHIP_CLASSES: Record<ChipColor, string> = {
+  green: 'chip-success',
+  red: 'chip-error',
+  yellow: 'chip-warning',
+  gray: 'chip-default',
+}
+
+const TAG_CLASSES: Record<TagColor, string> = {
+  primary: 'border-primary bg-primary-container text-primary',
+  purple: 'tag-purple',
+  green: 'tag-green',
+  blue: 'tag-blue',
+}
 
 @Component({
   selector: 'ja-crud-data-table',
   templateUrl: './data-table.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     MatTableModule,
     MatButtonModule,
@@ -51,146 +74,82 @@ import { ActionConfig, ColumnConfig } from '../interfaces'
     }
   `,
 })
-export class CrudDataTable<T extends { id: string }> {
-  @Input() data: T[] = []
-  @Input() columns: ColumnConfig[] = []
-  @Input() actions: ActionConfig = {}
-  @Input() loading = false
-  @Input() error: string | null = null
-  @Input() emptyMessage = 'No items found. Click the + button to create one.'
-  @Input() loadingMessage = 'Loading...'
+export class CrudDataTable<Row extends { id: string }> {
+  readonly data = input<readonly Row[]>([])
+  readonly columns = input<ColumnConfig<Row>[]>([])
+  readonly actions = input<ActionConfig>({})
+  readonly loading = input(false)
+  readonly error = input<string | null>(null)
+  readonly emptyMessage = input(
+    'No items found. Click the + button to create one.',
+  )
+  readonly loadingMessage = input('Loading...')
 
-  @Output() view = new EventEmitter<T>()
-  @Output() edit = new EventEmitter<T>()
-  @Output() delete = new EventEmitter<T>()
+  readonly view = output<Row>()
+  readonly edit = output<Row>()
+  readonly delete = output<Row>()
 
-  get displayedColumns(): string[] {
-    const cols = this.columns.map(c => c.key)
+  readonly hasActions = computed(() => {
+    const { view, edit, delete: remove } = this.actions()
 
-    if (this.hasActions) {
-      cols.push('actions')
-    }
+    return Boolean(view || edit || remove)
+  })
 
-    return cols
+  readonly displayedColumns = computed(() => [
+    ...this.columns().map(column => column.key),
+    ...(this.hasActions() ? ['actions'] : []),
+  ])
+
+  value(row: Row, column: ColumnConfig<Row>): unknown {
+    return column.value
+      ? column.value(row)
+      : (row as Record<string, unknown>)[column.key]
   }
 
-  get hasActions(): boolean {
-    return !!(this.actions.view || this.actions.edit || this.actions.delete)
+  /** Empty for missing values, so an optional amount never shows as zero. */
+  currency(row: Row, column: ColumnConfig<Row>): string {
+    const raw = this.value(row, column)
+    const amount = Number(raw)
+
+    return raw === null ||
+      raw === undefined ||
+      raw === '' ||
+      Number.isNaN(amount)
+      ? ''
+      : formatMoney(amount)
   }
 
-  getValue(row: T, column: ColumnConfig): unknown {
-    if (column.getValue) {
-      return column.getValue(row)
-    }
+  isMissing(row: Row, column: ColumnConfig<Row>): boolean {
+    const raw = this.value(row, column)
 
-    const value = (row as Record<string, unknown>)[column.key]
-
-    if (column.type === 'combined' && column.combineWith) {
-      const secondValue = (row as Record<string, unknown>)[column.combineWith]
-      const format = column.combineFormat ?? '{0} {1}'
-
-      return format
-        .replace('{0}', String(value ?? ''))
-        .replace('{1}', String(secondValue ?? ''))
-    }
-
-    return value
+    return raw === null || raw === undefined
   }
 
-  getArrayValue(row: T, column: ColumnConfig): string[] {
-    const value = this.getValue(row, column)
+  date(row: Row, column: ColumnConfig<Row>): string | null {
+    const value = this.value(row, column)
 
-    if (Array.isArray(value)) {
-      return value.map(v => String(v))
-    }
-
-    return []
+    return typeof value === 'string' ? value : null
   }
 
-  getDateValue(row: T, column: ColumnConfig): Date | string | number | null {
-    const value = this.getValue(row, column)
+  tags(row: Row, column: ColumnConfig<Row>): string[] {
+    const value = this.value(row, column)
 
-    if (
-      value instanceof Date ||
-      typeof value === 'string' ||
-      typeof value === 'number'
-    ) {
-      return value
-    }
-
-    return null
+    return Array.isArray(value) ? value.map(String) : []
   }
 
-  formatCurrency(value: unknown, column: ColumnConfig): string {
-    const num = Number(value)
-
-    if (isNaN(num)) return String(value)
-
-    return new Intl.NumberFormat(column.currencyLocale ?? 'es-MX', {
-      style: 'currency',
-      currency: column.currencyCode ?? 'MXN',
-    }).format(num)
+  chipClass(value: unknown, column: ColumnConfig<Row>): string {
+    return CHIP_CLASSES[column.chipColor?.(value) ?? 'gray']
   }
 
-  getChipClass(value: unknown, column: ColumnConfig): string {
-    if (!column.chipColor) return 'chip-default'
-
-    const color = column.chipColor(value)
-
-    switch (color) {
-      case 'green':
-        return 'chip-success'
-      case 'red':
-        return 'chip-error'
-      case 'yellow':
-        return 'chip-warning'
-      case 'gray':
-      default:
-        return 'chip-default'
-    }
+  chipLabel(value: unknown, column: ColumnConfig<Row>): string {
+    return column.chipLabel ? column.chipLabel(value) : String(value)
   }
 
-  getChipLabel(value: unknown, column: ColumnConfig): string {
-    if (!column.chipLabel) return String(value)
-
-    return column.chipLabel(value)
+  tagClass(tag: string, column: ColumnConfig<Row>): string {
+    return TAG_CLASSES[column.tagColor?.(tag) ?? 'primary']
   }
 
-  getTagLabel(tag: string, column: ColumnConfig): string {
-    if (!column.tagLabel) return tag
-
-    return column.tagLabel(tag)
-  }
-
-  getTagClass(tag: string, column: ColumnConfig): string {
-    if (!column.tagColor) {
-      return 'border-primary bg-primary-container text-primary'
-    }
-
-    const color = column.tagColor(tag)
-
-    switch (color) {
-      case 'purple':
-        return 'tag-purple'
-      case 'green':
-        return 'tag-green'
-      case 'blue':
-        return 'tag-blue'
-      case 'primary':
-      default:
-        return 'border-primary bg-primary-container text-primary'
-    }
-  }
-
-  onView(row: T): void {
-    this.view.emit(row)
-  }
-
-  onEdit(row: T): void {
-    this.edit.emit(row)
-  }
-
-  onDelete(row: T): void {
-    this.delete.emit(row)
+  tagLabel(tag: string, column: ColumnConfig<Row>): string {
+    return column.tagLabel ? column.tagLabel(tag) : tag
   }
 }

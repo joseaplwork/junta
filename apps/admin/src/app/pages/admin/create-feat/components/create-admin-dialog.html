@@ -6,93 +6,55 @@
   [formValid]="form.valid"
   (submitAction)="onSubmit()"
   (cancelAction)="onCancel()">
-  <form [formGroup]="form" class="grid gap-4">
+  <form class="grid gap-4" [formGroup]="form">
     <mat-form-field class="w-full" appearance="outline">
       <mat-label>Email</mat-label>
-      <input
-        matInput
-        type="email"
-        formControlName="email"
-        placeholder="Enter email address"
-        required />
-      @if (form.get('email')?.hasError('required') &&
-      form.get('email')?.touched) {
-      <mat-error>Email is required</mat-error>
-      } @if (form.get('email')?.hasError('email') && form.get('email')?.touched)
-      {
-      <mat-error>Please enter a valid email address</mat-error>
+      <input matInput type="email" formControlName="email" />
+      @if (form.controls.email.hasError('email')) {
+        <mat-error>Please enter a valid email address</mat-error>
+      } @else {
+        <mat-error>Email is required</mat-error>
       }
     </mat-form-field>
 
     <mat-form-field class="w-full" appearance="outline">
       <mat-label>Password</mat-label>
-      <input
-        matInput
-        type="password"
-        formControlName="password"
-        placeholder="Enter password"
-        required />
-      @if (form.get('password')?.hasError('required') &&
-      form.get('password')?.touched) {
-      <mat-error>Password is required</mat-error>
-      } @if (form.get('password')?.hasError('minlength') &&
-      form.get('password')?.touched) {
-      <mat-error>Password must be at least 6 characters</mat-error>
+      <input matInput type="password" formControlName="password" />
+      @if (form.controls.password.hasError('minlength')) {
+        <mat-error>Password must be at least 6 characters</mat-error>
+      } @else {
+        <mat-error>Password is required</mat-error>
       }
     </mat-form-field>
 
     <mat-form-field class="w-full" appearance="outline">
       <mat-label>Name</mat-label>
-      <input
-        matInput
-        type="text"
-        formControlName="name"
-        placeholder="Enter name"
-        required />
-      @if (form.get('name')?.hasError('required') && form.get('name')?.touched)
-      {
+      <input matInput formControlName="name" />
       <mat-error>Name is required</mat-error>
-      }
     </mat-form-field>
 
     <mat-form-field class="w-full" appearance="outline">
       <mat-label>Surname</mat-label>
-      <input
-        matInput
-        type="text"
-        formControlName="surname"
-        placeholder="Enter surname"
-        required />
-      @if (form.get('surname')?.hasError('required') &&
-      form.get('surname')?.touched) {
+      <input matInput formControlName="surname" />
       <mat-error>Surname is required</mat-error>
-      }
     </mat-form-field>
 
     <mat-form-field class="w-full" appearance="outline">
       <mat-label>Phone</mat-label>
-      <input
-        matInput
-        type="text"
-        formControlName="phoneNumber"
-        placeholder="Enter phone number"
-        required />
-      @if (form.get('phoneNumber')?.hasError('required') &&
-      form.get('phoneNumber')?.touched) {
+      <input matInput formControlName="phoneNumber" />
       <mat-error>Phone is required</mat-error>
-      }
     </mat-form-field>
 
-    <div class="space-y-2">
-      <label class="block text-sm font-medium text-muted">Roles</label>
-      @for (role of availableRoles; track role || $index) {
-      <mat-checkbox
-        [checked]="isRoleSelected(role)"
-        (change)="toggleRole(role)"
-        class="block">
-        {{ role | titlecase }}
-      </mat-checkbox>
+    <fieldset class="space-y-2">
+      <legend class="text-muted block text-sm font-medium">Roles</legend>
+      @for (role of roles; track role) {
+        <mat-checkbox
+          class="block"
+          [checked]="hasRole(role)"
+          (change)="toggleRole(role)">
+          {{ roleLabels[role] }}
+        </mat-checkbox>
       }
-    </div>
+    </fieldset>
   </form>
 </ja-crud-dialog-shell>

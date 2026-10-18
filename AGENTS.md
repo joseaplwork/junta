@@ -1,14 +1,107 @@
-<!-- nx configuration start-->
-<!-- Leave the start & end comments to automatically receive updates. -->
+# Junta: instructions for AI agents
 
-# General Guidelines for working with Nx
+Junta is a back office for _juntas_, rotating savings groups. Admins create
+juntas, assign participants to monthly payout groups and record the money that
+changes hands offline. Business rules live in [docs/domain.md](docs/domain.md).
+Read it before you touch anything involving money, groups or roles.
 
-- When running tasks (for example build, lint, test, e2e, etc.), always prefer running the task through `nx` (i.e. `nx run`, `nx run-many`, `nx affected`) instead of using the underlying tooling directly
-- You have access to the Nx MCP server and its tools, use them to help the user
-- When answering questions about the repository, use the `nx_workspace` tool first to gain an understanding of the workspace architecture where applicable.
-- When working in individual projects, use the `nx_project_details` mcp tool to analyze and understand the specific project structure and dependencies
-- For questions around nx configuration, best practices or if you're unsure, use the `nx_docs` tool to get relevant, up-to-date docs. Always use this instead of assuming things about nx configuration
-- If the user needs help with an Nx configuration or project graph error, use the `nx_workspace` tool to get any errors
-- For Nx plugin best practices, check `node_modules/@nx/<plugin>/PLUGIN.md`. Not all plugins have this file - proceed without it if unavailable.
+This file is the canonical agent guide for every tool. `CLAUDE.md` imports it,
+and Cursor reads it directly. The app folders add their own `AGENTS.md`.
 
-<!-- nx configuration end-->
+## Commands
+
+| Goal                                    | Command                                                                            |
+| --------------------------------------- | ---------------------------------------------------------------------------------- |
+| Install                                 | `npm ci` (Node 22 or 24; CI uses `.nvmrc`)                                         |
+| Run the API (needs `apps/api/.env`)     | `npm run start:api`                                                                |
+| Run the admin app                       | `npm run start:admin`                                                              |
+| New resource, backend and admin page    | `npx nx g @junta/nx-plugin:crud <name> --fields="<spec>" --no-interactive`         |
+| New backend resource only               | `npx nx g @junta/nx-plugin:api-resource <name> --fields="<spec>" --no-interactive` |
+| Verify affected projects (done = green) | `npm run verify`                                                                   |
+| API end-to-end tests (needs Postgres)   | `npm run verify:e2e`                                                               |
+| Format changed files                    | `npm run format`                                                                   |
+| One target of one project               | `npx nx <target> <project>`, e.g. `npx nx test @junta/domain`                      |
+
+Field specs look like `title:string,amount:decimal,dueDate?:date`. Types are
+`string`, `int`, `decimal`, `boolean` and `date`. `?` marks an optional field.
+
+Always run tasks through Nx, never through `jest`, `eslint` or `tsc` directly.
+Inspect projects and generators with the Nx MCP server when it is available.
+
+## Workflow
+
+1. **Specify.** Anything beyond a small fix starts as a spec in `docs/specs/`
+   (skill: `write-spec`). Ask the user about open business questions first.
+2. **Generate.** New resources come from the generators. Never copy a feature
+   folder by hand.
+3. **Implement.** Follow the `AGENTS.md` of the app you are in. Business rules
+   go in `libs/domain` with tests named after their rule id.
+4. **Verify.** `npm run verify` must pass. If the API changed, also run
+   `npm run verify:e2e`. The agent stop hook re-checks your work automatically.
+5. **Report.** Say what changed, how you verified it and what is still open.
+
+## Where code goes
+
+| Path                 | Contains                                                                     | May import        |
+| -------------------- | ---------------------------------------------------------------------------- | ----------------- |
+| `apps/api`           | NestJS + TypeORM REST API. See `apps/api/AGENTS.md`.                         | contracts, domain |
+| `apps/admin`         | Angular 20 admin app, zoneless and signal-based. See `apps/admin/AGENTS.md`. | contracts, domain |
+| `libs/contracts`     | API request and response types, enums, route names. Types only.              | nothing           |
+| `libs/domain`        | Pure business rules with tests, tagged with `BR-xx` ids.                     | contracts         |
+| `tools/nx-plugin`    | The code generators and their templates.                                     | tooling only      |
+| `tools/eslint-rules` | Custom lint rules for this repo.                                             | tooling only      |
+| `tools/scripts`      | `verify.mjs`, the single definition of "verified".                           |                   |
+| `tools/ai/hooks`     | Format-on-edit and verify-on-stop hooks shared by Claude Code and Cursor.    |                   |
+| `docs`               | Domain, architecture, workflow, specs and decision records.                  |                   |
+
+## Hard rules
+
+Each rule names what enforces it. Never weaken an enforcer to get green.
+
+1. **Contracts first.** Every API shape is defined once in `libs/contracts`.
+   DTOs `implements` it and admin clients return it. [typecheck]
+2. **Shared libraries stay pure.** `libs/contracts` imports nothing.
+   `libs/domain` imports only contracts and no framework. [lint: module boundaries]
+3. **Apps never import each other.** Anything both apps need goes in a library.
+   [lint: module boundaries]
+4. **Business rules live in `libs/domain`** as pure functions with tests.
+   Controllers hold no logic and cannot import repositories or domain code.
+   [lint: no-restricted-imports]
+5. **Every API route needs a valid token and a permission** unless it is
+   marked `@Public()`. [global guards]
+6. **Admin pages are independent.** A page never imports another page.
+   [lint: @nx/workspace-no-cross-page-imports]
+7. **Admin pages talk to the API only through `shared/api` clients.**
+   [lint: no-restricted-imports]
+8. **Angular style:** standalone, OnPush, `input()`, `output()`, `signal()`,
+   `inject()`, `ja-` selectors, built-in control flow. [lint]
+9. **TypeScript is strict.** No `any`. Exported functions declare return types.
+   Promises are awaited or explicitly `void`. [typecheck, lint]
+10. **Entities are the database schema.** There is no hand-written SQL. Keep
+    column names stable, because development syncs the schema on startup.
+    [review, ADR 0003]
+11. **Secrets stay in `apps/api/.env`**, which is git-ignored. Never read,
+    print or commit it. [Claude Code permissions]
+
+## Definition of done
+
+- `npm run verify` passes.
+- API changes have an e2e test, and `npm run verify:e2e` passes.
+- Business rule changes update `docs/domain.md` and a `libs/domain` test with
+  the rule id.
+- A new convention or architectural choice gets an ADR in `docs/decisions/`.
+- No `TODO` without a spec or issue reference.
+
+## Ask before you decide
+
+Stop and ask the user when a task depends on rounding or currency, roles and
+permissions, deleting data, or any open question in `docs/domain.md`. Write the
+answer into that file.
+
+## Troubleshooting
+
+- `No cached ProjectGraph is available` means another Nx process, such as the
+  editor, rewrote the graph cache mid-run. `npm run verify` avoids it. For
+  other Nx commands, run them again.
+- A generator refuses to overwrite existing code. Pick another name or edit
+  the existing resource by hand, following its current shape.

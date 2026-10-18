@@ -1,23 +1,51 @@
 {
   "root": true,
   "ignorePatterns": ["**/*"],
-  "parserOptions": {
-    "project": "./tsconfig.base.json"
-  },
-  "plugins": ["@nx", "import"],
+  "plugins": ["@nx"],
   "overrides": [
     {
-      "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
+      "files": ["*.ts", "*.js", "*.mjs", "*.cjs"],
       "rules": {
         "@nx/enforce-module-boundaries": [
           "error",
           {
-            "allow": ["@/**"],
-            "enforceBuildableLibDependency": true,
+            "allowCircularSelfDependency": true,
             "depConstraints": [
               {
-                "sourceTag": "*",
-                "onlyDependOnLibsWithTags": ["*"]
+                "sourceTag": "type:app",
+                "onlyDependOnLibsWithTags": ["type:contracts", "type:domain"]
+              },
+              {
+                "sourceTag": "type:domain",
+                "onlyDependOnLibsWithTags": ["type:contracts"],
+                "bannedExternalImports": [
+                  "@angular/*",
+                  "@nestjs/*",
+                  "typeorm",
+                  "rxjs",
+                  "express",
+                  "class-validator",
+                  "class-transformer",
+                  "bcrypt",
+                  "pg"
+                ]
+              },
+              {
+                "sourceTag": "type:contracts",
+                "onlyDependOnLibsWithTags": ["type:contracts"],
+                "bannedExternalImports": ["*"]
+              },
+              {
+                "sourceTag": "type:tool",
+                "onlyDependOnLibsWithTags": ["type:tool"]
+              },
+              {
+                "sourceTag": "scope:admin",
+                "notDependOnLibsWithTags": ["scope:api"]
+              },
+              {
+                "sourceTag": "scope:api",
+                "notDependOnLibsWithTags": ["scope:admin"]
               }
             ]
           }
@@ -25,10 +53,38 @@
       }
     },
     {
-      "files": ["*.spec.ts", "*.spec.tsx", "*.spec.js", "*.spec.jsx"],
-      "env": {
-        "jest": true
-      },
+      "files": ["*.ts"],
+      "parser": "@typescript-eslint/parser",
+      "plugins": ["@typescript-eslint"],
+      "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:@typescript-eslint/stylistic",
+        "plugin:prettier/recommended"
+      ],
+      "rules": {
+        "no-console": ["error", { "allow": ["warn", "error"] }],
+        "@typescript-eslint/explicit-module-boundary-types": "error",
+        "@typescript-eslint/no-unused-vars": [
+          "error",
+          { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }
+        ],
+        "@typescript-eslint/no-floating-promises": "error",
+        "@typescript-eslint/no-misused-promises": "error",
+        "@typescript-eslint/await-thenable": "error"
+      }
+    },
+    {
+      "files": ["*.spec.ts", "*.e2e-spec.ts", "**/test/**/*.ts"],
+      "env": { "jest": true },
+      "rules": {
+        "@typescript-eslint/explicit-module-boundary-types": "off",
+        "@typescript-eslint/no-non-null-assertion": "off"
+      }
+    },
+    {
+      "files": ["*.json"],
+      "parser": "jsonc-eslint-parser",
       "rules": {}
     }
   ]

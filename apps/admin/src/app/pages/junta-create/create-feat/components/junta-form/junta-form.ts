@@ -1,5 +1,6 @@
 import { CdkDragDrop, DragDropModule } from '@angular/cdk/drag-drop'
 import {
+  ChangeDetectionStrategy,
   Component,
   computed,
   effect,
@@ -8,378 +9,278 @@ import {
   output,
   signal,
 } from '@angular/core'
+import { toSignal } from '@angular/core/rxjs-interop'
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
 import { MatButtonModule } from '@angular/material/button'
 import { MatCardModule } from '@angular/material/card'
 import { MatCheckboxModule } from '@angular/material/checkbox'
-import { MatChipsModule } from '@angular/material/chips'
 import { MatNativeDateModule } from '@angular/material/core'
 import { MatDatepickerModule } from '@angular/material/datepicker'
 import { MatFormFieldModule } from '@angular/material/form-field'
 import { MatIconModule } from '@angular/material/icon'
 import { MatInputModule } from '@angular/material/input'
-import { MatListModule } from '@angular/material/list'
+import { map } from 'rxjs'
 
-import { GroupConfig } from '@/admin/shared/interfaces/group'
-import { Participant } from '@/admin/shared/interfaces/participant'
+import {
+  CreateJuntaRequest,
+  JuntaDetailResponse,
+  ParticipantResponse,
+} from '@junta/contracts'
+import { countJuntaMonths, shuffle } from '@junta/domain'
 
-import { JuntaWithGroups } from '../../services/junta-data'
+/** Form safety limit, not a business rule: stops half-typed years from rendering thousands of groups. */
+export const MAX_FORM_MONTHS = 120
 
+const startOfDay = (date: Date): Date =>
+  new Date(date.getFullYear(), date.getMonth(), date.getDate())
+
+const daysInMonth = (year: number, month: number): number =>
+  new Date(year, month + 1, 0).getDate()
+
+/** Same day-of-month `months` later, clamped to the last day of shorter months. */
+export function addMonths(date: Date, months: number): Date {
+  const year = date.getFullYear()
+  const month = date.getMonth() + months
+
+  return new Date(
+    year,
+    month,
+    Math.min(date.getDate(), daysInMonth(year, month)),
+  )
+}
+
+const ORDINAL_SUFFIXES: Record<string, string> = {
+  one: 'st',
+  two: 'nd',
+  few: 'rd',
+  other: 'th',
+}
+const ordinalRules = new Intl.PluralRules('en-US', { type: 'ordinal' })
+
+/**
+ * Junta details plus the payout groups: one group per month (BR-01), each
+ * participant in at most one group (BR-05), order drawn by raffle (BR-08).
+ * Date edits never drop assignments: a group that still has members stays
+ * visible until the admin moves them, and saving waits until groups and
+ * months match.
+ */
 @Component({
   selector: 'ja-junta-form',
   templateUrl: './junta-form.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     DragDropModule,
     MatButtonModule,
     MatCardModule,
     MatCheckboxModule,
-    MatChipsModule,
     MatDatepickerModule,
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
-    MatListModule,
     MatNativeDateModule,
     ReactiveFormsModule,
   ],
 })
 export class JuntaForm {
-  private readonly _fb = inject(FormBuilder)
+  private readonly _fb = inject(FormBuilder).nonNullable
+  private readonly _today = startOfDay(new Date())
 
-  readonly initialJunta = input<JuntaWithGroups | null>(null)
-  readonly participants = input<Participant[]>([])
+  readonly initialJunta = input<JuntaDetailResponse | null>(null)
+  readonly participants = input<ParticipantResponse[]>([])
   readonly loadingParticipants = input(false)
   readonly submitting = input(false)
-  readonly isEditMode = input(false)
-  readonly editId = input<string | null>(null)
+  readonly submitLabel = input('Create Junta')
 
+  readonly submitRequest = output<CreateJuntaRequest>()
   readonly cancelForm = output<void>()
-  readonly submitPayload = output<{
-    formValue: Record<string, unknown>
-    groupConfigs: GroupConfig[]
-    isEdit: boolean
-    editId?: string
-  }>()
 
-  readonly assignedGroups = signal<string[][]>([])
-  readonly datesUpdated = signal(0)
-  readonly dragOverGroupIndex = signal<number | null>(null)
-  readonly availableParticipantsListId = 'available-participants'
-
-  readonly form = this._fb.nonNullable.group({
+  readonly availableListId = 'available-participants'
+  readonly maxMonths = MAX_FORM_MONTHS
+  readonly form = this._fb.group({
     name: ['', Validators.required],
     amount: [0, [Validators.required, Validators.min(1)]],
-    startDate: [null as Date | null, Validators.required],
-    endDate: [null as Date | null, Validators.required],
+    startDate: this._fb.control<Date | null>(null, Validators.required),
+    endDate: this._fb.control<Date | null>(
+      { value: null, disabled: true },
+      Validators.required,
+    ),
     active: [true],
   })
 
-  readonly minStartDate = new Date()
+  /** Participant ids by payout order (index 0 is order 1). Only explicit admin actions change it. */
+  private readonly _assignments = signal<string[][]>([])
 
-  readonly endDateDisabled = computed(() => {
-    const startDate = this.form.get('startDate')?.value
-
-    return !startDate || !(startDate instanceof Date)
-  })
-
-  readonly numberOfMonths = computed(() => {
-    this.datesUpdated()
-    const startDate = this.form.get('startDate')?.value
-    const endDate = this.form.get('endDate')?.value
-
-    if (
-      !startDate ||
-      !(startDate instanceof Date) ||
-      !endDate ||
-      !(endDate instanceof Date)
-    ) {
-      return 0
-    }
-
-    const start = new Date(startDate.getFullYear(), startDate.getMonth(), 1)
-    const end = new Date(endDate.getFullYear(), endDate.getMonth(), 1)
-    const months =
-      (end.getFullYear() - start.getFullYear()) * 12 +
-      (end.getMonth() - start.getMonth()) +
-      1
-
-    return Math.max(0, months)
-  })
-
-  readonly paymentGroups = computed(() => {
-    const months = this.numberOfMonths()
-    const currentGroups = this.assignedGroups()
-
-    if (months === 0) return []
-
-    const groups: string[][] = []
-
-    for (let i = 0; i < months; i++) {
-      groups[i] = currentGroups[i] || []
-    }
-
-    return groups
-  })
-
-  readonly canAssignParticipants = computed(() => this.numberOfMonths() > 0)
-  readonly hasAssignedParticipants = computed(() =>
-    this.assignedGroups().some(group => group.length > 0),
+  private readonly _formValue = toSignal(
+    this.form.valueChanges.pipe(map(() => this.form.getRawValue())),
+    { initialValue: this.form.getRawValue() },
   )
-  readonly connectedDropLists = computed(() => [
-    this.availableParticipantsListId,
-  ])
+
+  readonly isEditMode = computed(() => this.initialJunta() !== null)
+  readonly dragOverGroupIndex = signal<number | null>(null)
+
+  /** Running juntas started in the past, so the minimum only applies when creating. */
+  readonly minStartDate = computed(() =>
+    this.isEditMode() ? null : this._today,
+  )
+
+  readonly minEndDate = computed(() => {
+    const { startDate } = this._formValue()
+
+    return startDate ? addMonths(startDate, 1) : null
+  })
+
+  private readonly _monthSpan = computed(() => {
+    const { startDate, endDate } = this._formValue()
+
+    return startDate && endDate ? countJuntaMonths(startDate, endDate) : 0
+  })
+
+  readonly durationTooLong = computed(() => this._monthSpan() > MAX_FORM_MONTHS)
+
+  readonly numberOfMonths = computed(() =>
+    this.durationTooLong() ? 0 : this._monthSpan(),
+  )
+
+  /** One group per month, plus any later group that still has members. */
+  readonly paymentGroups = computed(() => {
+    const assignments = this._assignments()
+    const lastAssigned = assignments.reduce(
+      (last, ids, index) => (ids.length > 0 ? index : last),
+      -1,
+    )
+    const length = Math.max(this.numberOfMonths(), lastAssigned + 1)
+
+    return Array.from({ length }, (_, index) => assignments[index] ?? [])
+  })
+
+  readonly groupsMatchMonths = computed(
+    () =>
+      this.numberOfMonths() > 0 &&
+      this.paymentGroups().length === this.numberOfMonths(),
+  )
+
+  readonly hasAssignedParticipants = computed(() =>
+    this.paymentGroups().some(group => group.length > 0),
+  )
+
+  readonly groupListIds = computed(() =>
+    this.paymentGroups().map((_, index) => `group-${index}`),
+  )
 
   readonly availableParticipants = computed(() => {
-    if (!this.canAssignParticipants()) return []
+    const assigned = new Set(this._assignments().flat())
 
-    const assignedIds = this.assignedGroups()
-      .flat()
-      .filter((id): id is string => !!id)
-
-    return this.participants().filter(p => !assignedIds.includes(p.id))
+    return this.participants().filter(
+      participant => !assigned.has(participant.id),
+    )
   })
 
-  readonly availableParticipantIds = computed(() =>
-    this.availableParticipants().map(p => p.id),
-  )
+  readonly groupMembers = computed(() => {
+    const byId = new Map(this.participants().map(p => [p.id, p]))
 
-  readonly assignedParticipants = computed(() => {
-    const all = this.participants()
-    const groups = this.paymentGroups()
-
-    return groups.map(group =>
-      group
-        .map(id => all.find(p => p.id === id))
-        .filter((p): p is Participant => !!p),
+    return this.paymentGroups().map(ids =>
+      ids
+        .map(id => byId.get(id))
+        .filter((member): member is ParticipantResponse => Boolean(member)),
     )
   })
 
   constructor() {
-    const endDateControl = this.form.get('endDate')
+    effect(() => {
+      const { startDate } = this._formValue()
+      const endDate = this.form.controls.endDate
 
-    if (endDateControl) endDateControl.disable()
-
-    this.form.get('startDate')?.valueChanges.subscribe(startDate => {
-      if (startDate && startDate instanceof Date) {
-        const ctrl = this.form.get('endDate')
-
-        if (ctrl?.disabled) ctrl.enable({ emitEvent: false })
-      }
-      this.datesUpdated.update(v => v + 1)
-      setTimeout(() => this._updateGroupsFromDates(), 0)
-    })
-
-    this.form.get('endDate')?.valueChanges.subscribe(() => {
-      this.datesUpdated.update(v => v + 1)
-      setTimeout(() => this._updateGroupsFromDates(), 0)
+      if (startDate && endDate.disabled) endDate.enable()
+      if (!startDate && endDate.enabled) endDate.disable()
     })
 
     effect(() => {
       const junta = this.initialJunta()
 
-      if (junta) {
-        this.form.patchValue({
-          name: junta.name,
-          amount: junta.amount,
-          startDate: new Date(junta.startDate),
-          endDate: new Date(junta.endDate),
-          active: junta.active,
-        })
-        const groups = junta.groupConfigs
-          .sort((a, b) => a.order - b.order)
-          .map(c => c.participantIds)
+      if (!junta) return
 
-        this.assignedGroups.set(groups)
-        this._updateGroupsFromDates()
-      }
+      this.form.patchValue({
+        name: junta.name,
+        amount: junta.amount,
+        startDate: new Date(junta.startDate),
+        endDate: new Date(junta.endDate),
+        active: junta.active,
+      })
+      this._assignments.set(
+        [...junta.groups]
+          .sort((left, right) => left.order - right.order)
+          .map(group => group.members.map(member => member.id)),
+      )
     })
   }
 
-  getAllGroupIds(): string[] {
-    return this.paymentGroups().map((_, i) => `group-${i}`)
-  }
+  /** Creating: the end falls whole months after the start. Editing keeps stored dates valid. */
+  readonly endDateFilter = (date: Date | null): boolean => {
+    const startDate = this.form.controls.startDate.value
+    const minEnd = this.minEndDate()
 
-  canDropIntoGroup(): boolean {
-    return true
-  }
+    if (!date || !startDate || !minEnd) return false
+    if (startOfDay(date) < startOfDay(minEnd)) return false
+    if (this.isEditMode()) return true
 
-  isDragOverGroup(groupIndex: number): boolean {
-    return this.dragOverGroupIndex() === groupIndex
-  }
-
-  onDragEnded(): void {
-    this.dragOverGroupIndex.set(null)
-  }
-
-  onDropListEntered(event: { container: { id: string } }): void {
-    const id = event.container.id
-
-    if (id?.startsWith('group-')) {
-      this.dragOverGroupIndex.set(parseInt(id.replace('group-', ''), 10))
-    }
-  }
-
-  onDropListExited(): void {
-    this.dragOverGroupIndex.set(null)
-  }
-
-  onEndDateChange(): void {
-    const endDate = this.form.get('endDate')?.value
-
-    if (endDate instanceof Date) {
-      this.datesUpdated.update(v => v + 1)
-      setTimeout(() => this._updateGroupsFromDates(), 0)
-    }
-  }
-
-  getMinEndDate(): Date | null {
-    const startDate = this.form.get('startDate')?.value
-
-    if (!startDate || !(startDate instanceof Date)) return null
-    const d = new Date(
-      startDate.getFullYear(),
-      startDate.getMonth(),
-      startDate.getDate(),
+    return (
+      date.getDate() ===
+      Math.min(
+        startDate.getDate(),
+        daysInMonth(date.getFullYear(), date.getMonth()),
+      )
     )
-
-    d.setMonth(d.getMonth() + 1)
-    return d
   }
 
-  dateFilter = (date: Date | null): boolean => {
-    if (!date) return false
-    const startDate = this.form.get('startDate')?.value
-
-    if (!startDate || !(startDate instanceof Date)) return false
-    if (startDate.getDate() !== date.getDate()) return false
-    const minEnd = new Date(
-      startDate.getFullYear(),
-      startDate.getMonth(),
-      startDate.getDate(),
-    )
-
-    minEnd.setMonth(minEnd.getMonth() + 1)
-    const norm = new Date(date.getFullYear(), date.getMonth(), date.getDate())
-    const normMin = new Date(
-      minEnd.getFullYear(),
-      minEnd.getMonth(),
-      minEnd.getDate(),
-    )
-
-    return norm >= normMin
+  ordinal(position: number): string {
+    return `${position}${ORDINAL_SUFFIXES[ordinalRules.select(position)]}`
   }
 
-  getError(control: string): string | null {
-    const ctrl = this.form.get(control)
+  onDrop(event: CdkDragDrop<string[], string[], string>, index: number): void {
+    const participantId = event.item.data
 
-    if (ctrl?.hasError('required')) return 'This field is required'
-    if (ctrl?.hasError('min')) return 'Must be greater than 0'
-    return null
-  }
+    if (event.previousContainer === event.container) return
+    if (this._assignments().flat().includes(participantId)) return
 
-  getOrdinalSuffix(num: number): string {
-    const j = num % 10
-    const k = num % 100
+    this._assignments.update(groups => {
+      const next = Array.from(
+        { length: Math.max(groups.length, index + 1) },
+        (_, groupIndex) => groups[groupIndex] ?? [],
+      )
 
-    if (j === 1 && k !== 11) return 'st'
-    if (j === 2 && k !== 12) return 'nd'
-    if (j === 3 && k !== 13) return 'rd'
-    return 'th'
+      next[index] = [...next[index], participantId]
+
+      return next
+    })
   }
 
   removeParticipant(participantId: string): void {
-    this.assignedGroups.update(current =>
-      current.map(g => g.filter(id => id !== participantId)),
+    this._assignments.update(groups =>
+      groups.map(ids => ids.filter(id => id !== participantId)),
     )
   }
 
   runRaffle(): void {
-    this.assignedGroups.update(current => this._shuffle([...current]))
-  }
-
-  onParticipantDrop(
-    event: CdkDragDrop<string[], string[], string>,
-    targetGroupIndex: number,
-  ): void {
-    if (event.previousContainer === event.container) return
-    const participantId = event.item.data as string
-
-    if (!participantId) return
-    const current = this.paymentGroups()
-
-    if (current.flat().includes(participantId)) return
-    if (targetGroupIndex < 0 || targetGroupIndex >= current.length) return
-    this.assignedGroups.update(groups =>
-      groups.map((g, i) =>
-        i === targetGroupIndex ? [...g, participantId] : g,
-      ),
-    )
-  }
-
-  onCancel(): void {
-    this.cancelForm.emit()
+    this._assignments.set(shuffle(this.paymentGroups()))
   }
 
   onSubmit(): void {
+    const { name, amount, startDate, endDate, active } = this.form.getRawValue()
+
     if (this.form.invalid || this.submitting()) return
-    if (!this.canAssignParticipants()) return
-    const groups = this.assignedGroups()
+    if (!startDate || !endDate) return
+    if (!this.groupsMatchMonths() || !this.hasAssignedParticipants()) return
 
-    if (!groups.some(g => g.length > 0)) return
-
-    const formValue = this.form.value
-    const groupConfigs: GroupConfig[] = groups.map((participantIds, index) => ({
-      order: index + 1,
-      participantIds,
-    }))
-
-    this.submitPayload.emit({
-      formValue: { ...formValue },
-      groupConfigs,
-      isEdit: this.isEditMode(),
-      editId: this.isEditMode() ? (this.editId() ?? undefined) : undefined,
+    this.submitRequest.emit({
+      name,
+      amount,
+      startDate: startDate.toISOString(),
+      endDate: endDate.toISOString(),
+      active,
+      groups: this.paymentGroups().map((participantIds, index) => ({
+        order: index + 1,
+        participantIds,
+      })),
     })
-  }
-
-  private _shuffle<T>(array: T[]): T[] {
-    const a = [...array]
-
-    for (let i = a.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1))
-
-      ;[a[i], a[j]] = [a[j], a[i]]
-    }
-    return a
-  }
-
-  private _updateGroupsFromDates(): void {
-    const startDate = this.form.get('startDate')?.value
-    const endDate = this.form.get('endDate')?.value
-
-    if (
-      !startDate ||
-      !(startDate instanceof Date) ||
-      !endDate ||
-      !(endDate instanceof Date)
-    ) {
-      this.assignedGroups.set([])
-      return
-    }
-    const start = new Date(startDate.getFullYear(), startDate.getMonth(), 1)
-    const end = new Date(endDate.getFullYear(), endDate.getMonth(), 1)
-    const months =
-      (end.getFullYear() - start.getFullYear()) * 12 +
-      (end.getMonth() - start.getMonth()) +
-      1
-
-    if (months <= 0) {
-      this.assignedGroups.set([])
-      return
-    }
-    const current = this.assignedGroups()
-    const newGroups: string[][] = []
-
-    for (let i = 0; i < months; i++) newGroups[i] = current[i] || []
-    this.assignedGroups.set(newGroups)
   }
 }
