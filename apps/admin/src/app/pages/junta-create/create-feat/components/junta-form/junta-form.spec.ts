@@ -29,6 +29,7 @@ const junta: JuntaDetailResponse = {
   id: 'junta-1',
   name: 'Neighbourhood junta',
   amount: 2000,
+  currency: 'PEN',
   groupCount: 2,
   groupAmount: 1000,
   startDate: start.toISOString(),
@@ -117,6 +118,7 @@ describe('JuntaForm', () => {
       {
         name: 'Neighbourhood junta',
         amount: 2000,
+        currency: 'PEN',
         startDate: start.toISOString(),
         endDate: end.toISOString(),
         active: true,

@@ -18,6 +18,7 @@ const buildJunta = (overrides: Partial<Junta> = {}): Junta =>
     id: 'junta-1',
     name: 'Main Junta',
     amount: 2000,
+    currency: 'MXN',
     groupCount: 2,
     groupAmount: 1000,
     startDate: new Date('2026-01-15T00:00:00.000Z'),
@@ -31,6 +32,7 @@ const createDto = (overrides: Partial<CreateJuntaDto> = {}): CreateJuntaDto =>
   Object.assign(new CreateJuntaDto(), {
     name: 'Main Junta',
     amount: 2000,
+    currency: 'MXN',
     startDate: '2026-01-15T00:00:00.000Z',
     endDate: '2026-02-15T00:00:00.000Z',
     active: true,
@@ -177,6 +179,29 @@ describe('JuntasService', () => {
       expect(response).toMatchObject({ groupCount: 3, groupAmount: 1000 })
       expect(manager.delete).toHaveBeenCalledWith(Group, { juntaId: 'junta-1' })
       expect(saved.filter(entity => entity instanceof Group)).toHaveLength(3)
+    })
+
+    it('rejects a pool that does not split evenly across the groups (BR-03)', async () => {
+      manager.findOne.mockResolvedValue(buildJunta())
+
+      await expect(
+        service.update('junta-1', {
+          amount: 2000,
+          groups: [
+            { order: 1, participantIds: ['p1'] },
+            { order: 2, participantIds: ['p2'] },
+            { order: 3, participantIds: ['p3'] },
+          ],
+        }),
+      ).rejects.toMatchObject({ rule: 'BR-03' })
+    })
+
+    it('changes the currency (BR-13)', async () => {
+      manager.findOne.mockResolvedValue(buildJunta())
+
+      await expect(
+        service.update('junta-1', { currency: 'PEN' }),
+      ).resolves.toMatchObject({ currency: 'PEN' })
     })
 
     it('locks the junta row inside the transaction', async () => {

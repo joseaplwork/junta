@@ -17,6 +17,7 @@ import { CrudDialogShell } from '@/admin/shared/components/crud'
 import {
   ASSIGNABLE_ROLES,
   ROLE_LABELS,
+  backOfficeRoleValidator,
   toggleRole,
 } from '../../constants/admin-roles'
 
@@ -47,7 +48,7 @@ export class CreateAdminDialog {
   readonly form = this._fb.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]],
-    roles: this._fb.control<Role[]>([Role.ADMIN], Validators.required),
+    roles: this._fb.control<Role[]>([Role.ADMIN], backOfficeRoleValidator),
     name: ['', Validators.required],
     surname: ['', Validators.required],
     phoneNumber: ['', Validators.required],

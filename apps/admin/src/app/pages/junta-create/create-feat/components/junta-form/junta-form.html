@@ -14,12 +14,25 @@
         <mat-form-field appearance="outline">
           <mat-label>Total Amount</mat-label>
           <input matInput type="number" formControlName="amount" />
-          <span matTextPrefix>$&nbsp;</span>
           @if (form.controls.amount.hasError('min')) {
             <mat-error>Must be greater than 0</mat-error>
           } @else {
             <mat-error>This field is required</mat-error>
           }
+          @if (!amountSplitsEvenly()) {
+            <mat-hint class="text-warning">
+              Must divide evenly into {{ numberOfMonths() }} groups
+            </mat-hint>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Currency</mat-label>
+          <mat-select formControlName="currency">
+            @for (code of currencies; track code) {
+              <mat-option [value]="code">{{ code }}</mat-option>
+            }
+          </mat-select>
         </mat-form-field>
 
         <div class="grid grid-cols-2 gap-4">
@@ -208,6 +221,7 @@
       [disabled]="
         form.invalid ||
         !groupsMatchMonths() ||
+        !amountSplitsEvenly() ||
         !hasAssignedParticipants() ||
         submitting()
       "

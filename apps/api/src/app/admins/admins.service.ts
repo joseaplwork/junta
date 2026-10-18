@@ -4,6 +4,7 @@ import * as bcrypt from 'bcrypt'
 import { DataSource, Repository } from 'typeorm'
 
 import { AdminResponse } from '@junta/contracts'
+import { assertBackOfficeRole } from '@junta/domain'
 
 import { Participant } from '@/api/participants/entities/participant.entity'
 
@@ -24,6 +25,8 @@ export class AdminsService {
 
   /** BR-11: every admin is backed by a participant, created in the same transaction. */
   async create(dto: CreateAdminDto): Promise<AdminResponse> {
+    assertBackOfficeRole(dto.roles)
+
     const passwordHash = await bcrypt.hash(dto.password, BCRYPT_ROUNDS)
 
     const admin = await this.dataSource.transaction(async manager => {
@@ -75,7 +78,10 @@ export class AdminsService {
     > = {}
 
     if (dto.email !== undefined) adminChanges.email = dto.email
-    if (dto.roles !== undefined) adminChanges.roles = dto.roles
+    if (dto.roles !== undefined) {
+      assertBackOfficeRole(dto.roles)
+      adminChanges.roles = dto.roles
+    }
     if (dto.password !== undefined) {
       adminChanges.password = await bcrypt.hash(dto.password, BCRYPT_ROUNDS)
     }

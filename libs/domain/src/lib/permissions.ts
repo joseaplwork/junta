@@ -1,5 +1,7 @@
 import { Permission, Role } from '@junta/contracts'
 
+import { DomainRuleViolation } from './domain-rule-violation'
+
 /**
  * BR-12: the role-to-permission policy. A super admin always holds every
  * permission, including permissions added later.
@@ -29,4 +31,20 @@ export function permissionsForRoles(roles: readonly Role[]): Permission[] {
   }
 
   return [...permissions]
+}
+
+const BACK_OFFICE_ROLES: readonly Role[] = [Role.SUPER_ADMIN, Role.ADMIN]
+
+/** BR-14: an admin account holds at least one back-office role. */
+export function hasBackOfficeRole(roles: readonly Role[]): boolean {
+  return roles.some(role => BACK_OFFICE_ROLES.includes(role))
+}
+
+export function assertBackOfficeRole(roles: readonly Role[]): void {
+  if (!hasBackOfficeRole(roles)) {
+    throw new DomainRuleViolation(
+      'BR-14',
+      'An admin account needs the admin or super admin role. The participant role cannot be its only role.',
+    )
+  }
 }

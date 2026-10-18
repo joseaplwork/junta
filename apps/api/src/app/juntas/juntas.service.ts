@@ -35,6 +35,7 @@ export class JuntasService {
         manager.create(Junta, {
           name: dto.name,
           amount: dto.amount,
+          currency: dto.currency,
           groupCount: dto.groups.length,
           groupAmount: calculateGroupAmount(dto.amount, dto.groups.length),
           startDate: new Date(dto.startDate),
@@ -78,6 +79,7 @@ export class JuntasService {
       const junta = await this.lockEntity(manager, id)
 
       if (dto.name !== undefined) junta.name = dto.name
+      if (dto.currency !== undefined) junta.currency = dto.currency
       if (dto.amount !== undefined) junta.amount = dto.amount
       if (dto.startDate !== undefined) {
         junta.startDate = new Date(dto.startDate)

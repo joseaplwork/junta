@@ -11,7 +11,12 @@ interface Row {
 }
 
 const columns: ColumnConfig<Row>[] = [
-  { key: 'amount', header: 'Amount', type: 'currency' },
+  {
+    key: 'amount',
+    header: 'Amount',
+    type: 'currency',
+    currency: () => 'MXN',
+  },
   {
     key: 'paid',
     header: 'Paid',
@@ -23,11 +28,11 @@ const columns: ColumnConfig<Row>[] = [
 describe('CrudDataTable', () => {
   it('formats present values', async () => {
     await render(CrudDataTable<Row>, {
-      inputs: { data: [{ id: '1', amount: 12.5, paid: false }], columns },
+      inputs: { data: [{ id: '1', amount: 1200, paid: false }], columns },
     })
 
     expect(screen.getByText('No')).toBeInTheDocument()
-    expect(screen.getByText(/12\.50/)).toBeInTheDocument()
+    expect(screen.getByText(/1,200/)).toBeInTheDocument()
   })
 
   it('leaves cells empty for missing optional values instead of zero or No', async () => {

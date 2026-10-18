@@ -3,6 +3,7 @@ import {
   ArrayMinSize,
   IsArray,
   IsBoolean,
+  IsISO4217CurrencyCode,
   IsISO8601,
   IsInt,
   IsNotEmpty,
@@ -23,6 +24,9 @@ export class CreateJuntaDto implements CreateJuntaRequest {
   @IsInt()
   @Min(1)
   amount: number
+
+  @IsISO4217CurrencyCode()
+  currency: string
 
   @IsISO8601()
   startDate: string

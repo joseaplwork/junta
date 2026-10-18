@@ -25,6 +25,10 @@ export class Junta {
   @Column({ type: 'int' })
   amount: number
 
+  /** ISO 4217 code (BR-13). */
+  @Column({ type: 'char', length: 3 })
+  currency: string
+
   @Column({ name: 'groups', type: 'int' })
   groupCount: number
 

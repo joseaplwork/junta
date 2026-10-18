@@ -17,6 +17,7 @@ import { CrudDialogShell } from '@/admin/shared/components/crud'
 import {
   ASSIGNABLE_ROLES,
   ROLE_LABELS,
+  backOfficeRoleValidator,
   toggleRole,
 } from '../../constants/admin-roles'
 
@@ -49,7 +50,7 @@ export class UpdateAdminDialog {
     email: [this.data.admin.email, [Validators.required, Validators.email]],
     roles: this._fb.control<Role[]>(
       [...this.data.admin.roles],
-      Validators.required,
+      backOfficeRoleValidator,
     ),
   })
 

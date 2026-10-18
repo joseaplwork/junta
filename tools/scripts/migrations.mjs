@@ -23,7 +23,7 @@ const FOLDER = 'apps/api/src/app/database/migrations'
 const DATA_SOURCE = 'apps/api/src/app/database/data-source.ts'
 const BASELINE = 'apps/api/src/app/database/baseline.ts'
 const FILE_PATTERN = /^(\d{13})-([A-Za-z][A-Za-z0-9]*)\.ts$/
-const CLASS_PATTERN = /export class (\w+) implements MigrationInterface/
+const CLASS_PATTERN = /export class (\w+)\s+implements\s+MigrationInterface/
 const NAME_PATTERN = /^[A-Z][A-Za-z0-9]*$/
 
 const [command, ...rest] = process.argv.slice(2)

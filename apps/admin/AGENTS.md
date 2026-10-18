@@ -56,8 +56,10 @@ src/app/
 - **Templates** use `@if` and `@for`, give every `<button>` a `type` and
   self-close empty elements. Lint enforces all three.
 - **Navigation** goes through `shared/services/navigation.ts`.
-- **Money** uses the `money` pipe or `formatMoney`. API dates are ISO strings.
-  For `<input type="date">` use `shared/forms/date-input.ts`.
+- **Money** uses the `money` pipe or `formatMoney` with the junta's currency
+  (`amount | money: junta.currency`). Amounts are whole units.
+- **Dates** from the API are ISO strings. For `<input type="date">` use
+  `shared/forms/date-input.ts`.
 - **Routes** are lazy (`loadComponent`) and guarded with
   `permissionGuard(Permission.X_READ)`. The sidebar entry uses the same
   permission.

@@ -35,7 +35,12 @@ export class ListFeat {
 
   readonly columns: ColumnConfig<JuntaResponse>[] = [
     { key: 'name', header: 'Name', type: 'text' },
-    { key: 'amount', header: 'Amount', type: 'currency' },
+    {
+      key: 'amount',
+      header: 'Amount',
+      type: 'currency',
+      currency: junta => junta.currency,
+    },
     { key: 'groupCount', header: 'Groups', type: 'text' },
     { key: 'startDate', header: 'Start Date', type: 'date' },
     { key: 'endDate', header: 'End Date', type: 'date' },

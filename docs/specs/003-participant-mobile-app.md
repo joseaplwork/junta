@@ -2,7 +2,7 @@
 
 - **Status:** draft
 - **Owner:** unassigned
-- **Rules:** BR-04, BR-06, BR-07, BR-09, BR-12, and a new BR-13 below
+- **Rules:** BR-04, BR-06, BR-07, BR-09, BR-12, and a new BR-15 below
 
 ## Problem
 
@@ -52,7 +52,7 @@ interface MyJuntaDetailResponse extends MyJuntaSummaryResponse {
 | GET    | `/api/me/juntas`     | `self:read` | none    | `MyJuntaSummaryResponse[]` | 401, 403           |
 | GET    | `/api/me/juntas/:id` | `self:read` | none    | `MyJuntaDetailResponse`    | 400, 401, 403, 404 |
 
-- **New rule BR-13:** a participant sees only the juntas they belong to and the
+- **New rule BR-15:** a participant sees only the juntas they belong to and the
   names of their own group's members. Never phone numbers, never other groups.
   It goes into `docs/domain.md` before any code.
 - **Required before anyone signs in:** the `participant` role must lose
@@ -94,7 +94,7 @@ Written once the open questions are answered. At minimum:
 
 ## Test plan
 
-- `libs/domain`: BR-13 visibility rules.
+- `libs/domain`: BR-15 visibility rules.
 - `apps/api`: unit and e2e tests for the `me` endpoints and participant
   sign-in, including the permission checks above.
 - `apps/mobile`: component tests for each page.

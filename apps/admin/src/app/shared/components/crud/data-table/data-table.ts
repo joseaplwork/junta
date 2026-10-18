@@ -116,7 +116,7 @@ export class CrudDataTable<Row extends { id: string }> {
       raw === '' ||
       Number.isNaN(amount)
       ? ''
-      : formatMoney(amount)
+      : formatMoney(amount, column.currency?.(row))
   }
 
   isMissing(row: Row, column: ColumnConfig<Row>): boolean {

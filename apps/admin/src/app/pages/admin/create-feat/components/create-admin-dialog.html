@@ -55,6 +55,11 @@
           {{ roleLabels[role] }}
         </mat-checkbox>
       }
+      @if (form.controls.roles.hasError('backOfficeRole')) {
+        <p class="text-sm text-red-600">
+          Choose Admin or Super Admin. Participant cannot be the only role.
+        </p>
+      }
     </fieldset>
   </form>
 </ja-crud-dialog-shell>

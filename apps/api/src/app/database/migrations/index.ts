@@ -6,6 +6,7 @@ import { InitialSchema1792319852909 } from './1792319852909-InitialSchema'
 import { DropLegacyTables1792319963499 } from './1792319963499-DropLegacyTables'
 import { AddAdminTokenVersion1792320664801 } from './1792320664801-AddAdminTokenVersion'
 import { WholeUnitPaymentAmounts1792323266777 } from './1792323266777-WholeUnitPaymentAmounts'
+import { AddJuntaCurrency1792326514520 } from './1792326514520-AddJuntaCurrency'
 
 /** Every migration, oldest first. */
 export const MIGRATIONS: (new () => MigrationInterface)[] = [
@@ -13,4 +14,5 @@ export const MIGRATIONS: (new () => MigrationInterface)[] = [
   DropLegacyTables1792319963499,
   AddAdminTokenVersion1792320664801,
   WholeUnitPaymentAmounts1792323266777,
+  AddJuntaCurrency1792326514520,
 ]

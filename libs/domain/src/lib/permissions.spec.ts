@@ -1,6 +1,10 @@
 import { Permission, Role } from '@junta/contracts'
 
-import { permissionsForRoles } from './permissions'
+import {
+  assertBackOfficeRole,
+  hasBackOfficeRole,
+  permissionsForRoles,
+} from './permissions'
 
 describe('permissionsForRoles (BR-12)', () => {
   it('grants a super admin every permission', () => {
@@ -37,5 +41,21 @@ describe('permissionsForRoles (BR-12)', () => {
 
   it('returns no permissions for no roles', () => {
     expect(permissionsForRoles([])).toEqual([])
+  })
+})
+
+describe('hasBackOfficeRole (BR-14)', () => {
+  it.each([
+    [[Role.ADMIN]],
+    [[Role.SUPER_ADMIN, Role.PARTICIPANT]],
+    [[Role.ADMIN, Role.PARTICIPANT]],
+  ])('accepts %j', roles => {
+    expect(hasBackOfficeRole(roles)).toBe(true)
+    expect(() => assertBackOfficeRole(roles)).not.toThrow()
+  })
+
+  it.each([[[Role.PARTICIPANT]], [[]]])('rejects %j', roles => {
+    expect(hasBackOfficeRole(roles)).toBe(false)
+    expect(() => assertBackOfficeRole(roles)).toThrow('admin or super admin')
   })
 })
