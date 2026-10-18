@@ -89,6 +89,9 @@ Answers go into `domain.md` or the spec, so the next session knows them.
   generator snapshot tests and the CI `Generators` job show the effect.
 - When the agent repeats a mistake, fix the instructions or add an enforcer.
   Don't just correct the code.
+- Check `npm audit` regularly. Patch within the current major versions, pin
+  exact versions, and prefer releases at least two weeks old unless a fix is
+  urgent. Plan major upgrades, such as NestJS 11 or Angular 21, as specs.
 
 ## CI
 
