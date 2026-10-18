@@ -5,10 +5,12 @@ export const API_PREFIX = 'api'
  * clients both read these values, so a rename updates both sides at once.
  */
 export const ApiResource = {
-  admins: 'admins',
+  accounts: 'accounts',
   auth: 'auth',
   health: 'health',
   juntas: 'juntas',
+  me: 'me',
+  mobileAuth: 'mobile-auth',
   participants: 'participants',
 } as const
 

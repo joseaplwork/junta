@@ -19,6 +19,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker'
 import { MatFormFieldModule } from '@angular/material/form-field'
 import { MatIconModule } from '@angular/material/icon'
 import { MatInputModule } from '@angular/material/input'
+import { MatSelectModule } from '@angular/material/select'
 import { map } from 'rxjs'
 
 import {
@@ -26,10 +27,21 @@ import {
   JuntaDetailResponse,
   ParticipantResponse,
 } from '@junta/contracts'
-import { countJuntaMonths, shuffle } from '@junta/domain'
+import { countJuntaMonths, shuffle, splitsEvenly } from '@junta/domain'
 
 /** Form safety limit, not a business rule: stops half-typed years from rendering thousands of groups. */
 export const MAX_FORM_MONTHS = 120
+
+/** Currencies offered in the form (BR-13). Any ISO 4217 code is valid in the API. */
+export const JUNTA_CURRENCIES = [
+  'MXN',
+  'PEN',
+  'COP',
+  'CLP',
+  'ARS',
+  'USD',
+  'EUR',
+]
 
 const startOfDay = (date: Date): Date =>
   new Date(date.getFullYear(), date.getMonth(), date.getDate())
@@ -77,6 +89,7 @@ const ordinalRules = new Intl.PluralRules('en-US', { type: 'ordinal' })
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
+    MatSelectModule,
     MatNativeDateModule,
     ReactiveFormsModule,
   ],
@@ -99,6 +112,7 @@ export class JuntaForm {
   readonly form = this._fb.group({
     name: ['', Validators.required],
     amount: [0, [Validators.required, Validators.min(1)]],
+    currency: ['MXN', Validators.required],
     startDate: this._fb.control<Date | null>(null, Validators.required),
     endDate: this._fb.control<Date | null>(
       { value: null, disabled: true },
@@ -153,6 +167,15 @@ export class JuntaForm {
     return Array.from({ length }, (_, index) => assignments[index] ?? [])
   })
 
+  readonly currencies = JUNTA_CURRENCIES
+
+  /** BR-03: the pool must split into equal whole amounts, one share per month. */
+  readonly amountSplitsEvenly = computed(
+    () =>
+      this.numberOfMonths() === 0 ||
+      splitsEvenly(this._formValue().amount, this.numberOfMonths()),
+  )
+
   readonly groupsMatchMonths = computed(
     () =>
       this.numberOfMonths() > 0 &&
@@ -202,6 +225,7 @@ export class JuntaForm {
       this.form.patchValue({
         name: junta.name,
         amount: junta.amount,
+        currency: junta.currency,
         startDate: new Date(junta.startDate),
         endDate: new Date(junta.endDate),
         active: junta.active,
@@ -265,15 +289,18 @@ export class JuntaForm {
   }
 
   onSubmit(): void {
-    const { name, amount, startDate, endDate, active } = this.form.getRawValue()
+    const { name, amount, currency, startDate, endDate, active } =
+      this.form.getRawValue()
 
     if (this.form.invalid || this.submitting()) return
     if (!startDate || !endDate) return
     if (!this.groupsMatchMonths() || !this.hasAssignedParticipants()) return
+    if (!this.amountSplitsEvenly()) return
 
     this.submitRequest.emit({
       name,
       amount,
+      currency,
       startDate: startDate.toISOString(),
       endDate: endDate.toISOString(),
       active,

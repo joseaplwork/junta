@@ -1,9 +1,5 @@
 import { healthApi } from './health-api'
 
-jest.mock('@/mobile/shared/config/api-url', () => ({
-  resolveApiUrl: () => 'http://api.test',
-}))
-
 describe('healthApi', () => {
   const fetchMock = jest.fn()
 
@@ -15,13 +11,14 @@ describe('healthApi', () => {
   it('checks the public health endpoint', async () => {
     fetchMock.mockResolvedValue({
       ok: true,
+      status: 200,
       json: async () => ({ status: 'ok' }),
     })
 
     await expect(healthApi.check()).resolves.toEqual({ status: 'ok' })
     expect(fetchMock).toHaveBeenCalledWith(
       'http://api.test/api/health',
-      expect.objectContaining({ headers: { Accept: 'application/json' } }),
+      expect.objectContaining({ method: 'GET' }),
     )
   })
 

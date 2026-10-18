@@ -10,7 +10,12 @@ import {
 import {
   assertValidGroupAssignments,
   calculateGroupAmount,
+  canManageJunta,
+  managesEverything,
 } from '@junta/domain'
+
+import { AuthenticatedAccount } from '@/api/common/auth/authenticated-account'
+import { assertParticipantsVisible } from '@/api/participants/participant-scope'
 
 import { CreateJuntaDto } from './dto/create-junta.dto'
 import { UpdateJuntaDto } from './dto/update-junta.dto'
@@ -27,20 +32,27 @@ export class JuntasService {
     private readonly dataSource: DataSource,
   ) {}
 
-  async create(dto: CreateJuntaDto, adminId: string): Promise<JuntaResponse> {
+  /** The creator becomes the organizer (BR-16). */
+  async create(
+    dto: CreateJuntaDto,
+    viewer: AuthenticatedAccount,
+  ): Promise<JuntaResponse> {
     assertValidGroupAssignments(dto.groups)
 
     const junta = await this.dataSource.transaction(async manager => {
+      await assertParticipantsVisible(manager, viewer, memberIds(dto.groups))
+
       const saved = await manager.save(
         manager.create(Junta, {
           name: dto.name,
           amount: dto.amount,
+          currency: dto.currency,
           groupCount: dto.groups.length,
           groupAmount: calculateGroupAmount(dto.amount, dto.groups.length),
           startDate: new Date(dto.startDate),
           endDate: new Date(dto.endDate),
           active: dto.active,
-          adminId,
+          organizerId: viewer.id,
         }),
       )
 
@@ -52,32 +64,46 @@ export class JuntasService {
     return toJuntaResponse(junta)
   }
 
-  async findAll(): Promise<JuntaResponse[]> {
-    const juntas = await this.juntas.find({ order: { startDate: 'DESC' } })
+  async findAll(viewer: AuthenticatedAccount): Promise<JuntaResponse[]> {
+    const juntas = await this.juntas.find({
+      where: managesEverything(viewer) ? {} : { organizerId: viewer.id },
+      order: { startDate: 'DESC' },
+    })
 
     return juntas.map(toJuntaResponse)
   }
 
-  async findOne(id: string): Promise<JuntaDetailResponse> {
+  async findOne(
+    viewer: AuthenticatedAccount,
+    id: string,
+  ): Promise<JuntaDetailResponse> {
     const junta = await this.juntas.findOne({
       where: { id },
       relations: { groups: { participantGroups: { participant: true } } },
     })
 
-    if (!junta) {
+    if (!junta || !canManageJunta(viewer, junta)) {
       throw new NotFoundException(`Junta ${id} not found`)
     }
 
     return toJuntaDetailResponse(junta)
   }
 
-  async update(id: string, dto: UpdateJuntaDto): Promise<JuntaResponse> {
+  async update(
+    viewer: AuthenticatedAccount,
+    id: string,
+    dto: UpdateJuntaDto,
+  ): Promise<JuntaResponse> {
     if (dto.groups) assertValidGroupAssignments(dto.groups)
 
     const saved = await this.dataSource.transaction(async manager => {
-      const junta = await this.lockEntity(manager, id)
+      const junta = await this.lockEntity(manager, viewer, id)
 
+      if (dto.groups) {
+        await assertParticipantsVisible(manager, viewer, memberIds(dto.groups))
+      }
       if (dto.name !== undefined) junta.name = dto.name
+      if (dto.currency !== undefined) junta.currency = dto.currency
       if (dto.amount !== undefined) junta.amount = dto.amount
       if (dto.startDate !== undefined) {
         junta.startDate = new Date(dto.startDate)
@@ -97,22 +123,29 @@ export class JuntasService {
     return toJuntaResponse(saved)
   }
 
-  async remove(id: string): Promise<void> {
+  async remove(viewer: AuthenticatedAccount, id: string): Promise<void> {
     await this.dataSource.transaction(async manager => {
-      await this.lockEntity(manager, id)
+      await this.lockEntity(manager, viewer, id)
       await this.deleteGroups(manager, id)
       await manager.delete(Junta, { id })
     })
   }
 
-  /** Loads the junta with a row lock, so concurrent edits of one junta run one after another. */
-  private async lockEntity(manager: EntityManager, id: string): Promise<Junta> {
+  /**
+   * Loads the junta with a row lock, so concurrent edits of one junta run one
+   * after another. Someone else's junta answers 404 (BR-16).
+   */
+  private async lockEntity(
+    manager: EntityManager,
+    viewer: AuthenticatedAccount,
+    id: string,
+  ): Promise<Junta> {
     const junta = await manager.findOne(Junta, {
       where: { id },
       lock: { mode: 'pessimistic_write' },
     })
 
-    if (!junta) {
+    if (!junta || !canManageJunta(viewer, junta)) {
       throw new NotFoundException(`Junta ${id} not found`)
     }
 
@@ -159,3 +192,6 @@ export class JuntasService {
     await manager.delete(Group, { juntaId })
   }
 }
+
+const memberIds = (groups: readonly GroupAssignment[]): string[] =>
+  groups.flatMap(group => group.participantIds)

@@ -1,0 +1,35 @@
+<ja-crud-dialog-shell
+  title="Update Account"
+  icon="edit"
+  submitLabel="Update Account"
+  [submitting]="submitting()"
+  [formValid]="form.valid"
+  (submitAction)="onSubmit()"
+  (cancelAction)="onCancel()">
+  <form class="grid gap-4" [formGroup]="form">
+    <mat-form-field class="w-full" appearance="outline">
+      <mat-label>Email</mat-label>
+      <input matInput type="email" formControlName="email" />
+      @if (form.controls.email.hasError('email')) {
+        <mat-error>Please enter a valid email address</mat-error>
+      } @else {
+        <mat-error>Email is required</mat-error>
+      }
+    </mat-form-field>
+
+    <fieldset class="space-y-2">
+      <legend class="text-muted block text-sm font-medium">Roles</legend>
+      @for (role of roles; track role) {
+        <mat-checkbox
+          class="block"
+          [checked]="hasRole(role)"
+          (change)="toggleRole(role)">
+          {{ roleLabels[role] }}
+        </mat-checkbox>
+      }
+      @if (form.controls.roles.hasError('noRole')) {
+        <p class="text-sm text-red-600">Choose at least one role.</p>
+      }
+    </fieldset>
+  </form>
+</ja-crud-dialog-shell>

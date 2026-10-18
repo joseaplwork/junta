@@ -6,7 +6,7 @@ import { DataSource } from 'typeorm'
 
 import { API_PREFIX, Role } from '@junta/contracts'
 
-import { Admin } from '@/api/admins/entities/admin.entity'
+import { Account } from '@/api/accounts/entities/account.entity'
 import { AppModule } from '@/api/app.module'
 import { APP_CONFIG, AppConfig, loadAppConfig } from '@/api/config/app-config'
 import { configureApp } from '@/api/configure-app'
@@ -74,10 +74,10 @@ async function seedSuperAdmin(dataSource: DataSource): Promise<void> {
     phoneNumber: '000000000',
   })
 
-  await dataSource.getRepository(Admin).save({
+  await dataSource.getRepository(Account).save({
     email: E2E_ADMIN.email,
     password: await bcrypt.hash(E2E_ADMIN.password, 4),
-    roles: [Role.SUPER_ADMIN],
+    roles: [Role.ADMIN],
     participant,
   })
 }
@@ -140,7 +140,7 @@ export async function createE2eApp(): Promise<E2eApp> {
 }
 
 /** Supertest helpers that send the seeded super admin's access token. */
-export function asSuperAdmin(e2e: E2eApp): {
+export function asAdmin(e2e: E2eApp): {
   get: (path: string) => request.Test
   post: (path: string, body?: object) => request.Test
   patch: (path: string, body: object) => request.Test

@@ -3,7 +3,7 @@ import { APP_GUARD } from '@nestjs/core'
 import { JwtModule, JwtModuleOptions } from '@nestjs/jwt'
 import { PassportModule } from '@nestjs/passport'
 
-import { AdminsModule } from '@/api/admins/admins.module'
+import { AccountsModule } from '@/api/accounts/accounts.module'
 import { JwtAuthGuard } from '@/api/common/guards/jwt-auth.guard'
 import { PermissionsGuard } from '@/api/common/guards/permissions.guard'
 import { APP_CONFIG, AppConfig } from '@/api/config/app-config'
@@ -15,7 +15,7 @@ import { LocalStrategy } from './strategies/local.strategy'
 
 @Module({
   imports: [
-    AdminsModule,
+    AccountsModule,
     PassportModule,
     JwtModule.registerAsync({
       inject: [APP_CONFIG],

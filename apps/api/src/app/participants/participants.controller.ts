@@ -18,6 +18,8 @@ import {
   Permission,
 } from '@junta/contracts'
 
+import { AuthenticatedAccount } from '@/api/common/auth/authenticated-account'
+import { CurrentAccount } from '@/api/common/decorators/current-account.decorator'
 import { RequirePermissions } from '@/api/common/decorators/require-permissions.decorator'
 
 import { CreateParticipantDto } from './dto/create-participant.dto'
@@ -30,43 +32,56 @@ export class ParticipantsController {
 
   @Post()
   @RequirePermissions(Permission.PARTICIPANT_CREATE)
-  create(@Body() dto: CreateParticipantDto): Promise<ParticipantResponse> {
-    return this.participantsService.create(dto)
+  create(
+    @Body() dto: CreateParticipantDto,
+    @CurrentAccount() viewer: AuthenticatedAccount,
+  ): Promise<ParticipantResponse> {
+    return this.participantsService.create(dto, viewer)
   }
 
   @Get()
   @RequirePermissions(Permission.PARTICIPANT_READ)
-  findAll(): Promise<ParticipantResponse[]> {
-    return this.participantsService.findAll()
+  findAll(
+    @CurrentAccount() viewer: AuthenticatedAccount,
+  ): Promise<ParticipantResponse[]> {
+    return this.participantsService.findAll(viewer)
   }
 
   @Get(':id')
   @RequirePermissions(Permission.PARTICIPANT_READ)
   findOne(
+    @CurrentAccount() viewer: AuthenticatedAccount,
     @Param('id', ParseUUIDPipe) id: string,
   ): Promise<ParticipantResponse> {
-    return this.participantsService.findOne(id)
+    return this.participantsService.findOne(viewer, id)
   }
 
   @Get(':id/juntas')
   @RequirePermissions(Permission.PARTICIPANT_READ)
-  findJuntas(@Param('id', ParseUUIDPipe) id: string): Promise<JuntaResponse[]> {
-    return this.participantsService.findJuntas(id)
+  findJuntas(
+    @CurrentAccount() viewer: AuthenticatedAccount,
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<JuntaResponse[]> {
+    return this.participantsService.findJuntas(viewer, id)
   }
 
   @Patch(':id')
   @RequirePermissions(Permission.PARTICIPANT_UPDATE)
   update(
+    @CurrentAccount() viewer: AuthenticatedAccount,
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: UpdateParticipantDto,
   ): Promise<ParticipantResponse> {
-    return this.participantsService.update(id, dto)
+    return this.participantsService.update(viewer, id, dto)
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   @RequirePermissions(Permission.PARTICIPANT_DELETE)
-  remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
-    return this.participantsService.remove(id)
+  remove(
+    @CurrentAccount() viewer: AuthenticatedAccount,
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<void> {
+    return this.participantsService.remove(viewer, id)
   }
 }

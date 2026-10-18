@@ -15,4 +15,6 @@ export interface ColumnConfig<Row> {
   tagColor?: (tag: string) => TagColor
   tagLabel?: (tag: string) => string
   dateFormat?: string
+  /** ISO 4217 code for `currency` columns. Without it the amount shows as a number. */
+  currency?: (row: Row) => string
 }

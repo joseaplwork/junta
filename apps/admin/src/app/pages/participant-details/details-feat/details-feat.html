@@ -82,7 +82,7 @@
                     <div>
                       <p class="text-muted text-sm">Total Amount</p>
                       <p class="text-lg font-semibold">
-                        {{ junta.amount | money }}
+                        {{ junta.amount | money: junta.currency }}
                       </p>
                     </div>
                     <mat-divider />

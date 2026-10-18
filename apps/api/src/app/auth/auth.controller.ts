@@ -16,8 +16,8 @@ import {
   AuthProfileResponse,
 } from '@junta/contracts'
 
-import { AuthenticatedAdmin } from '@/api/common/auth/authenticated-admin'
-import { CurrentAdmin } from '@/api/common/decorators/current-admin.decorator'
+import { AuthenticatedAccount } from '@/api/common/auth/authenticated-account'
+import { CurrentAccount } from '@/api/common/decorators/current-account.decorator'
 import { Public } from '@/api/common/decorators/public.decorator'
 
 import { AuthService } from './auth.service'
@@ -39,7 +39,7 @@ export class AuthController {
   @Post('login')
   @HttpCode(HttpStatus.OK)
   login(
-    @CurrentAdmin() subject: TokenSubject,
+    @CurrentAccount() subject: TokenSubject,
     @Res({ passthrough: true }) response: Response,
   ): AccessTokenResponse {
     return this.startSession(response, this.authService.issueTokens(subject))
@@ -61,7 +61,7 @@ export class AuthController {
   }
 
   @Get('profile')
-  profile(@CurrentAdmin() admin: AuthenticatedAdmin): AuthProfileResponse {
+  profile(@CurrentAccount() admin: AuthenticatedAccount): AuthProfileResponse {
     return {
       id: admin.id,
       email: admin.email,

@@ -30,10 +30,10 @@ export const routes: Routes = [
           import('./pages/dashboard/dashboard-page').then(m => m.DashboardPage),
       },
       {
-        path: 'admin',
-        canActivate: [permissionGuard(Permission.ADMIN_READ)],
+        path: 'account',
+        canActivate: [permissionGuard(Permission.ACCOUNT_READ)],
         loadComponent: () =>
-          import('./pages/admin/admin-page').then(m => m.AdminPage),
+          import('./pages/account/account-page').then(m => m.AccountPage),
       },
       {
         path: 'participant',

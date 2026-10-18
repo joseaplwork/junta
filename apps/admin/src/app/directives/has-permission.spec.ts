@@ -16,7 +16,7 @@ import { HasPermission } from './has-permission'
   `,
 })
 class Host {
-  readonly permission = signal<Permission | null>(Permission.ADMIN_READ)
+  readonly permission = signal<Permission | null>(Permission.ACCOUNT_READ)
 }
 
 async function setup(initiallyGranted: Permission[]) {
@@ -38,7 +38,7 @@ async function setup(initiallyGranted: Permission[]) {
 
 describe('HasPermission', () => {
   it('renders the element when the admin holds the permission', async () => {
-    await setup([Permission.ADMIN_READ])
+    await setup([Permission.ACCOUNT_READ])
 
     expect(screen.getByText('guarded')).toBeInTheDocument()
   })
@@ -67,10 +67,10 @@ describe('HasPermission', () => {
   })
 
   it('keeps the same element when a token refresh brings the same permissions', async () => {
-    const { fixture, granted } = await setup([Permission.ADMIN_READ])
+    const { fixture, granted } = await setup([Permission.ACCOUNT_READ])
     const before = screen.getByText('guarded')
 
-    granted.set([Permission.ADMIN_READ])
+    granted.set([Permission.ACCOUNT_READ])
     await fixture.whenStable()
 
     expect(screen.getByText('guarded')).toBe(before)

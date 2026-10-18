@@ -12,12 +12,13 @@ export function toJuntaResponse(junta: Junta): JuntaResponse {
     id: junta.id,
     name: junta.name,
     amount: junta.amount,
+    currency: junta.currency,
     groupCount: junta.groupCount,
     groupAmount: junta.groupAmount,
     startDate: junta.startDate.toISOString(),
     endDate: junta.endDate.toISOString(),
     active: junta.active,
-    adminId: junta.adminId,
+    organizerId: junta.organizerId,
   }
 }
 

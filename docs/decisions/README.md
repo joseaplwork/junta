@@ -12,3 +12,4 @@ of an existing record and number it in order.
 | [0004](0004-admin-pages-and-features.md)       | Admin pages built from independent features and typed clients |
 | [0005](0005-migrations.md)                     | Migrations generated from the entities; no schema sync        |
 | [0006](0006-react-native-mobile-app.md)        | Participant app built with React Native and Expo              |
+| [0007](0007-accounts-and-roles.md)             | One accounts table; admin, organizer and participant roles    |

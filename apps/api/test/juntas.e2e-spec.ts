@@ -1,10 +1,10 @@
 import { JuntaDetailResponse, ParticipantResponse } from '@junta/contracts'
 
-import { E2eApp, asSuperAdmin, createE2eApp } from './support/e2e-app'
+import { E2eApp, asAdmin, createE2eApp } from './support/e2e-app'
 
 describe('Juntas (e2e)', () => {
   let e2e: E2eApp
-  let api: ReturnType<typeof asSuperAdmin>
+  let api: ReturnType<typeof asAdmin>
   let participants: ParticipantResponse[]
 
   const juntaRequest = (
@@ -12,6 +12,7 @@ describe('Juntas (e2e)', () => {
   ) => ({
     name: 'Neighbourhood junta',
     amount: 2000,
+    currency: 'PEN',
     startDate: '2026-01-15T00:00:00.000Z',
     endDate: '2026-02-15T00:00:00.000Z',
     active: true,
@@ -20,7 +21,7 @@ describe('Juntas (e2e)', () => {
 
   beforeAll(async () => {
     e2e = await createE2eApp()
-    api = asSuperAdmin(e2e)
+    api = asAdmin(e2e)
     participants = []
 
     for (const name of ['Ana', 'Luis', 'Marta']) {
@@ -52,7 +53,11 @@ describe('Juntas (e2e)', () => {
       )
       .expect(201)
 
-    expect(created.body).toMatchObject({ groupCount: 2, groupAmount: 1000 })
+    expect(created.body).toMatchObject({
+      currency: 'PEN',
+      groupCount: 2,
+      groupAmount: 1000,
+    })
 
     const detail = await api.get(`juntas/${created.body.id}`).expect(200)
     const junta: JuntaDetailResponse = detail.body
@@ -101,6 +106,7 @@ describe('Juntas (e2e)', () => {
 
     const updated = await api
       .patch(`juntas/${created.body.id}`, {
+        amount: 3000,
         groups: [
           { order: 1, participantIds: [marta.id] },
           { order: 2, participantIds: [ana.id] },
@@ -109,7 +115,7 @@ describe('Juntas (e2e)', () => {
       })
       .expect(200)
 
-    expect(updated.body).toMatchObject({ groupCount: 3, groupAmount: 666 })
+    expect(updated.body).toMatchObject({ groupCount: 3, groupAmount: 1000 })
 
     await api.delete(`juntas/${created.body.id}`).expect(204)
     await api.get(`juntas/${created.body.id}`).expect(404)
@@ -119,5 +125,32 @@ describe('Juntas (e2e)', () => {
     const [ana] = participants
 
     await api.delete(`participants/${ana.id}`).expect(409)
+  })
+
+  it('answers 400 for a pool that does not split evenly (BR-03)', async () => {
+    const [ana, luis, marta] = participants
+    const response = await api
+      .post('juntas', {
+        ...juntaRequest([
+          { order: 1, participantIds: [ana.id] },
+          { order: 2, participantIds: [luis.id] },
+          { order: 3, participantIds: [marta.id] },
+        ]),
+        endDate: '2026-03-15T00:00:00.000Z',
+      })
+      .expect(400)
+
+    expect(response.body.rule).toBe('BR-03')
+  })
+
+  it('answers 400 for a currency that is not ISO 4217 (BR-13)', async () => {
+    const [ana] = participants
+
+    await api
+      .post('juntas', {
+        ...juntaRequest([{ order: 1, participantIds: [ana.id] }]),
+        currency: 'PESOS',
+      })
+      .expect(400)
   })
 })

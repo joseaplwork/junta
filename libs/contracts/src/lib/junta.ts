@@ -10,6 +10,8 @@ export interface CreateJuntaRequest {
   name: string
   /** Pool collected every month and paid out in full to one group. Whole currency units. */
   amount: number
+  /** ISO 4217 code of the junta's currency, such as MXN or PEN (BR-13). */
+  currency: string
   /** ISO 8601 date-time. */
   startDate: string
   /** ISO 8601 date-time. */
@@ -25,13 +27,16 @@ export interface JuntaResponse {
   id: string
   name: string
   amount: number
+  /** ISO 4217 code, see BR-13 in docs/domain.md. */
+  currency: string
   groupCount: number
   /** Monthly amount each group collects, see BR-03 in docs/domain.md. */
   groupAmount: number
   startDate: string
   endDate: string
   active: boolean
-  adminId: string
+  /** The account that created and runs the junta (BR-16). */
+  organizerId: string
 }
 
 export interface GroupMemberResponse {

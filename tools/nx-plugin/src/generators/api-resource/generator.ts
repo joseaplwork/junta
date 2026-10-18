@@ -139,7 +139,7 @@ function registerContracts(tree: Tree, names: ResourceNames): void {
   )
 }
 
-/** Adds the four permissions and grants them to admins (owner decision, BR-12). */
+/** Adds the four permissions and grants them to organizers (BR-12). Admins hold every permission. */
 function registerPermissions(tree: Tree, names: ResourceNames): void {
   addEnumMembers(
     tree,
@@ -155,9 +155,9 @@ function registerPermissions(tree: Tree, names: ResourceNames): void {
     appendArrayElement(
       tree,
       ROLE_PERMISSIONS_FILE,
-      objectPropertyArray('ROLE_PERMISSIONS', '[Role.ADMIN]'),
+      objectPropertyArray('ROLE_PERMISSIONS', '[Role.ORGANIZER]'),
       `Permission.${names.singularConstant}_${action}`,
-      'the [Role.ADMIN] array of ROLE_PERMISSIONS',
+      'the [Role.ORGANIZER] array of ROLE_PERMISSIONS',
     )
   }
 }
@@ -200,7 +200,7 @@ export function writeApiResource(
 
 export function apiResourceNextSteps(names: ResourceNames): string {
   return [
-    `Generated the ${names.singularLabel} API resource. Admins and super admins hold its ${names.singularConstant}_* permissions.`,
+    `Generated the ${names.singularLabel} API resource. Organizers and admins hold its ${names.singularConstant}_* permissions.`,
     'Next:',
     `  1. Write the migration: npx nx run @junta/api:migration-run, then npx nx run @junta/api:migration-generate --name=Add${names.pluralClass}, then migration-run again.`,
     `  2. Add business rules in apps/api/src/app/${names.pluralFile}/${names.pluralFile}.service.ts (pure rules go in libs/domain).`,

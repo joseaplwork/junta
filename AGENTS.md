@@ -1,9 +1,10 @@
 # Junta: instructions for AI agents
 
-Junta manages _juntas_, rotating savings groups. In the admin app the owner
-creates juntas, assigns participants to monthly payout groups and records the
-money that changes hands offline. A mobile app for participants, for iOS and
-Android, is being built (spec 003). Business rules live in
+Junta manages _juntas_, rotating savings groups. In the web app (`apps/admin`)
+admins and organizers create juntas, assign participants to monthly payout
+groups and record the money that changes hands offline. In the mobile app,
+every account sees the juntas it belongs to. Roles are `admin`, `organizer`
+and `participant` (spec 004). Business rules live in
 [docs/domain.md](docs/domain.md). Read it before you touch anything involving
 money, groups or roles.
 

@@ -18,8 +18,8 @@ import {
   Permission,
 } from '@junta/contracts'
 
-import { AuthenticatedAdmin } from '@/api/common/auth/authenticated-admin'
-import { CurrentAdmin } from '@/api/common/decorators/current-admin.decorator'
+import { AuthenticatedAccount } from '@/api/common/auth/authenticated-account'
+import { CurrentAccount } from '@/api/common/decorators/current-account.decorator'
 import { RequirePermissions } from '@/api/common/decorators/require-permissions.decorator'
 
 import { CreateJuntaDto } from './dto/create-junta.dto'
@@ -34,38 +34,45 @@ export class JuntasController {
   @RequirePermissions(Permission.JUNTA_CREATE)
   create(
     @Body() dto: CreateJuntaDto,
-    @CurrentAdmin() admin: AuthenticatedAdmin,
+    @CurrentAccount() viewer: AuthenticatedAccount,
   ): Promise<JuntaResponse> {
-    return this.juntasService.create(dto, admin.id)
+    return this.juntasService.create(dto, viewer)
   }
 
   @Get()
   @RequirePermissions(Permission.JUNTA_READ)
-  findAll(): Promise<JuntaResponse[]> {
-    return this.juntasService.findAll()
+  findAll(
+    @CurrentAccount() viewer: AuthenticatedAccount,
+  ): Promise<JuntaResponse[]> {
+    return this.juntasService.findAll(viewer)
   }
 
   @Get(':id')
   @RequirePermissions(Permission.JUNTA_READ)
   findOne(
+    @CurrentAccount() viewer: AuthenticatedAccount,
     @Param('id', ParseUUIDPipe) id: string,
   ): Promise<JuntaDetailResponse> {
-    return this.juntasService.findOne(id)
+    return this.juntasService.findOne(viewer, id)
   }
 
   @Patch(':id')
   @RequirePermissions(Permission.JUNTA_UPDATE)
   update(
+    @CurrentAccount() viewer: AuthenticatedAccount,
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: UpdateJuntaDto,
   ): Promise<JuntaResponse> {
-    return this.juntasService.update(id, dto)
+    return this.juntasService.update(viewer, id, dto)
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   @RequirePermissions(Permission.JUNTA_DELETE)
-  remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
-    return this.juntasService.remove(id)
+  remove(
+    @CurrentAccount() viewer: AuthenticatedAccount,
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<void> {
+    return this.juntasService.remove(viewer, id)
   }
 }

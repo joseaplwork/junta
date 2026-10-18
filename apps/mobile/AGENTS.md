@@ -36,8 +36,12 @@ apps/mobile/
       <screen>-screen.tsx   composes the features of one screen
       <name>-feature/       one feature: state, effects and its UI
     shared/
-      api/                  one typed client per API resource, plus apiGet
+      api/                  one typed client per API resource, plus apiRequest
+      auth/                 session provider, keychain token store
+      components/           shared UI (ui.tsx) and connection status
       config/               API URL resolution
+      format/               money and dates in the user's language
+      i18n/                 translations: locales/es.ts is the source
 ```
 
 ## Rules
@@ -61,8 +65,13 @@ apps/mobile/
   `src/shared/config/api-url.ts`.
 - **Store releases** go through EAS (`npx eas-cli@latest build`, `submit`).
   Ask the owner before anything that ships to the stores.
-- **Sign-in:** participants cannot sign in yet. Do not add auth before spec 003
-  is `ready`.
+- **Text** always comes from `t('...')`. Add keys to `locales/es.ts` first;
+  other locales must have the same keys, which the `Translations` type checks.
+- **Session:** screens read it with `useSession()`. Tokens live only in
+  `tokenStore`, backed by `expo-secure-store`. Calls that need a signed-in
+  participant pass `auth: true`; the client refreshes once on a 401.
+- **Protected routes** live under `src/app/juntas/`, whose layout redirects to
+  sign-in when there is no session.
 
 ## Tests
 

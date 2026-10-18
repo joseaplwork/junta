@@ -1,5 +1,6 @@
 import { PRODUCTION_API_URL, resolveApiUrl } from './api-url'
 
+jest.unmock('@/mobile/shared/config/api-url')
 jest.mock('expo-constants', () => ({ expoConfig: {} }))
 
 describe('resolveApiUrl', () => {

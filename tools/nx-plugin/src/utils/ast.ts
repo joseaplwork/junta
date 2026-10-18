@@ -110,7 +110,7 @@ function propertyKeyText(name: ts.PropertyName): string {
 
 /**
  * The array under one key of an object literal variable. Computed keys keep
- * their brackets: `objectPropertyArray('ROLE_PERMISSIONS', '[Role.ADMIN]')`.
+ * their brackets: `objectPropertyArray('ROLE_PERMISSIONS', '[Role.ORGANIZER]')`.
  */
 export const objectPropertyArray =
   (variableName: string, key: string): ArrayFinder =>

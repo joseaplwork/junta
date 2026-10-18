@@ -6,7 +6,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm'
 
-import { Admin } from '@/api/admins/entities/admin.entity'
+import { Account } from '@/api/accounts/entities/account.entity'
 import { ParticipantGroup } from '@/api/juntas/entities/participant-group.entity'
 import { Contribution } from '@/api/payments/entities/contribution.entity'
 import { Distribution } from '@/api/payments/entities/distribution.entity'
@@ -37,6 +37,11 @@ export class Participant {
   @OneToMany(() => Distribution, distribution => distribution.participant)
   distributions: Distribution[]
 
-  @OneToOne(() => Admin, admin => admin.participant)
-  admin: Admin | null
+  /** The participant's own login, when they have one (BR-11). */
+  @OneToOne(() => Account, account => account.participant)
+  account: Account | null
+
+  /** The account that created this participant (BR-16). Unset for older rows. */
+  @Column({ name: 'created_by', type: 'uuid', nullable: true })
+  createdBy: string | null
 }
