@@ -1,6 +1,6 @@
 # 002: Refresh token revocation
 
-- **Status:** draft
+- **Status:** done
 - **Owner:** unassigned
 - **Rules:** none (security, not a business rule)
 
@@ -13,7 +13,9 @@ keeps a session alive until the admin is deleted.
 
 ## Decisions
 
-None taken yet. See the open questions.
+- Logging out ends every session of the admin (owner, 2026-10-18).
+- The new column ships as a migration (ADR 0005), which the owner asked for
+  on the same day.
 
 ## Scope
 
@@ -41,9 +43,8 @@ None. Token payloads are internal to `apps/api` (`auth/auth.types.ts`).
   the password.
 
 Entity changes: `Admin.tokenVersion`, column `token_version`, `int`, not null,
-default `0`, on the `Administrators` table. Development syncs it
-automatically. Production needs a migration, see
-[ADR 0003](../decisions/0003-entities-are-the-schema.md).
+default `0`, on the `Administrators` table, added by migration
+`AddAdminTokenVersion`.
 
 ## Admin changes (`apps/admin`)
 
@@ -56,13 +57,13 @@ None. The feature changes existing auth code only.
 
 ## Acceptance criteria
 
-- [ ] After logout, the old refresh cookie gets 401 from `/api/auth/refresh`
+- [x] After logout, the old refresh cookie gets 401 from `/api/auth/refresh`
       (e2e).
-- [ ] After a password change, every refresh token issued before it gets 401
+- [x] After a password change, every refresh token issued before it gets 401
       (e2e).
-- [ ] Refresh tokens issued before the deploy have no `ver` claim. They count
+- [x] Refresh tokens issued before the deploy have no `ver` claim. They count
       as version 0, so the deploy logs nobody out (unit test).
-- [ ] Logout with a missing, expired or forged cookie still answers 204 (e2e).
+- [x] Logout with a missing, expired or forged cookie still answers 204 (e2e).
 
 ## Test plan
 
@@ -71,6 +72,4 @@ None. The feature changes existing auth code only.
 
 ## Open questions
 
-- Should logout end every session of the admin, which this design does, or
-  only the current browser's? Per-browser logout needs a sessions table.
-- Is the new column acceptable before migrations exist for production?
+None. Access tokens stay valid until they expire, one minute by default.

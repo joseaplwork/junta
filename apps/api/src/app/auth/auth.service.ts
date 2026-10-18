@@ -14,6 +14,7 @@ import {
   AccessTokenPayload,
   IssuedTokens,
   RefreshTokenPayload,
+  TokenSubject,
 } from './auth.types'
 
 /** Compared against when the email is unknown, so both failures take the same time. */
@@ -28,6 +29,12 @@ export function toAuthenticatedAdmin(
     roles: admin.roles,
     permissions: permissionsForRoles(admin.roles),
   }
+}
+
+export function toTokenSubject(
+  admin: Pick<Admin, 'id' | 'email' | 'roles' | 'tokenVersion'>,
+): TokenSubject {
+  return { ...toAuthenticatedAdmin(admin), tokenVersion: admin.tokenVersion }
 }
 
 @Injectable()
@@ -45,7 +52,7 @@ export class AuthService {
   async validateCredentials(
     email: unknown,
     password: unknown,
-  ): Promise<AuthenticatedAdmin> {
+  ): Promise<TokenSubject> {
     if (typeof email !== 'string' || typeof password !== 'string') {
       throw new UnauthorizedException('Invalid credentials')
     }
@@ -60,20 +67,21 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials')
     }
 
-    return toAuthenticatedAdmin(admin)
+    return toTokenSubject(admin)
   }
 
-  issueTokens(admin: AuthenticatedAdmin): IssuedTokens {
+  issueTokens(subject: TokenSubject): IssuedTokens {
     const accessPayload: AccessTokenPayload = {
       type: 'access',
-      sub: admin.id,
-      email: admin.email,
-      roles: admin.roles,
-      permissions: admin.permissions,
+      sub: subject.id,
+      email: subject.email,
+      roles: subject.roles,
+      permissions: subject.permissions,
     }
     const refreshPayload: RefreshTokenPayload = {
       type: 'refresh',
-      sub: admin.id,
+      sub: subject.id,
+      ver: subject.tokenVersion,
     }
 
     return {
@@ -88,16 +96,37 @@ export class AuthService {
     }
   }
 
-  /** Reloads the admin so role changes and deletions apply at the next refresh. */
+  /**
+   * Reloads the admin so role changes and deletions apply at the next refresh.
+   * A token issued before the admin's latest logout or password change is
+   * rejected (spec 002).
+   */
   async refresh(refreshToken: string | undefined): Promise<IssuedTokens> {
     const payload = this.verifyRefreshToken(refreshToken)
     const admin = await this.adminsService.findEntityById(payload.sub)
 
-    if (!admin) {
+    if (!admin || admin.tokenVersion !== (payload.ver ?? 0)) {
       throw new UnauthorizedException('Invalid refresh token')
     }
 
-    return this.issueTokens(toAuthenticatedAdmin(admin))
+    return this.issueTokens(toTokenSubject(admin))
+  }
+
+  /**
+   * Ends every session of the admin who owns the refresh token (spec 002).
+   * A missing, invalid or already revoked token changes nothing, because
+   * logging out must always succeed.
+   */
+  async logout(refreshToken: string | undefined): Promise<void> {
+    let payload: RefreshTokenPayload
+
+    try {
+      payload = this.verifyRefreshToken(refreshToken)
+    } catch {
+      return
+    }
+
+    await this.adminsService.revokeSessions(payload.sub, payload.ver ?? 0)
   }
 
   private verifyRefreshToken(token: string | undefined): RefreshTokenPayload {

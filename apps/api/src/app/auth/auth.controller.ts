@@ -21,7 +21,7 @@ import { CurrentAdmin } from '@/api/common/decorators/current-admin.decorator'
 import { Public } from '@/api/common/decorators/public.decorator'
 
 import { AuthService } from './auth.service'
-import { IssuedTokens } from './auth.types'
+import { IssuedTokens, TokenSubject } from './auth.types'
 import { LocalAuthGuard } from './guards/local-auth.guard'
 import {
   REFRESH_TOKEN_COOKIE,
@@ -32,15 +32,16 @@ import {
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  /** `LocalAuthGuard` puts the `TokenSubject` from `LocalStrategy` on the request. */
   @Public()
   @UseGuards(LocalAuthGuard)
   @Post('login')
   @HttpCode(HttpStatus.OK)
   login(
-    @CurrentAdmin() admin: AuthenticatedAdmin,
+    @CurrentAdmin() subject: TokenSubject,
     @Res({ passthrough: true }) response: Response,
   ): AccessTokenResponse {
-    return this.startSession(response, this.authService.issueTokens(admin))
+    return this.startSession(response, this.authService.issueTokens(subject))
   }
 
   @Public()
@@ -67,10 +68,15 @@ export class AuthController {
     }
   }
 
+  /** Ends every session of the cookie's admin, then clears the cookie (spec 002). */
   @Public()
   @Post('logout')
   @HttpCode(HttpStatus.NO_CONTENT)
-  logout(@Res({ passthrough: true }) response: Response): void {
+  async logout(
+    @Req() request: Request,
+    @Res({ passthrough: true }) response: Response,
+  ): Promise<void> {
+    await this.authService.logout(request.cookies?.[REFRESH_TOKEN_COOKIE])
     response.clearCookie(REFRESH_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE_OPTIONS)
   }
 

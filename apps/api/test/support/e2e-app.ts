@@ -82,6 +82,28 @@ async function seedSuperAdmin(dataSource: DataSource): Promise<void> {
   })
 }
 
+/**
+ * Fails with the fix when the entities describe a schema the migrations do not
+ * build, before any test touches the database.
+ */
+export async function assertMigrationsMatchEntities(
+  dataSource: DataSource,
+): Promise<void> {
+  const { upQueries } = await dataSource.driver.createSchemaBuilder().log()
+  const missing = upQueries.map(query => query.query.trim())
+
+  if (missing.length > 0) {
+    throw new Error(
+      [
+        'The entities differ from the migrations. Run the pending migrations on',
+        'your database, then npx nx run @junta/api:migration-generate --name=<WhatChanged>.',
+        'SQL the migrations do not contain yet:',
+        ...missing,
+      ].join('\n'),
+    )
+  }
+}
+
 export const apiPath = (path: string): string => `/${API_PREFIX}/${path}`
 
 /**
@@ -106,6 +128,7 @@ export async function createE2eApp(): Promise<E2eApp> {
 
   await dataSource.dropDatabase()
   await dataSource.runMigrations({ transaction: 'each' })
+  await assertMigrationsMatchEntities(dataSource)
   await seedSuperAdmin(dataSource)
 
   const login = await request(app.getHttpServer())

@@ -76,10 +76,11 @@ refresh fails, the session ends and the admin returns to `/login`.
   Each strategy rejects the other type.
 - `POST /api/auth/refresh` reloads the admin from the database, so role changes
   and deletions apply at the next refresh.
-- `POST /api/auth/logout` clears the cookie.
-- Known gap: refresh tokens cannot be revoked. A stolen refresh cookie works
-  until it expires, even after logout or a password change. The fix is drafted
-  in [spec 002](specs/002-refresh-token-revocation.md).
+- `POST /api/auth/logout` clears the cookie and ends every session of its
+  admin. Refresh tokens carry the admin's `tokenVersion`. Logout and password
+  changes increment it, which revokes every earlier refresh token, see
+  [spec 002](specs/002-refresh-token-revocation.md). Access tokens live one
+  minute and are not revoked.
 - Every route requires an access token unless decorated with `@Public()`.
   `@RequirePermissions(...)` checks the token's permissions. Roles map to
   permissions in `libs/domain` (BR-12).

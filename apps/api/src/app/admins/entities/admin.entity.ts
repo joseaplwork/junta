@@ -27,6 +27,13 @@ export class Admin {
   @Column({ type: 'simple-array', default: Role.ADMIN })
   roles: Role[]
 
+  /**
+   * Refresh tokens carry the version they were issued with. Incrementing it
+   * revokes every earlier refresh token of this admin (spec 002).
+   */
+  @Column({ name: 'token_version', type: 'int', default: 0 })
+  tokenVersion: number
+
   @OneToOne(() => Participant, participant => participant.admin)
   @JoinColumn({ name: 'participant_id' })
   participant: Participant

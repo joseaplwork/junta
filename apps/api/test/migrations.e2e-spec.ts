@@ -1,5 +1,13 @@
-import { E2eApp, createE2eApp } from './support/e2e-app'
+import {
+  E2eApp,
+  assertMigrationsMatchEntities,
+  createE2eApp,
+} from './support/e2e-app'
 
+/**
+ * `createE2eApp` already refuses to start when the migrations and entities
+ * differ, so every e2e spec fails with the fix. These tests state it once.
+ */
 describe('Migrations (e2e)', () => {
   let e2e: E2eApp
 
@@ -8,25 +16,13 @@ describe('Migrations (e2e)', () => {
   })
 
   afterAll(async () => {
-    await e2e.app.close()
+    await e2e?.app.close()
   })
 
   it('build exactly the schema the entities describe', async () => {
-    const { upQueries } = await e2e.dataSource.driver
-      .createSchemaBuilder()
-      .log()
-    const pending = upQueries.map(query => query.query.trim())
-
-    if (pending.length > 0) {
-      throw new Error(
-        [
-          'The entities differ from the migrations. Run the pending migrations on',
-          'your database, then npx nx run @junta/api:migration-generate --name=<Name>.',
-          'SQL still missing from the migrations:',
-          ...pending,
-        ].join('\n'),
-      )
-    }
+    await expect(
+      assertMigrationsMatchEntities(e2e.dataSource),
+    ).resolves.toBeUndefined()
   })
 
   it('records every migration as applied', async () => {

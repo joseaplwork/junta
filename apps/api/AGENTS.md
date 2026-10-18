@@ -51,7 +51,9 @@ Cross-cutting code lives in `common/` (guards, decorators, filters),
 - **Config** comes from `@Inject(APP_CONFIG) config: AppConfig`. Only
   `config/app-config.ts` reads `process.env`.
 - **Auth**: `JwtAuthGuard` and `PermissionsGuard` are global. `@Public()` opts
-  a route out. `@CurrentAdmin()` returns the caller.
+  a route out. `@CurrentAdmin()` returns the caller. Incrementing
+  `Admin.tokenVersion` revokes that admin's refresh tokens: logout and password
+  changes do it (spec 002).
 
 ## Errors
 

@@ -25,6 +25,7 @@ describe('AuthService', () => {
   const adminsService = {
     findByEmailWithPassword: jest.fn(),
     findEntityById: jest.fn(),
+    revokeSessions: jest.fn(),
   }
 
   const admin = async (): Promise<Admin> =>
@@ -32,6 +33,7 @@ describe('AuthService', () => {
       id: 'admin-1',
       email: 'ana@junta.test',
       roles: [Role.ADMIN],
+      tokenVersion: 0,
       password: await bcrypt.hash('right-password', 4),
     })
 
@@ -98,6 +100,7 @@ describe('AuthService', () => {
       email: 'ana@junta.test',
       roles: [Role.ADMIN],
       permissions: [Permission.JUNTA_READ],
+      tokenVersion: 0,
     }
 
     it('signs an access token carrying the session claims', () => {
@@ -146,6 +149,67 @@ describe('AuthService', () => {
       await expect(service.refresh(undefined)).rejects.toBeInstanceOf(
         UnauthorizedException,
       )
+    })
+
+    it('stamps the refresh token with the token version (spec 002)', () => {
+      const { refreshToken } = service.issueTokens({
+        ...authenticated,
+        tokenVersion: 4,
+      })
+
+      expect(jwtService.verify(refreshToken)).toMatchObject({
+        type: 'refresh',
+        ver: 4,
+      })
+    })
+
+    it('rejects a refresh token issued before the latest logout or password change', async () => {
+      const { refreshToken } = service.issueTokens(authenticated)
+
+      adminsService.findEntityById.mockResolvedValue(
+        Object.assign(await admin(), { tokenVersion: 1 }),
+      )
+
+      await expect(service.refresh(refreshToken)).rejects.toBeInstanceOf(
+        UnauthorizedException,
+      )
+    })
+
+    it('accepts a refresh token from before spec 002 as version 0', async () => {
+      const legacyToken = jwtService.sign(
+        { type: 'refresh', sub: 'admin-1' },
+        { expiresIn: '7d' },
+      )
+
+      adminsService.findEntityById.mockResolvedValue(await admin())
+
+      await expect(service.refresh(legacyToken)).resolves.toMatchObject({
+        accessToken: expect.any(String),
+      })
+    })
+  })
+
+  describe('logout', () => {
+    it('ends every session of the token owner (spec 002)', async () => {
+      const { refreshToken } = service.issueTokens({
+        id: 'admin-1',
+        email: 'ana@junta.test',
+        roles: [Role.ADMIN],
+        permissions: [],
+        tokenVersion: 2,
+      })
+
+      await service.logout(refreshToken)
+
+      expect(adminsService.revokeSessions).toHaveBeenCalledWith('admin-1', 2)
+    })
+
+    it.each([
+      ['no token', undefined],
+      ['a forged token', 'not-a-jwt'],
+    ])('succeeds without revoking anything for %s', async (_case, token) => {
+      await expect(service.logout(token)).resolves.toBeUndefined()
+      expect(adminsService.revokeSessions).not.toHaveBeenCalled()
     })
   })
 })

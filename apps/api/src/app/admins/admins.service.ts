@@ -78,9 +78,22 @@ export class AdminsService {
     await this.dataSource.transaction(async manager => {
       await manager.save(admin.participant)
       await manager.save(admin)
+
+      // A new password ends every session of this admin (spec 002).
+      if (dto.password !== undefined) {
+        await manager.increment(Admin, { id }, 'tokenVersion', 1)
+      }
     })
 
     return toAdminResponse(await this.findEntity(id))
+  }
+
+  /**
+   * Revokes every refresh token of the admin. Matching on the presented
+   * version keeps an already revoked token from ending newer sessions.
+   */
+  async revokeSessions(id: string, tokenVersion: number): Promise<void> {
+    await this.admins.increment({ id, tokenVersion }, 'tokenVersion', 1)
   }
 
   async remove(id: string): Promise<void> {

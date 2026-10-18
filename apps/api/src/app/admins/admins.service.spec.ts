@@ -32,7 +32,12 @@ const buildAdmin = (overrides: Partial<Admin> = {}): Admin =>
 describe('AdminsService', () => {
   let service: AdminsService
   let savedAdmin: Admin | undefined
-  const admins = { find: jest.fn(), findOne: jest.fn(), remove: jest.fn() }
+  const admins = {
+    find: jest.fn(),
+    findOne: jest.fn(),
+    remove: jest.fn(),
+    increment: jest.fn(),
+  }
   const manager = {
     create: jest.fn((entity: EntityClass, input: object) =>
       Object.assign(new entity(), input),
@@ -46,6 +51,7 @@ describe('AdminsService', () => {
         id: (entity as { id?: string }).id ?? 'generated',
       })
     }),
+    increment: jest.fn(),
   }
   const dataSource = {
     transaction: jest.fn(async (work: (m: typeof manager) => unknown) =>
@@ -97,6 +103,37 @@ describe('AdminsService', () => {
 
     expect(admin.participant.surname).toBe('Lopez')
     expect(dataSource.transaction).toHaveBeenCalledTimes(1)
+  })
+
+  it('ends every session of the admin when the password changes (spec 002)', async () => {
+    admins.findOne.mockResolvedValue(buildAdmin())
+
+    await service.update('admin-1', { password: 'new-secret' })
+
+    expect(manager.increment).toHaveBeenCalledWith(
+      Admin,
+      { id: 'admin-1' },
+      'tokenVersion',
+      1,
+    )
+  })
+
+  it('keeps sessions when other fields change', async () => {
+    admins.findOne.mockResolvedValue(buildAdmin())
+
+    await service.update('admin-1', { surname: 'Lopez' })
+
+    expect(manager.increment).not.toHaveBeenCalled()
+  })
+
+  it('revokes sessions only for the version the token was issued with', async () => {
+    await service.revokeSessions('admin-1', 3)
+
+    expect(admins.increment).toHaveBeenCalledWith(
+      { id: 'admin-1', tokenVersion: 3 },
+      'tokenVersion',
+      1,
+    )
   })
 
   it('throws NotFoundException for an unknown id', async () => {

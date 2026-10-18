@@ -1,8 +1,14 @@
 import request from 'supertest'
 
-import { Permission } from '@junta/contracts'
+import { Permission, Role } from '@junta/contracts'
 
-import { E2E_ADMIN, E2eApp, apiPath, createE2eApp } from './support/e2e-app'
+import {
+  E2E_ADMIN,
+  E2eApp,
+  apiPath,
+  asSuperAdmin,
+  createE2eApp,
+} from './support/e2e-app'
 
 const refreshCookieOf = (response: request.Response): string => {
   const cookies = response.headers['set-cookie'] as unknown as string[]
@@ -91,5 +97,66 @@ describe('Auth (e2e)', () => {
       .expect(204)
 
     expect(refreshCookieOf(response)).toMatch(/^refreshToken=;/)
+  })
+
+  describe('session revocation (spec 002)', () => {
+    const credentials = { email: 'revoke@junta.test', password: 'first-pass' }
+    let adminId: string
+
+    const login = async (password = credentials.password): Promise<string> =>
+      refreshCookieOf(
+        await request(server())
+          .post(apiPath('auth/login'))
+          .send({ ...credentials, password })
+          .expect(200),
+      )
+    const refresh = (cookie: string): request.Test =>
+      request(server()).post(apiPath('auth/refresh')).set('Cookie', cookie)
+
+    beforeAll(async () => {
+      const created = await asSuperAdmin(e2e)
+        .post('admins', {
+          ...credentials,
+          roles: [Role.ADMIN],
+          name: 'Rita',
+          surname: 'Vega',
+          phoneNumber: '622333444',
+        })
+        .expect(201)
+
+      adminId = created.body.id
+    })
+
+    it('ends every session of the admin on logout', async () => {
+      const laptop = await login()
+      const phone = await login()
+
+      await request(server())
+        .post(apiPath('auth/logout'))
+        .set('Cookie', laptop)
+        .expect(204)
+
+      await refresh(laptop).expect(401)
+      await refresh(phone).expect(401)
+      await refresh(await login()).expect(200)
+    })
+
+    it('ends every session of the admin when the password changes', async () => {
+      const before = await login()
+
+      await asSuperAdmin(e2e)
+        .patch(`admins/${adminId}`, { password: 'second-pass' })
+        .expect(200)
+
+      await refresh(before).expect(401)
+      await refresh(await login('second-pass')).expect(200)
+    })
+
+    it('still answers 204 to a logout with a forged cookie', async () => {
+      await request(server())
+        .post(apiPath('auth/logout'))
+        .set('Cookie', 'refreshToken=forged')
+        .expect(204)
+    })
   })
 })
