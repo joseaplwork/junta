@@ -1,0 +1,59 @@
+import { useCallback, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
+
+import { Button, ErrorText, colors } from '@/mobile/shared/components/ui'
+
+type State = { kind: 'loading' } | { kind: 'error' } | { kind: 'loaded' }
+
+export function <%= featureClass %>Feature(): React.JSX.Element {
+  const { t } = useTranslation()
+  const [state, setState] = useState<State>({ kind: 'loading' })
+
+  const load = useCallback(async (): Promise<void> => {
+    setState({ kind: 'loading' })
+
+    try {
+      // Replace with a typed client from shared/api (never api-client or fetch).
+      await Promise.resolve()
+      setState({ kind: 'loaded' })
+    } catch {
+      setState({ kind: 'error' })
+    }
+  }, [])
+
+  useEffect(() => {
+    void load()
+  }, [load])
+
+  if (state.kind === 'loading') {
+    return <ActivityIndicator accessibilityLabel={t('common.loading')} />
+  }
+
+  if (state.kind === 'error') {
+    return (
+      <View style={styles.center}>
+        <ErrorText>{t('common.genericError')}</ErrorText>
+        <Button
+          label={t('common.retry')}
+          onPress={() => void load()}
+          variant="link"
+        />
+      </View>
+    )
+  }
+
+  return (
+    <View style={styles.content}>
+      <Text style={styles.title}>{t('<%= i18nNamespace %>.title')}</Text>
+      <Text style={styles.body}>{t('<%= i18nNamespace %>.loaded')}</Text>
+    </View>
+  )
+}
+
+const styles = StyleSheet.create({
+  content: { gap: 12, padding: 16 },
+  center: { alignItems: 'center', gap: 8, padding: 24 },
+  title: { color: colors.text, fontSize: 20, fontWeight: '600' },
+  body: { color: colors.muted, fontSize: 15, lineHeight: 21 },
+})

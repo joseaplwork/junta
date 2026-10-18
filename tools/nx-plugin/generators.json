@@ -15,6 +15,11 @@
       "factory": "./src/generators/admin-crud-page/generator",
       "schema": "./src/generators/admin-crud-page/schema.json",
       "description": "Admin page with list, create, update and delete features, its API client, route and menu entry."
+    },
+    "mobile-screen": {
+      "factory": "./src/generators/mobile-screen/generator",
+      "schema": "./src/generators/mobile-screen/schema.json",
+      "description": "Mobile Expo Router route, screen and feature with i18n stubs and an RNTL test."
     }
   }
 }

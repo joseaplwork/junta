@@ -58,6 +58,51 @@
             "name": "fetch",
             "message": "Routes and screens call the typed clients in shared/api instead of fetch."
           }
+        ],
+        "no-restricted-imports": [
+          "error",
+          {
+            "paths": [
+              {
+                "name": "@/mobile/shared/api/api-client",
+                "message": "Routes and screens call typed clients in shared/api (e.g. meApi), not api-client."
+              },
+              {
+                "name": "expo-secure-store",
+                "message": "Only shared/auth may touch the keychain. Screens use useSession() and tokenStore."
+              }
+            ],
+            "patterns": [
+              {
+                "group": ["**/shared/api/api-client", "**/api-client"],
+                "message": "Routes and screens call typed clients in shared/api (e.g. meApi), not api-client."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["*.ts", "*.tsx"],
+      "excludedFiles": [
+        "src/app/**",
+        "src/screens/**",
+        "src/shared/auth/**",
+        "src/test-setup.ts",
+        "*.spec.ts",
+        "*.spec.tsx"
+      ],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "paths": [
+              {
+                "name": "expo-secure-store",
+                "message": "Only shared/auth may touch the keychain. Screens use useSession() and tokenStore."
+              }
+            ]
+          }
         ]
       }
     },

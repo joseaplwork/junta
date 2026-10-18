@@ -13,20 +13,21 @@ and Cursor reads it directly. The app folders add their own `AGENTS.md`.
 
 ## Commands
 
-| Goal                                    | Command                                                                            |
-| --------------------------------------- | ---------------------------------------------------------------------------------- |
-| Install                                 | `npm ci` (Node 22 or 24; CI uses `.nvmrc`)                                         |
-| Run the API (needs `apps/api/.env`)     | `npm run start:api`                                                                |
-| Run the admin app                       | `npm run start:admin`                                                              |
-| Run the mobile app (Expo dev server)    | `npm run start:mobile`                                                             |
-| New resource, backend and admin page    | `npx nx g @junta/nx-plugin:crud <name> --fields="<spec>" --no-interactive`         |
-| New backend resource only               | `npx nx g @junta/nx-plugin:api-resource <name> --fields="<spec>" --no-interactive` |
-| Apply database migrations               | `npx nx run @junta/api:migration-run`                                              |
-| Migration after an entity change        | `npx nx run @junta/api:migration-generate --name=<WhatChanged>`                    |
-| Verify affected projects (done = green) | `npm run verify`                                                                   |
-| API end-to-end tests (needs Postgres)   | `npm run verify:e2e`                                                               |
-| Format changed files                    | `npm run format`                                                                   |
-| One target of one project               | `npx nx <target> <project>`, e.g. `npx nx test @junta/domain`                      |
+| Goal                                    | Command                                                                                                       |
+| --------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| Install                                 | `npm ci` (Node 22 or 24; CI uses `.nvmrc`)                                                                    |
+| Run the API (needs `apps/api/.env`)     | `npm run start:api`                                                                                           |
+| Run the admin app                       | `npm run start:admin`                                                                                         |
+| Run the mobile app (Expo dev server)    | `npm run start:mobile`                                                                                        |
+| New resource, backend and admin page    | `npx nx g @junta/nx-plugin:crud <name> --fields="<spec>" --no-interactive`                                    |
+| New backend resource only               | `npx nx g @junta/nx-plugin:api-resource <name> --fields="<spec>" --no-interactive`                            |
+| New mobile screen                       | `npx nx g @junta/nx-plugin:mobile-screen <name> [--protected] --no-interactive` (see `apps/mobile/AGENTS.md`) |
+| Apply database migrations               | `npx nx run @junta/api:migration-run`                                                                         |
+| Migration after an entity change        | `npx nx run @junta/api:migration-generate --name=<WhatChanged>`                                               |
+| Verify affected projects (done = green) | `npm run verify`                                                                                              |
+| API end-to-end tests (needs Postgres)   | `npm run verify:e2e`                                                                                          |
+| Format changed files                    | `npm run format`                                                                                              |
+| One target of one project               | `npx nx <target> <project>`, e.g. `npx nx test @junta/domain`                                                 |
 
 Field specs look like `title:string,amount:int,dueDate?:date`. Types are
 `string`, `int`, `decimal`, `boolean` and `date`. `?` marks an optional field.
@@ -38,8 +39,8 @@ Inspect projects and generators with the Nx MCP server when it is available.
 
 1. **Specify.** Anything beyond a small fix starts as a spec in `docs/specs/`
    (skill: `write-spec`). Ask the user about open business questions first.
-2. **Generate.** New resources come from the generators. Never copy a feature
-   folder by hand.
+2. **Generate.** New resources and mobile screens come from the generators.
+   Never copy a feature or screen folder by hand.
 3. **Implement.** Follow the `AGENTS.md` of the app you are in. Business rules
    go in `libs/domain` with tests named after their rule id.
 4. **Verify.** `npm run verify` must pass. If the API changed, also run

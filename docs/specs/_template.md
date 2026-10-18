@@ -36,10 +36,16 @@ existing column needs a data plan.
 
 Pages, features, routes, sidebar entries and permissions.
 
+## Mobile changes (`apps/mobile`)
+
+Screens, Expo Router paths (protected under `/juntas` or public), i18n keys
+and `shared/api` clients. Write "none" when the feature is admin/API only.
+
 ## Generator commands
 
 ```sh
 npx nx g @junta/nx-plugin:crud <name> --fields="<spec>" --no-interactive
+npx nx g @junta/nx-plugin:mobile-screen <name> --protected --no-interactive
 ```
 
 Write "none" and the reason if the feature changes existing code only.
@@ -55,6 +61,7 @@ Each item must be checkable by a test or a command.
 - `libs/domain`: rule tests named after each BR id.
 - `apps/api`: unit tests for services, e2e for each endpoint.
 - `apps/admin`: component tests for new dialogs and lists.
+- `apps/mobile`: RNTL tests for new features; locale key parity.
 
 ## Open questions
 

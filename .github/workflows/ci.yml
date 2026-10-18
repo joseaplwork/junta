@@ -101,11 +101,15 @@ jobs:
           npx nx g @junta/nx-plugin:crud ci-sample
           --fields="title:string,amount:decimal,dueDate:date,done:boolean,count:int,notes?:string"
           --no-interactive
+      - name: Generate a mobile screen
+        run: >-
+          npx nx g @junta/nx-plugin:mobile-screen ci-sample
+          --no-interactive
       - name: Write the migration for the sample resource
         run: |
           npx nx run @junta/api:migration-run
           npx nx run @junta/api:migration-generate --name=AddCiSamples
       - name: Generated code passes every gate
-        run: npx nx run-many -t lint typecheck test build -p @junta/api @junta/admin @junta/contracts @junta/domain @junta/nx-plugin
+        run: npx nx run-many -t lint typecheck test build -p @junta/api @junta/admin @junta/mobile @junta/contracts @junta/domain @junta/nx-plugin
       - name: Generated API passes its e2e test
         run: npm run verify:e2e

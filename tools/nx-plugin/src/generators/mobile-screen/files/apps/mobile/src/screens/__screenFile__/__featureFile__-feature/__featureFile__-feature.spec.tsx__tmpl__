@@ -1,0 +1,14 @@
+import { render, screen, waitFor } from '@testing-library/react-native'
+
+import { <%= featureClass %>Feature } from './<%= featureFile %>-feature'
+
+describe('<%= featureClass %>Feature', () => {
+  it('shows the loaded state', async () => {
+    await render(<<%= featureClass %>Feature />)
+
+    await waitFor(() => {
+      expect(screen.getByText('<%= titleEs %>')).toBeOnTheScreen()
+    })
+    expect(screen.getByText('<%= loadedEs %>')).toBeOnTheScreen()
+  })
+})

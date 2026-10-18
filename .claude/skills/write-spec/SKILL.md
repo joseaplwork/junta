@@ -27,8 +27,12 @@ Do not write or change code in this skill. The output is one spec file.
    - an endpoint table with methods, paths, permissions and errors;
    - entity changes with database column names;
    - admin pages, features, routes and permissions;
+   - mobile screens, Expo Router paths (protected under `/juntas` or public),
+     i18n keys and `shared/api` clients when the feature touches the
+     participant app;
    - the exact generator commands, for example
-     `npx nx g @junta/nx-plugin:crud <name> --fields="..." --no-interactive`;
+     `npx nx g @junta/nx-plugin:crud <name> --fields="..." --no-interactive`
+     and `npx nx g @junta/nx-plugin:mobile-screen <name> --no-interactive`;
    - acceptance criteria that a test or a command can check;
    - a test plan per project.
 5. If the answers add or change business rules, update `docs/domain.md` with

@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/schema",
+  "$id": "MobileScreen",
+  "title": "Mobile screen",
+  "description": "Generates a mobile route, screen and feature that follow apps/mobile/AGENTS.md exactly.",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Screen folder name in kebab-case (e.g. connection-status).",
+      "$default": { "$source": "argv", "index": 0 },
+      "x-prompt": "Screen name in kebab-case (e.g. settings)"
+    },
+    "feature": {
+      "type": "string",
+      "description": "Feature folder name in kebab-case. Defaults to the screen name."
+    },
+    "route": {
+      "type": "string",
+      "description": "Expo Router file name in kebab-case. Defaults to the screen name."
+    },
+    "protected": {
+      "type": "boolean",
+      "default": false,
+      "description": "Place the route under app/juntas/ so the session layout guards it."
+    },
+    "skipFormat": {
+      "type": "boolean",
+      "default": false,
+      "description": "Skip formatting the generated files."
+    }
+  },
+  "required": ["name"],
+  "additionalProperties": false
+}

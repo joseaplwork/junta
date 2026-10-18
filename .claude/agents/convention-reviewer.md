@@ -24,7 +24,8 @@ do not edit files.
    - entity changes without a migration from `migration-generate`, edits to a
      migration that already ran, or a migration that drops a column holding
      data;
-   - hand-copied features that should have come from a generator;
+   - hand-copied admin features or mobile screens that should have come from
+     a generator (`crud` / `admin-crud-page` / `mobile-screen`);
    - decisions about money, roles or deletion that no spec or domain entry
      backs;
    - lint suppressions, `any`, skipped tests or loosened configuration.

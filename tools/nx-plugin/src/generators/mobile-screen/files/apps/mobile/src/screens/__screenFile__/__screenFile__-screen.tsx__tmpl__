@@ -1,0 +1,5 @@
+import { <%= featureClass %>Feature } from './<%= featureFile %>-feature/<%= featureFile %>-feature'
+
+export function <%= screenClass %>Screen(): React.JSX.Element {
+  return <<%= featureClass %>Feature />
+}

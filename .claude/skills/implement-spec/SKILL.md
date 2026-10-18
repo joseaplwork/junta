@@ -23,6 +23,10 @@ The spec is in the arguments or in the user's message: $ARGUMENTS
    3. `apps/api`: entity, DTOs, mapper, service and controller. Add a unit
       test for each new service behavior and an e2e test for each endpoint.
    4. `apps/admin`: client, page, features and tests.
+   5. `apps/mobile`: when the spec lists mobile changes, run
+      `@junta/nx-plugin:mobile-screen` (never hand-copy a screen). Add or
+      extend typed clients in `shared/api`, fill the feature, and expand
+      locale keys. Use the `new-mobile-screen` skill for screen-only work.
 5. Run `npm run verify` and fix every failure at its root. If the API changed,
    run `npm run verify:e2e` too (it needs a local Postgres; see
    `apps/api/.env.example`). Use the `verify-changes` skill when anything fails.
@@ -38,5 +42,5 @@ The spec is in the arguments or in the user's message: $ARGUMENTS
 
 - Change a lint rule, a tsconfig option or a test expectation just to get
   green.
-- Copy a feature folder instead of running a generator.
+- Copy a feature or mobile screen folder instead of running a generator.
 - Decide a business question the spec does not answer.

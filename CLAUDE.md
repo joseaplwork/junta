@@ -3,8 +3,8 @@
 ## Claude Code
 
 - **Skills** live in `.claude/skills/` and Cursor reads the same folder:
-  `write-spec`, `implement-spec`, `new-crud-resource`, `add-field`,
-  `domain-rule` and `verify-changes`.
+  `write-spec`, `implement-spec`, `new-crud-resource`, `new-mobile-screen`,
+  `add-field`, `domain-rule` and `verify-changes`.
 - **Hooks** in `.claude/settings.json`: every Edit or Write is formatted with
   Prettier. When you stop, `tools/ai/hooks/verify-on-stop.mjs` verifies the
   affected projects and sends failures back once. Set

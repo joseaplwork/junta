@@ -1,0 +1,100 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`mobile-screen generator renders apps/mobile/src/app/sample-panel.tsx from the screen name 1`] = `
+"import { SamplePanelScreen } from '@/mobile/screens/sample-panel/sample-panel-screen'
+
+export default function SamplePanelRoute(): React.JSX.Element {
+  return <SamplePanelScreen />
+}
+"
+`;
+
+exports[`mobile-screen generator renders apps/mobile/src/screens/sample-panel/sample-panel-feature/sample-panel-feature.spec.tsx from the screen name 1`] = `
+"import { render, screen, waitFor } from '@testing-library/react-native'
+
+import { SamplePanelFeature } from './sample-panel-feature'
+
+describe('SamplePanelFeature', () => {
+  it('shows the loaded state', async () => {
+    await render(<SamplePanelFeature />)
+
+    await waitFor(() => {
+      expect(screen.getByText('Sample Panel')).toBeOnTheScreen()
+    })
+    expect(screen.getByText('Contenido de ejemplo. Sustitúyelo por la funcionalidad real.')).toBeOnTheScreen()
+  })
+})
+"
+`;
+
+exports[`mobile-screen generator renders apps/mobile/src/screens/sample-panel/sample-panel-feature/sample-panel-feature.tsx from the screen name 1`] = `
+"import { useCallback, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
+
+import { Button, ErrorText, colors } from '@/mobile/shared/components/ui'
+
+type State = { kind: 'loading' } | { kind: 'error' } | { kind: 'loaded' }
+
+export function SamplePanelFeature(): React.JSX.Element {
+  const { t } = useTranslation()
+  const [state, setState] = useState<State>({ kind: 'loading' })
+
+  const load = useCallback(async (): Promise<void> => {
+    setState({ kind: 'loading' })
+
+    try {
+      // Replace with a typed client from shared/api (never api-client or fetch).
+      await Promise.resolve()
+      setState({ kind: 'loaded' })
+    } catch {
+      setState({ kind: 'error' })
+    }
+  }, [])
+
+  useEffect(() => {
+    void load()
+  }, [load])
+
+  if (state.kind === 'loading') {
+    return <ActivityIndicator accessibilityLabel={t('common.loading')} />
+  }
+
+  if (state.kind === 'error') {
+    return (
+      <View style={styles.center}>
+        <ErrorText>{t('common.genericError')}</ErrorText>
+        <Button
+          label={t('common.retry')}
+          onPress={() => void load()}
+          variant="link"
+        />
+      </View>
+    )
+  }
+
+  return (
+    <View style={styles.content}>
+      <Text style={styles.title}>{t('samplePanel.title')}</Text>
+      <Text style={styles.body}>{t('samplePanel.loaded')}</Text>
+    </View>
+  )
+}
+
+const styles = StyleSheet.create({
+  content: { gap: 12, padding: 16 },
+  center: { alignItems: 'center', gap: 8, padding: 24 },
+  title: { color: colors.text, fontSize: 20, fontWeight: '600' },
+  body: { color: colors.muted, fontSize: 15, lineHeight: 21 },
+})
+"
+`;
+
+exports[`mobile-screen generator renders apps/mobile/src/screens/sample-panel/sample-panel-screen.tsx from the screen name 1`] = `
+"import { SamplePanelFeature } from './sample-panel-feature/sample-panel-feature'
+
+export function SamplePanelScreen(): React.JSX.Element {
+  return <SamplePanelFeature />
+}
+"
+`;
