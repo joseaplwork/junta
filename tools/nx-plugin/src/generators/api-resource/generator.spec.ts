@@ -67,6 +67,16 @@ describe('api-resource generator', () => {
     }
   })
 
+  it('grants the new permissions to admins', () => {
+    const policy = read(tree, 'libs/domain/src/lib/permissions.ts')
+    const adminPermissions = policy.match(/\[Role\.ADMIN\]: \[([^\]]*)\]/)?.[1]
+
+    for (const action of ['CREATE', 'READ', 'UPDATE', 'DELETE']) {
+      expect(adminPermissions).toContain(`Permission.SAMPLE_RECORD_${action}`)
+    }
+    expect(policy).not.toMatch(/\[Role\.PARTICIPANT\]: \[[^\]]*SAMPLE_RECORD/)
+  })
+
   it.each([
     'libs/contracts/src/lib/sample-record.ts',
     'apps/api/src/app/sample-records/entities/sample-record.entity.ts',
@@ -109,16 +119,6 @@ describe('api-resource generator', () => {
         skipFormat: true,
       }),
     ).rejects.toThrow('the database table "Administrators"')
-  })
-
-  it('refuses names that land on a legacy table of the development database', async () => {
-    await expect(
-      apiResourceGenerator(createWorkspaceTree(), {
-        name: 'payment',
-        fields: 'amount:decimal',
-        skipFormat: true,
-      }),
-    ).rejects.toThrow('the database table "Payments"')
   })
 
   it.each(['test', 'title', 'column', 'module'])(

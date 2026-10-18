@@ -21,7 +21,9 @@ do not edit files.
    - a business rule changed without a `BR-xx` update in `docs/domain.md` and
      a test named after it;
    - endpoints without an e2e test; new behavior without a unit test;
-   - entity column renames that would drop data under `DB_SYNCHRONIZE`;
+   - entity changes without a migration from `migration-generate`, edits to a
+     migration that already ran, or a migration that drops a column holding
+     data;
    - hand-copied features that should have come from a generator;
    - decisions about money, roles or deletion that no spec or domain entry
      backs;

@@ -17,6 +17,8 @@ and Cursor reads it directly. The app folders add their own `AGENTS.md`.
 | Run the admin app                       | `npm run start:admin`                                                              |
 | New resource, backend and admin page    | `npx nx g @junta/nx-plugin:crud <name> --fields="<spec>" --no-interactive`         |
 | New backend resource only               | `npx nx g @junta/nx-plugin:api-resource <name> --fields="<spec>" --no-interactive` |
+| Apply database migrations               | `npx nx run @junta/api:migration-run`                                              |
+| Migration after an entity change        | `npx nx run @junta/api:migration-generate --name=<WhatChanged>`                    |
 | Verify affected projects (done = green) | `npm run verify`                                                                   |
 | API end-to-end tests (needs Postgres)   | `npm run verify:e2e`                                                               |
 | Format changed files                    | `npm run format`                                                                   |
@@ -77,9 +79,10 @@ Each rule names what enforces it. Never weaken an enforcer to get green.
    `inject()`, `ja-` selectors, built-in control flow. [lint]
 9. **TypeScript is strict.** No `any`. Exported functions declare return types.
    Promises are awaited or explicitly `void`. [typecheck, lint]
-10. **Entities are the database schema.** There is no hand-written SQL. Keep
-    column names stable, because development syncs the schema on startup.
-    [review, ADR 0003]
+10. **Entities define the schema and migrations change it.** Every entity
+    change ships with a migration from `migration-generate`. Never edit a
+    migration that has already run; add a new one. [e2e: migrations build the
+    entity schema, ADR 0005]
 11. **Secrets stay in `apps/api/.env`**, which is git-ignored. Never read,
     print or commit it. [Claude Code permissions]
 
@@ -87,6 +90,7 @@ Each rule names what enforces it. Never weaken an enforcer to get green.
 
 - `npm run verify` passes.
 - API changes have an e2e test, and `npm run verify:e2e` passes.
+- Entity changes ship with their generated migration.
 - Business rule changes update `docs/domain.md` and a `libs/domain` test with
   the rule id.
 - A new convention or architectural choice gets an ADR in `docs/decisions/`.

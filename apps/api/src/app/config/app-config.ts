@@ -1,12 +1,12 @@
 export const APP_CONFIG = Symbol('APP_CONFIG')
 
+/** The schema comes only from migrations, so there is no synchronize option. */
 export interface DatabaseConfig {
   host: string
   port: number
   username: string
   password: string
   name: string
-  synchronize: boolean
   logging: boolean
 }
 
@@ -65,19 +65,23 @@ function readBoolean(env: Env, key: string, fallback: boolean): boolean {
   return raw === 'true'
 }
 
+/** Only the database settings. The migration CLI needs nothing else. */
+export function loadDatabaseConfig(env: Env): DatabaseConfig {
+  return {
+    host: env['DB_HOST'] || 'localhost',
+    port: readInteger(env, 'DB_PORT', 5432),
+    username: readRequired(env, 'DB_USERNAME'),
+    password: readRequired(env, 'DB_PASSWORD'),
+    name: readRequired(env, 'DB_NAME'),
+    logging: readBoolean(env, 'DB_LOGGING', false),
+  }
+}
+
 export function loadAppConfig(env: Env): AppConfig {
   return {
     port: readInteger(env, 'PORT', 3000),
     corsOrigin: env['CORS_ORIGIN'] || 'http://localhost:4200',
-    database: {
-      host: env['DB_HOST'] || 'localhost',
-      port: readInteger(env, 'DB_PORT', 5432),
-      username: readRequired(env, 'DB_USERNAME'),
-      password: readRequired(env, 'DB_PASSWORD'),
-      name: readRequired(env, 'DB_NAME'),
-      synchronize: readBoolean(env, 'DB_SYNCHRONIZE', false),
-      logging: readBoolean(env, 'DB_LOGGING', false),
-    },
+    database: loadDatabaseConfig(env),
     auth: {
       jwtSecret: readRequired(env, 'JWT_SECRET'),
       accessTokenTtl: env['JWT_ACCESS_TTL'] || '1m',

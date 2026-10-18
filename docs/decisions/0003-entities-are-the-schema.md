@@ -1,6 +1,7 @@
 # 0003: Entities are the schema
 
-- **Status:** accepted
+- **Status:** accepted, with schema sync replaced by migrations in
+  [ADR 0005](0005-migrations.md)
 - **Date:** 2026-10-17
 
 ## Context

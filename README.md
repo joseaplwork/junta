@@ -22,7 +22,9 @@ Cursor) under human review. Start with [AGENTS.md](AGENTS.md) and
 2. `npm ci`
 3. `cp apps/api/.env.example apps/api/.env` and fill in the database
    credentials and a random `JWT_SECRET`.
-4. `npm run start:api` (http://localhost:3000/api) and
+4. `npx nx run @junta/api:migration-run` creates or updates the schema. The
+   API refuses to start while migrations are pending.
+5. `npm run start:api` (http://localhost:3000/api) and
    `npm run start:admin` (http://localhost:4200).
 
 ## Everyday commands
@@ -34,6 +36,8 @@ Cursor) under human review. Start with [AGENTS.md](AGENTS.md) and
 | `npm run verify:e2e`                                                           | API end-to-end tests against the `E2E_DB_NAME` database              |
 | `npm run format`                                                               | Prettier on changed files                                            |
 | `npx nx g @junta/nx-plugin:crud <name> --fields="title:string,amount:decimal"` | New resource: API, contracts, admin page and tests                   |
+| `npx nx run @junta/api:migration-run`                                          | Apply pending database migrations                                    |
+| `npx nx run @junta/api:migration-generate --name=<Name>`                       | Write a migration from entity changes                                |
 | `npx nx graph`                                                                 | Project dependency graph                                             |
 
 ## Repository map

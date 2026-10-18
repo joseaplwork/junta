@@ -1,5 +1,6 @@
 import { Logger } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
+import { DataSource } from 'typeorm'
 
 import { API_PREFIX } from '@junta/contracts'
 
@@ -11,6 +12,12 @@ async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule)
   const config = app.get<AppConfig>(APP_CONFIG)
 
+  if (await app.get(DataSource).showMigrations()) {
+    throw new Error(
+      'The database has pending migrations. Run npx nx run @junta/api:migration-run first.',
+    )
+  }
+
   configureApp(app, config)
   await app.listen(config.port)
 
@@ -20,4 +27,7 @@ async function bootstrap(): Promise<void> {
   )
 }
 
-void bootstrap()
+bootstrap().catch((error: unknown) => {
+  Logger.error(error instanceof Error ? error.message : error, 'Bootstrap')
+  process.exit(1)
+})

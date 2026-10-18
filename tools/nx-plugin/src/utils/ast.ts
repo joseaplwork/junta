@@ -102,6 +102,42 @@ export const variableArray =
       : undefined
   }
 
+function propertyKeyText(name: ts.PropertyName): string {
+  return ts.isComputedPropertyName(name)
+    ? `[${name.expression.getText()}]`
+    : name.getText()
+}
+
+/**
+ * The array under one key of an object literal variable. Computed keys keep
+ * their brackets: `objectPropertyArray('ROLE_PERMISSIONS', '[Role.ADMIN]')`.
+ */
+export const objectPropertyArray =
+  (variableName: string, key: string): ArrayFinder =>
+  file => {
+    const declaration = findNode(
+      file,
+      (node): node is ts.VariableDeclaration =>
+        ts.isVariableDeclaration(node) &&
+        ts.isIdentifier(node.name) &&
+        node.name.text === variableName,
+    )
+    const object = unwrap(declaration?.initializer)
+
+    if (!object || !ts.isObjectLiteralExpression(object)) return undefined
+
+    const property = object.properties.find(
+      (candidate): candidate is ts.PropertyAssignment =>
+        ts.isPropertyAssignment(candidate) &&
+        propertyKeyText(candidate.name) === key,
+    )
+    const initializer = unwrap(property?.initializer)
+
+    return initializer && ts.isArrayLiteralExpression(initializer)
+      ? initializer
+      : undefined
+  }
+
 /** The `imports` array of the `@Module({...})` decorator. */
 export const moduleImportsArray: ArrayFinder = file => {
   const call = findNode(

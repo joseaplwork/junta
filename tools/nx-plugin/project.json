@@ -21,7 +21,8 @@
         "{workspaceRoot}/apps/admin/src/app/layouts/main-layout/components/sidebar/sidebar.ts",
         "{workspaceRoot}/libs/contracts/src/index.ts",
         "{workspaceRoot}/libs/contracts/src/lib/api.ts",
-        "{workspaceRoot}/libs/contracts/src/lib/enums/permission.ts"
+        "{workspaceRoot}/libs/contracts/src/lib/enums/permission.ts",
+        "{workspaceRoot}/libs/domain/src/lib/permissions.ts"
       ],
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {

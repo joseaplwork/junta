@@ -10,3 +10,4 @@ of an existing record and number it in order.
 | [0002](0002-contracts-and-domain-libraries.md) | Two framework-free shared libraries instead of layered libs   |
 | [0003](0003-entities-are-the-schema.md)        | TypeORM entities are the only schema definition               |
 | [0004](0004-admin-pages-and-features.md)       | Admin pages built from independent features and typed clients |
+| [0005](0005-migrations.md)                     | Migrations generated from the entities; no schema sync        |

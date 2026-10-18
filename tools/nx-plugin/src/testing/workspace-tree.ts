@@ -24,6 +24,7 @@ export const REGISTRY_FILES = [
   'libs/contracts/src/index.ts',
   'libs/contracts/src/lib/api.ts',
   'libs/contracts/src/lib/enums/permission.ts',
+  'libs/domain/src/lib/permissions.ts',
 ]
 
 export function createWorkspaceTree(): Tree {

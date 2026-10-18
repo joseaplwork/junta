@@ -25,7 +25,8 @@ test/participants.e2e-spec.ts     HTTP round trip against a real database
 ```
 
 Cross-cutting code lives in `common/` (guards, decorators, filters),
-`config/` (typed environment), `database/` (entity registry) and `auth/`.
+`config/` (typed environment), `database/` (entity registry, migrations) and
+`auth/`.
 
 ## Rules
 
@@ -66,14 +67,27 @@ controllers.
 | Unknown id                                   | 404    | `NotFoundException` in the service                |
 | Unique or foreign-key conflict               | 409    | `QueryFailedFilter`                               |
 
-## Database safety
+## Database and migrations
 
-- `DB_SYNCHRONIZE=true` makes TypeORM alter the development schema from the
-  entities at startup. Renaming a property without keeping its column `name`
-  drops that column and its data. Keep column names stable and say so in your
-  report whenever you change an entity.
-- e2e tests use `E2E_DB_NAME`, which must end in `_e2e`. The suite drops and
-  recreates that database on every run.
+The schema changes only through migrations in
+`src/app/database/migrations/`. After you change an entity:
+
+1. `npx nx run @junta/api:migration-run` brings your database up to date.
+2. `npx nx run @junta/api:migration-generate --name=<WhatChanged>` writes the
+   migration and registers it in the folder's `index.ts`.
+3. Read the SQL. A renamed property must keep its column `name`, otherwise the
+   migration drops the column and its data. Write data-moving migrations by
+   hand and ask the user first.
+4. `npx nx run @junta/api:migration-run` applies it, then
+   `npm run verify:e2e` checks that the migrations build exactly the entity
+   schema.
+
+- Never edit a migration that has run anywhere. Add a new one.
+- The API refuses to start while migrations are pending.
+- `npx nx run @junta/api:migration-check` fails when the database differs
+  from the entities.
+- e2e tests use `E2E_DB_NAME`, which must end in `_e2e`. The suite drops that
+  database and rebuilds it from the migrations on every run.
 
 ## Tests
 

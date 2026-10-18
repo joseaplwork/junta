@@ -23,7 +23,11 @@ those errors are your checklist.
    an explicit snake_case column, for example
    `@Column({ name: 'due_date', type: 'timestamptz', nullable: true })`.
    Use `numericTransformer` for decimals. Existing rows need either
-   `nullable: true` or a `default`, otherwise development startup fails.
+   `nullable: true` or a `default`, otherwise the migration fails on tables
+   that have rows.
+   Then write the migration: run `npx nx run @junta/api:migration-run`, then
+   `npx nx run @junta/api:migration-generate --name=Add<Resource><Field>`.
+   The SQL must be a single `ADD COLUMN`. Apply it with `migration-run`.
 3. **DTO** (`dto/create-<resource>.dto.ts`): add the validators. Required
    text gets `@IsString() @IsNotEmpty()`; optional fields start with
    `@IsOptional()`; dates use `@IsISO8601()`.
@@ -36,5 +40,5 @@ those errors are your checklist.
    should be visible. Extend the dialog spec fixtures.
 8. If the field carries a business rule, use the `domain-rule` skill.
 9. Run `npm run verify` and `npm run verify:e2e`.
-10. Report the new column name. Development syncs the schema on startup, so
-    say whether existing rows were affected.
+10. Report the new column name, the migration and whether existing rows got a
+    default.

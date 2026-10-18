@@ -41,7 +41,7 @@ jobs:
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: juntas_e2e
+          POSTGRES_DB: juntas
         ports: ['5432:5432']
         options: >-
           --health-cmd pg_isready --health-interval 5s --health-timeout 5s
@@ -61,6 +61,10 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci
+      - name: Migrations apply cleanly and match the entities
+        run: |
+          npx nx run @junta/api:migration-run
+          npx nx run @junta/api:migration-check
       - run: npm run verify:e2e
 
   generators:
@@ -72,7 +76,7 @@ jobs:
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: juntas_e2e
+          POSTGRES_DB: juntas
         ports: ['5432:5432']
         options: >-
           --health-cmd pg_isready --health-interval 5s --health-timeout 5s
@@ -97,6 +101,10 @@ jobs:
           npx nx g @junta/nx-plugin:crud ci-sample
           --fields="title:string,amount:decimal,dueDate:date,done:boolean,count:int,notes?:string"
           --no-interactive
+      - name: Write the migration for the sample resource
+        run: |
+          npx nx run @junta/api:migration-run
+          npx nx run @junta/api:migration-generate --name=AddCiSamples
       - name: Generated code passes every gate
         run: npx nx run-many -t lint typecheck test build -p @junta/api @junta/admin @junta/contracts @junta/nx-plugin
       - name: Generated API passes its e2e test

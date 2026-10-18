@@ -26,16 +26,26 @@ The request is in the arguments or in the user's message: $ARGUMENTS
    To generate only the API, use `@junta/nx-plugin:api-resource`, and add the
    page later with `@junta/nx-plugin:admin-crud-page` and the same `--fields`.
 
-4. Ask the user which roles get the new `<NAME>_CREATE/READ/UPDATE/DELETE`
-   permissions, then grant them in `libs/domain/src/lib/permissions.ts`.
-   Super admins already have every permission.
-5. Add any business rules with the `domain-rule` skill. The generated service
+4. Write the migration for the new table. Bring your database up to date,
+   generate, read the SQL, then apply it:
+
+   ```sh
+   npx nx run @junta/api:migration-run
+   npx nx run @junta/api:migration-generate --name=Add<PluralClass>
+   npx nx run @junta/api:migration-run
+   ```
+
+   The SQL must only create the new table and its constraints.
+
+5. The generator grants the four new `<NAME>_*` permissions to admins in
+   `libs/domain/src/lib/permissions.ts`. Super admins hold every permission.
+   Change this only when the user asks for different roles.
+6. Add any business rules with the `domain-rule` skill. The generated service
    is plain CRUD until you do.
-6. Adjust the list columns and form labels if the defaults do not fit.
-7. Run `npm run verify`, then `npm run verify:e2e`. The generated unit, client
+7. Adjust the list columns and form labels if the defaults do not fit.
+8. Run `npm run verify`, then `npm run verify:e2e`. The generated unit, client
    and e2e tests must pass unchanged unless you changed behavior on purpose.
-8. Report the generated paths, the permission decision, the commands and their
-   results.
+9. Report the generated paths, the migration, the commands and their results.
 
 ## What the generator does
 
@@ -43,7 +53,7 @@ The request is in the arguments or in the user's message: $ARGUMENTS
   entity, DTOs, service spec) and `apps/api/test/<plural>.e2e-spec.ts`.
 - Creates `libs/contracts/src/lib/<name>.ts` and exports it.
 - Registers the entity, the module, the `ApiResource` route name and the four
-  permissions.
+  permissions, and grants those permissions to admins.
 - Creates `apps/admin/src/app/pages/<name>/`, the `shared/api` client with its
   spec, a lazy route guarded by the read permission, and a sidebar entry.
 - Never overwrites existing files.

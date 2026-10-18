@@ -16,6 +16,7 @@ import {
   addSortedObjectProperty,
   appendArrayElement,
   moduleImportsArray,
+  objectPropertyArray,
   variableArray,
 } from '../../utils/ast'
 import * as render from '../../utils/fields'
@@ -26,17 +27,11 @@ import { ApiResourceSchema } from './schema'
 
 export const API_APP = 'apps/api/src/app'
 export const CONTRACTS = 'libs/contracts/src'
+export const ROLE_PERMISSIONS_FILE = 'libs/domain/src/lib/permissions.ts'
 export const PERMISSION_ACTIONS = ['CREATE', 'READ', 'UPDATE', 'DELETE']
 
-/**
- * Tables that exist in the development database without an entity (open
- * question Q-09 in docs/domain.md). With DB_SYNCHRONIZE=true a new entity on
- * one of them would rewrite the legacy table's columns.
- */
-export const LEGACY_TABLES = ['Payments', 'Receipts']
-
 function existingTables(tree: Tree): Set<string> {
-  const tables = new Set(LEGACY_TABLES)
+  const tables = new Set<string>()
 
   visitNotIgnoredFiles(tree, API_APP, file => {
     if (!file.endsWith('.entity.ts')) return
@@ -144,6 +139,7 @@ function registerContracts(tree: Tree, names: ResourceNames): void {
   )
 }
 
+/** Adds the four permissions and grants them to admins (owner decision, BR-12). */
 function registerPermissions(tree: Tree, names: ResourceNames): void {
   addEnumMembers(
     tree,
@@ -154,6 +150,16 @@ function registerPermissions(tree: Tree, names: ResourceNames): void {
         `${names.singularConstant}_${action} = '${names.singularFile}:${action.toLowerCase()}'`,
     ),
   )
+
+  for (const action of PERMISSION_ACTIONS) {
+    appendArrayElement(
+      tree,
+      ROLE_PERMISSIONS_FILE,
+      objectPropertyArray('ROLE_PERMISSIONS', '[Role.ADMIN]'),
+      `Permission.${names.singularConstant}_${action}`,
+      'the [Role.ADMIN] array of ROLE_PERMISSIONS',
+    )
+  }
 }
 
 export function templateContext(
@@ -194,11 +200,11 @@ export function writeApiResource(
 
 export function apiResourceNextSteps(names: ResourceNames): string {
   return [
-    `Generated the ${names.singularLabel} API resource.`,
+    `Generated the ${names.singularLabel} API resource. Admins and super admins hold its ${names.singularConstant}_* permissions.`,
     'Next:',
-    `  1. Add business rules in apps/api/src/app/${names.pluralFile}/${names.pluralFile}.service.ts (pure rules go in libs/domain).`,
-    `  2. Grant the new ${names.singularConstant}_* permissions to roles in libs/domain/src/lib/permissions.ts (super admins already have them).`,
-    '  3. Run npm run verify, then npx nx e2e @junta/api.',
+    `  1. Write the migration: npx nx run @junta/api:migration-run, then npx nx run @junta/api:migration-generate --name=Add${names.pluralClass}, then migration-run again.`,
+    `  2. Add business rules in apps/api/src/app/${names.pluralFile}/${names.pluralFile}.service.ts (pure rules go in libs/domain).`,
+    '  3. Run npm run verify, then npm run verify:e2e.',
   ].join('\n')
 }
 

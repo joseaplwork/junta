@@ -15,6 +15,18 @@ describe('permissionsForRoles (BR-12)', () => {
     )
   })
 
+  it('grants an admin every permission except admin management', () => {
+    const adminManagement = Object.values(Permission).filter(permission =>
+      permission.startsWith('admin:'),
+    )
+
+    expect(permissionsForRoles([Role.ADMIN]).sort()).toEqual(
+      Object.values(Permission)
+        .filter(permission => !adminManagement.includes(permission))
+        .sort(),
+    )
+  })
+
   it('merges roles without duplicates', () => {
     expect(
       permissionsForRoles([Role.ADMIN, Role.PARTICIPANT]).filter(

@@ -104,8 +104,10 @@ The admin shows the API message for business rule errors through
 - PostgreSQL through TypeORM. The entities in
   `apps/api/src/app/**/entities/` are the only schema definition, see
   [ADR 0003](decisions/0003-entities-are-the-schema.md).
-- Development uses `DB_SYNCHRONIZE=true`, so the schema follows the entities on
-  startup. Production must keep it `false`. There are no migrations yet.
+- Migrations in `apps/api/src/app/database/migrations/` change the schema in
+  every environment, see [ADR 0005](decisions/0005-migrations.md). They are
+  generated from the entities, and the e2e suite fails when the two differ.
+  The API refuses to start while migrations are pending.
 - Configuration comes from environment variables loaded by Nx from
   `apps/api/.env`. See `apps/api/.env.example`.
 

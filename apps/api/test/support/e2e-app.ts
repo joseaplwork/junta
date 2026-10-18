@@ -25,11 +25,7 @@ export interface E2eApp {
 
 /** Loads apps/api/.env values but always targets a throwaway `*_e2e` database. */
 function e2eConfig(): AppConfig {
-  const config = loadAppConfig({
-    ...process.env,
-    DB_SYNCHRONIZE: 'true',
-    DB_LOGGING: 'false',
-  })
+  const config = loadAppConfig({ ...process.env, DB_LOGGING: 'false' })
   const name = process.env['E2E_DB_NAME'] || 'juntas_e2e'
 
   if (!name.endsWith('_e2e')) {
@@ -88,7 +84,10 @@ async function seedSuperAdmin(dataSource: DataSource): Promise<void> {
 
 export const apiPath = (path: string): string => `/${API_PREFIX}/${path}`
 
-/** Boots the real AppModule on an empty schema with one seeded super admin. */
+/**
+ * Boots the real AppModule on a schema built only by the migrations, with one
+ * seeded super admin.
+ */
 export async function createE2eApp(): Promise<E2eApp> {
   const config = e2eConfig()
 
@@ -105,7 +104,8 @@ export async function createE2eApp(): Promise<E2eApp> {
 
   const dataSource = app.get(DataSource)
 
-  await dataSource.synchronize(true)
+  await dataSource.dropDatabase()
+  await dataSource.runMigrations({ transaction: 'each' })
   await seedSuperAdmin(dataSource)
 
   const login = await request(app.getHttpServer())
