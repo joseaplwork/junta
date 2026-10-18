@@ -1,6 +1,6 @@
 import { tokenStore } from '@/mobile/shared/auth/token-store'
 
-import { apiRequest } from './api-client'
+import { apiRequest, cancelPendingRefresh } from './api-client'
 
 const reply = (status: number, body?: unknown): object => ({
   ok: status < 400,
@@ -47,6 +47,30 @@ describe('apiRequest', () => {
     await expect(apiRequest('me/juntas', { auth: true })).rejects.toMatchObject(
       { status: 401 },
     )
+    expect(tokenStore.get()).toBeNull()
+  })
+
+  it('does not restore tokens when sign-out cancels a pending refresh', async () => {
+    let resolveRefresh!: (value: object) => void
+    const refreshResponse = new Promise<object>(resolve => {
+      resolveRefresh = resolve
+    })
+
+    fetchMock
+      .mockResolvedValueOnce(reply(401))
+      .mockImplementationOnce(() => refreshResponse)
+
+    const request = apiRequest('me/juntas', { auth: true })
+
+    await Promise.resolve()
+    cancelPendingRefresh()
+    await tokenStore.set(null)
+
+    resolveRefresh(
+      reply(200, { accessToken: 'new-access', refreshToken: 'refresh-2' }),
+    )
+
+    await expect(request).rejects.toMatchObject({ status: 401 })
     expect(tokenStore.get()).toBeNull()
   })
 })

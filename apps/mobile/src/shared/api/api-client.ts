@@ -38,9 +38,18 @@ function send(
 }
 
 let pendingRefresh: Promise<string | null> | null = null
+let refreshEpoch = 0
+
+/** Drop any in-flight refresh so a later completion cannot restore tokens. */
+export function cancelPendingRefresh(): void {
+  refreshEpoch += 1
+  pendingRefresh = null
+}
 
 /** One refresh at a time. A failed refresh ends the session. */
 function refreshAccessToken(): Promise<string | null> {
+  const epoch = refreshEpoch
+
   pendingRefresh ??= (async () => {
     const refreshToken = tokenStore.get()?.refreshToken
 
@@ -51,19 +60,31 @@ function refreshAccessToken(): Promise<string | null> {
       body: { refreshToken },
     })
 
+    // Sign-out (or another session change) won the race; do not write tokens.
+    if (epoch !== refreshEpoch) return null
+
     if (!response.ok) {
-      await tokenStore.set(null)
+      if (tokenStore.get()?.refreshToken === refreshToken) {
+        await tokenStore.set(null)
+      }
 
       return null
     }
 
     const tokens = (await response.json()) as TokenPairResponse
 
+    if (
+      epoch !== refreshEpoch ||
+      tokenStore.get()?.refreshToken !== refreshToken
+    ) {
+      return null
+    }
+
     await tokenStore.set(tokens)
 
     return tokens.accessToken
   })().finally(() => {
-    pendingRefresh = null
+    if (epoch === refreshEpoch) pendingRefresh = null
   })
 
   return pendingRefresh

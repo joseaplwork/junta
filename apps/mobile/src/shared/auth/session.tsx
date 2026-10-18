@@ -10,6 +10,7 @@ import {
 
 import { LoginRequest, RegisterRequest } from '@junta/contracts'
 
+import { cancelPendingRefresh } from '@/mobile/shared/api/api-client'
 import { mobileAuthApi } from '@/mobile/shared/api/mobile-auth-api'
 
 import { tokenStore } from './token-store'
@@ -57,6 +58,7 @@ export function SessionProvider({
   const signOut = useCallback(async () => {
     const refreshToken = tokenStore.get()?.refreshToken
 
+    cancelPendingRefresh()
     await tokenStore.set(null)
 
     if (refreshToken)

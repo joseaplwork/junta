@@ -1,5 +1,6 @@
 import { Redirect, Stack } from 'expo-router'
 import { useTranslation } from 'react-i18next'
+import { ActivityIndicator } from 'react-native'
 
 import { useSession } from '@/mobile/shared/auth/session'
 import { Button } from '@/mobile/shared/components/ui'
@@ -8,6 +9,8 @@ import { Button } from '@/mobile/shared/components/ui'
 export default function JuntasLayout(): React.JSX.Element {
   const { t } = useTranslation()
   const { status, signOut } = useSession()
+
+  if (status === 'loading') return <ActivityIndicator style={{ flex: 1 }} />
 
   if (status === 'signedOut') return <Redirect href="/sign-in" />
 
