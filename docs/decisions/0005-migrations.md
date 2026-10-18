@@ -24,7 +24,12 @@ changing on databases that hold real data.
   `tools/scripts/migrations.mjs` wraps the TypeORM CLI.
 - `InitialSchema` is the schema as of 2026-10-18. The development database
   was created by `synchronize`, so it was marked as having run that migration
-  (`migration-run --fake`) after `migration-check` showed it matched exactly.
+  after `migration-check` showed it matched exactly.
+- Any other database built by `synchronize` runs
+  `npx nx run @junta/api:migration-baseline` once. It records only
+  `InitialSchema`, applies the later migrations and checks the result.
+  `migration-run --fake` is refused, because it would mark every pending
+  migration as applied, including changes the database lacks.
 - `DropLegacyTables` removes the empty `Payments` and `Receipts` tables and
   their enum type, which answers Q-09.
 - The API refuses to start while migrations are pending.
@@ -34,7 +39,9 @@ changing on databases that hold real data.
 - The e2e suite builds its database from the migrations and fails when they
   differ from the entities. A unit test fails when `index.ts` misses a file.
 - Generating a migration needs a running database at the latest migration.
-- A database created by `synchronize` elsewhere must go through the same
-  check-then-fake step once before `migration-run`.
+- A database created by `synchronize` elsewhere needs `migration-baseline`
+  once before `migration-run`. `DropLegacyTables` refuses to run if the
+  legacy tables still hold rows.
 - Migrations that already ran are never edited. Data-moving changes, such as
-  renaming a column with data, are written by hand after asking the owner.
+  renaming a column with data, are written by hand after asking the owner,
+  starting from `migration-create`.

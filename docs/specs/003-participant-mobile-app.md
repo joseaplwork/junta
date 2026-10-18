@@ -47,10 +47,10 @@ interface MyJuntaDetailResponse extends MyJuntaSummaryResponse {
 
 ## API changes (`apps/api`)
 
-| Method | Path                 | Permission  | Request | Response                   | Errors   |
-| ------ | -------------------- | ----------- | ------- | -------------------------- | -------- |
-| GET    | `/api/me/juntas`     | `self:read` | none    | `MyJuntaSummaryResponse[]` | 401, 403 |
-| GET    | `/api/me/juntas/:id` | `self:read` | none    | `MyJuntaDetailResponse`    | 401, 404 |
+| Method | Path                 | Permission  | Request | Response                   | Errors             |
+| ------ | -------------------- | ----------- | ------- | -------------------------- | ------------------ |
+| GET    | `/api/me/juntas`     | `self:read` | none    | `MyJuntaSummaryResponse[]` | 401, 403           |
+| GET    | `/api/me/juntas/:id` | `self:read` | none    | `MyJuntaDetailResponse`    | 400, 401, 403, 404 |
 
 - **New rule BR-13:** a participant sees only the juntas they belong to and the
   names of their own group's members. Never phone numbers, never other groups.
@@ -58,13 +58,19 @@ interface MyJuntaDetailResponse extends MyJuntaSummaryResponse {
 - **Required before anyone signs in:** the `participant` role must lose
   `junta:read` and `participant:read`. With them, a participant could read
   every junta and every phone number through the admin endpoints. The new
-  `self:read` permission replaces them.
+  `self:read` permission replaces them. BR-12 says admins hold every
+  permission except admin management, so either admins also get `self:read`
+  or BR-12 changes with this spec.
 - **Sign-in:** participants have no credentials today, only a phone number.
   The answer to question 1 decides the endpoints and the data model.
 - **Tokens on a phone:** the admin keeps its refresh token in a cookie, which
   a native web view handles poorly. The mobile app should receive the refresh
   token in the response body and keep it in the iOS Keychain or Android
   Keystore through a secure-storage plugin. Revocation reuses spec 002.
+- **CORS for native builds:** their origins (`capacitor://localhost`,
+  `https://localhost`) must not join `CORS_ORIGIN`, which allows the refresh
+  cookie. Use Capacitor's native HTTP, which bypasses browser CORS, or a
+  separate list served without credentials.
 
 ## Admin changes (`apps/admin`)
 

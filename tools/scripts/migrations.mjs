@@ -5,12 +5,14 @@
 //   npx nx run @junta/api:migration-run                      apply pending migrations
 //   npx nx run @junta/api:migration-revert                   undo the latest migration
 //   npx nx run @junta/api:migration-generate --name=AddX     write a migration from the entity changes
+//   npx nx run @junta/api:migration-create --name=MoveX      write an empty migration for hand-written SQL
 //   npx nx run @junta/api:migration-check                    fail if the database differs from the entities
+//   npx nx run @junta/api:migration-baseline                 once, for a database built by schema sync (ADR 0005)
 //
 // `generate` and `check` diff the entities against the database in DB_NAME, so
-// run the pending migrations first. `generate` then rewrites migrations/index.ts
-// and formats the folder. `apps/api/src/app/database/migrations.spec.ts` fails if
-// index.ts is stale.
+// run the pending migrations first. `generate` and `create` then rewrite
+// migrations/index.ts and format the folder. `apps/api/src/app/database/migrations.spec.ts`
+// fails if index.ts is stale.
 import { spawnSync } from 'node:child_process'
 import { readFileSync, readdirSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
@@ -19,6 +21,7 @@ import { fileURLToPath } from 'node:url'
 const ROOT = fileURLToPath(new URL('../../', import.meta.url))
 const FOLDER = 'apps/api/src/app/database/migrations'
 const DATA_SOURCE = 'apps/api/src/app/database/data-source.ts'
+const BASELINE = 'apps/api/src/app/database/baseline.ts'
 const FILE_PATTERN = /^(\d{13})-([A-Za-z][A-Za-z0-9]*)\.ts$/
 const CLASS_PATTERN = /export class (\w+) implements MigrationInterface/
 const NAME_PATTERN = /^[A-Z][A-Za-z0-9]*$/
@@ -30,7 +33,8 @@ function fail(message) {
   process.exit(1)
 }
 
-function typeorm(args) {
+/** Runs a TypeScript entry point with the API's path aliases. */
+function runTs(entry, args) {
   const result = spawnSync(
     process.execPath,
     [
@@ -38,10 +42,8 @@ function typeorm(args) {
       'ts-node/register/transpile-only',
       '-r',
       'tsconfig-paths/register',
-      join(ROOT, 'node_modules/typeorm/cli.js'),
+      entry,
       ...args,
-      '-d',
-      DATA_SOURCE,
     ],
     {
       cwd: ROOT,
@@ -51,6 +53,23 @@ function typeorm(args) {
   )
 
   if (result.status !== 0) process.exit(result.status ?? 1)
+}
+
+const typeorm = args =>
+  runTs(join(ROOT, 'node_modules/typeorm/cli.js'), [...args, '-d', DATA_SOURCE])
+
+function nameArgument() {
+  const name = rest
+    .find(arg => arg.startsWith('--name='))
+    ?.slice('--name='.length)
+
+  if (!name || !NAME_PATTERN.test(name)) {
+    fail(
+      'Pass a PascalCase name that says what changes, e.g. --name=AddJuntaCurrency.',
+    )
+  }
+
+  return name
 }
 
 function syncRegistry() {
@@ -106,34 +125,38 @@ function syncRegistry() {
 
 switch (command) {
   case 'run':
+    if (rest.includes('--fake') || rest.includes('-f')) {
+      fail(
+        '--fake marks every pending migration as applied. For a database built by schema sync, run migration-baseline instead (ADR 0005).',
+      )
+    }
     typeorm(['migration:run', ...rest])
     break
   case 'revert':
     typeorm(['migration:revert', ...rest])
     break
-  case 'generate': {
-    const name = rest
-      .find(arg => arg.startsWith('--name='))
-      ?.slice('--name='.length)
-
-    if (!name || !NAME_PATTERN.test(name)) {
-      fail(
-        'Pass a PascalCase name that says what changes, e.g. --name=AddJuntaCurrency.',
-      )
-    }
-
-    typeorm(['migration:generate', `${FOLDER}/${name}`, '--pretty'])
+  case 'generate':
+    typeorm(['migration:generate', `${FOLDER}/${nameArgument()}`, '--pretty'])
     syncRegistry()
     break
-  }
+  case 'create':
+    runTs(join(ROOT, 'node_modules/typeorm/cli.js'), [
+      'migration:create',
+      `${FOLDER}/${nameArgument()}`,
+    ])
+    syncRegistry()
+    break
   case 'check':
     typeorm(['migration:generate', `${FOLDER}/PendingChanges`, '--check'])
+    break
+  case 'baseline':
+    runTs(BASELINE, [])
     break
   case 'sync':
     syncRegistry()
     break
   default:
     fail(
-      'Usage: node tools/scripts/migrations.mjs run|revert|generate|check|sync',
+      'Usage: node tools/scripts/migrations.mjs run|revert|generate|create|check|baseline|sync',
     )
 }

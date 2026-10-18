@@ -89,11 +89,11 @@ These double as test cases. Scenario 2 is covered by
 
 ## Roles
 
-| Role          | Can do                                                                                                                                     |
-| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| `superAdmin`  | Everything, including managing admins.                                                                                                     |
-| `admin`       | Everything except managing admins. The generators grant admins the permissions of every new resource.                                      |
-| `participant` | Read juntas and participants. Nobody signs in as a participant yet. Spec 003 narrows this to their own juntas before the mobile app ships. |
+| Role          | Can do                                                                                                                                                                                                                          |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `superAdmin`  | Everything, including managing admins.                                                                                                                                                                                          |
+| `admin`       | Everything except managing admins. The generators grant admins the permissions of every new resource.                                                                                                                           |
+| `participant` | Read juntas and participants. Today only admin accounts hold it, next to other roles. An account holding only this role could read every junta and phone number, see Q-14. Spec 003 narrows it to the participant's own juntas. |
 
 The mapping is `ROLE_PERMISSIONS` in `libs/domain/src/lib/permissions.ts`.
 The admin app is the owner's back office. Participants will use a mobile app,
@@ -125,21 +125,23 @@ rule above.
 | 2026-10-18 | Admins hold the permissions of every generated resource.                                           | BR-12        |
 | 2026-10-18 | Logging out ends every session of that admin.                                                      | spec 002     |
 | 2026-10-18 | Schema changes go through migrations, starting now.                                                | ADR 0005     |
+| 2026-10-18 | Payment amount columns became whole-unit integers (migration `WholeUnitPaymentAmounts`).           | Q-01         |
 
 ## Open questions
 
 Answer these with the product owner before building the related features.
 
-| Id   | Question                                                                                                                          | Current behavior                                                                              |
-| ---- | --------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
-| Q-02 | Currency follows the market. Does each junta store its own currency, or does each deployment serve one market?                    | `es-MX` and `MXN` in `apps/admin/src/app/shared/pipes/money-pipe.ts`.                         |
-| Q-03 | Should the API reject a group count that differs from the number of months (BR-01)? A timezone-safe check needs date-only fields. | Only the admin form builds one group per month.                                               |
-| Q-04 | How exactly does the raffle work: pure random, weighted, or recorded for audit?                                                   | Uniform random shuffle in the admin form.                                                     |
-| Q-05 | What happens when a participant leaves mid-cycle?                                                                                 | Not handled.                                                                                  |
-| Q-06 | Can the payout order change after money has been distributed?                                                                     | Not handled. Updating a junta replaces all its groups.                                        |
-| Q-07 | How are partial payments recorded?                                                                                                | Not handled.                                                                                  |
-| Q-08 | What is the minimum duration? An earlier draft said 1 month in one place and 2 in another.                                        | The admin form requires an end date at least one month after the start, so at least 2 groups. |
-| Q-10 | Are contributions created with the junta or month by month? What happens to them when groups are edited?                          | No contributions are created. See spec 001.                                                   |
-| Q-11 | Who marks a contribution as paid, and under which permission?                                                                     | No endpoint. See spec 001.                                                                    |
-| Q-12 | Does `overdue` follow a date rule, such as unpaid after day N of the month, or is it set by hand?                                 | No endpoint. See spec 001.                                                                    |
-| Q-13 | Flooring 2000 ÷ 3 to 666 leaves 2 units a month uncollected. Should a junta require a pool that divides evenly by its groups?     | The remainder is simply not collected.                                                        |
+| Id   | Question                                                                                                                                                  | Current behavior                                                                              |
+| ---- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| Q-02 | Currency follows the market. Does each junta store its own currency, or does each deployment serve one market?                                            | `es-MX` and `MXN` in `apps/admin/src/app/shared/pipes/money-pipe.ts`.                         |
+| Q-03 | Should the API reject a group count that differs from the number of months (BR-01)? A timezone-safe check needs date-only fields.                         | Only the admin form builds one group per month.                                               |
+| Q-04 | How exactly does the raffle work: pure random, weighted, or recorded for audit?                                                                           | Uniform random shuffle in the admin form.                                                     |
+| Q-05 | What happens when a participant leaves mid-cycle?                                                                                                         | Not handled.                                                                                  |
+| Q-06 | Can the payout order change after money has been distributed?                                                                                             | Not handled. Updating a junta replaces all its groups.                                        |
+| Q-07 | How are partial payments recorded?                                                                                                                        | Not handled.                                                                                  |
+| Q-08 | What is the minimum duration? An earlier draft said 1 month in one place and 2 in another.                                                                | The admin form requires an end date at least one month after the start, so at least 2 groups. |
+| Q-10 | Are contributions created with the junta or month by month? What happens to them when groups are edited?                                                  | No contributions are created. See spec 001.                                                   |
+| Q-11 | Who marks a contribution as paid, and under which permission?                                                                                             | No endpoint. See spec 001.                                                                    |
+| Q-12 | Does `overdue` follow a date rule, such as unpaid after day N of the month, or is it set by hand?                                                         | No endpoint. See spec 001.                                                                    |
+| Q-13 | Flooring 2000 ÷ 3 to 666 leaves 2 units a month uncollected. Should a junta require a pool that divides evenly by its groups?                             | The remainder is simply not collected.                                                        |
+| Q-14 | Should admin accounts stop accepting the participant role on its own until spec 003 ships? Today such an account could read every junta and phone number. | Allowed. Both existing admins hold it next to admin roles.                                    |

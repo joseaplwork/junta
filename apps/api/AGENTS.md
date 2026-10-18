@@ -46,7 +46,8 @@ Cross-cutting code lives in `common/` (guards, decorators, filters),
   `repository.merge` or `Object.assign`, which also copy `null` and extra keys.
 - **Entities** use camelCase properties, snake_case columns through
   `@Column({ name: 'snake_case' })` and PascalCase plural table names. Decimal
-  columns use `numericTransformer`. Register every entity in
+  columns use `numericTransformer`. Money is whole units, so money columns are
+  `int`, never decimal. Register every entity in
   `database/entities.ts`.
 - **Config** comes from `@Inject(APP_CONFIG) config: AppConfig`. Only
   `config/app-config.ts` reads `process.env`.
@@ -79,7 +80,8 @@ The schema changes only through migrations in
    migration and registers it in the folder's `index.ts`.
 3. Read the SQL. A renamed property must keep its column `name`, otherwise the
    migration drops the column and its data. Write data-moving migrations by
-   hand and ask the user first.
+   hand, from `npx nx run @junta/api:migration-create --name=<WhatChanges>`,
+   and ask the user first.
 4. `npx nx run @junta/api:migration-run` applies it, then
    `npm run verify:e2e` checks that the migrations build exactly the entity
    schema.
@@ -88,6 +90,8 @@ The schema changes only through migrations in
 - The API refuses to start while migrations are pending.
 - `npx nx run @junta/api:migration-check` fails when the database differs
   from the entities.
+- A database that schema sync built before 2026-10-18 runs
+  `npx nx run @junta/api:migration-baseline` once. Never use `--fake`.
 - e2e tests use `E2E_DB_NAME`, which must end in `_e2e`. The suite drops that
   database and rebuilds it from the migrations on every run.
 

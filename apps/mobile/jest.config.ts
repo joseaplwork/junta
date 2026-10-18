@@ -1,5 +1,6 @@
-/* eslint-disable */
-export default {
+import type { Config } from 'jest'
+
+const config: Config = {
   displayName: 'mobile',
   preset: '../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
@@ -23,3 +24,5 @@ export default {
     'jest-preset-angular/build/serializers/html-comment',
   ],
 }
+
+export default config

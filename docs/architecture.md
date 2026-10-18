@@ -85,6 +85,9 @@ refresh fails, the session ends and the admin returns to `/login`.
   changes increment it, which revokes every earlier refresh token, see
   [spec 002](specs/002-refresh-token-revocation.md). Access tokens live one
   minute and are not revoked.
+- Login, refresh and logout refuse requests whose `Origin` is not in
+  `CORS_ORIGIN` (`CookieOriginGuard`), because the refresh cookie is
+  `SameSite=None` and a form on another site could otherwise post to them.
 - Every route requires an access token unless decorated with `@Public()`.
   `@RequirePermissions(...)` checks the token's permissions. Roles map to
   permissions in `libs/domain` (BR-12).
@@ -136,9 +139,11 @@ The admin shows the API message for business rule errors through
 - Same structure as the admin: lazy pages made of features, one `shared/api`
   client per resource, `jm-` selectors.
 - `npm run start:mobile` serves it in the browser and proxies `/api` to the
-  local API. Native builds call the API by the absolute URL in
-  `apps/mobile/src/environments/environment.ts`, so `CORS_ORIGIN` must include
-  `capacitor://localhost` (iOS) and `https://localhost` (Android).
+  local API. Native builds will call the API by the absolute URL in
+  `apps/mobile/src/environments/environment.ts`. Their origins must not join
+  `CORS_ORIGIN`: that list grants access with the refresh cookie, and
+  `https://localhost` is not unique to this app. Spec 003 decides how native
+  builds call the API.
 - The native projects get added once the app id is decided. From then on they
   are committed source.
 - Participants cannot sign in yet. The admin's refresh cookie does not suit

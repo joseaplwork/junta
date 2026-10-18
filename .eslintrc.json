@@ -27,7 +27,11 @@
                   "class-validator",
                   "class-transformer",
                   "bcrypt",
-                  "pg"
+                  "pg",
+                  "@ionic/*",
+                  "@capacitor/*",
+                  "@stencil/*",
+                  "ionicons"
                 ]
               },
               {

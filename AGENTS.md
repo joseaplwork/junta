@@ -27,7 +27,7 @@ and Cursor reads it directly. The app folders add their own `AGENTS.md`.
 | Format changed files                    | `npm run format`                                                                   |
 | One target of one project               | `npx nx <target> <project>`, e.g. `npx nx test @junta/domain`                      |
 
-Field specs look like `title:string,amount:decimal,dueDate?:date`. Types are
+Field specs look like `title:string,amount:int,dueDate?:date`. Types are
 `string`, `int`, `decimal`, `boolean` and `date`. `?` marks an optional field.
 
 Always run tasks through Nx, never through `jest`, `eslint` or `tsc` directly.
@@ -51,7 +51,7 @@ Inspect projects and generators with the Nx MCP server when it is available.
 | -------------------- | ---------------------------------------------------------------------------- | ----------------- |
 | `apps/api`           | NestJS + TypeORM REST API. See `apps/api/AGENTS.md`.                         | contracts, domain |
 | `apps/admin`         | Angular 20 admin app, zoneless and signal-based. See `apps/admin/AGENTS.md`. | contracts, domain |
-| `apps/mobile`        | Ionic + Capacitor app for participants. See `apps/mobile/AGENTS.md`.         | contracts, domain |
+| `apps/mobile`        | Ionic + Capacitor app for participants (ADR 0006, proposed). See its AGENTS. | contracts, domain |
 | `libs/contracts`     | API request and response types, enums, route names. Types only.              | nothing           |
 | `libs/domain`        | Pure business rules with tests, tagged with `BR-xx` ids.                     | contracts         |
 | `tools/nx-plugin`    | The code generators and their templates.                                     | tooling only      |
@@ -65,7 +65,7 @@ Inspect projects and generators with the Nx MCP server when it is available.
 Each rule names what enforces it. Never weaken an enforcer to get green.
 
 1. **Contracts first.** Every API shape is defined once in `libs/contracts`.
-   DTOs `implements` it and admin clients return it. [typecheck]
+   DTOs `implements` it and every app's clients return it. [typecheck]
 2. **Shared libraries stay pure.** `libs/contracts` imports nothing.
    `libs/domain` imports only contracts and no framework. [lint: module boundaries]
 3. **Apps never import each other.** Rules and API shapes that several apps

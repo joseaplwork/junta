@@ -86,11 +86,25 @@
         "command": "node tools/scripts/migrations.mjs generate"
       }
     },
+    "migration-create": {
+      "executor": "nx:run-commands",
+      "cache": false,
+      "options": {
+        "command": "node tools/scripts/migrations.mjs create"
+      }
+    },
     "migration-check": {
       "executor": "nx:run-commands",
       "cache": false,
       "options": {
         "command": "node tools/scripts/migrations.mjs check"
+      }
+    },
+    "migration-baseline": {
+      "executor": "nx:run-commands",
+      "cache": false,
+      "options": {
+        "command": "node tools/scripts/migrations.mjs baseline"
       }
     }
   }

@@ -22,6 +22,7 @@ import { Public } from '@/api/common/decorators/public.decorator'
 
 import { AuthService } from './auth.service'
 import { IssuedTokens, TokenSubject } from './auth.types'
+import { CookieOriginGuard } from './guards/cookie-origin.guard'
 import { LocalAuthGuard } from './guards/local-auth.guard'
 import {
   REFRESH_TOKEN_COOKIE,
@@ -34,7 +35,7 @@ export class AuthController {
 
   /** `LocalAuthGuard` puts the `TokenSubject` from `LocalStrategy` on the request. */
   @Public()
-  @UseGuards(LocalAuthGuard)
+  @UseGuards(CookieOriginGuard, LocalAuthGuard)
   @Post('login')
   @HttpCode(HttpStatus.OK)
   login(
@@ -45,6 +46,7 @@ export class AuthController {
   }
 
   @Public()
+  @UseGuards(CookieOriginGuard)
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
   async refresh(
@@ -70,6 +72,7 @@ export class AuthController {
 
   /** Ends every session of the cookie's admin, then clears the cookie (spec 002). */
   @Public()
+  @UseGuards(CookieOriginGuard)
   @Post('logout')
   @HttpCode(HttpStatus.NO_CONTENT)
   async logout(

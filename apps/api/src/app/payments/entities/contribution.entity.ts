@@ -8,7 +8,6 @@ import {
 
 import { ContributionStatus } from '@junta/contracts'
 
-import { numericTransformer } from '@/api/database/numeric.transformer'
 import { Group } from '@/api/juntas/entities/group.entity'
 import { Junta } from '@/api/juntas/entities/junta.entity'
 import { Participant } from '@/api/participants/entities/participant.entity'
@@ -32,10 +31,7 @@ export class Contribution {
   month: number
 
   @Column({
-    type: 'decimal',
-    precision: 10,
-    scale: 2,
-    transformer: numericTransformer,
+    type: 'int',
   })
   amount: number
 

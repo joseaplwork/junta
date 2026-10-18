@@ -106,6 +106,6 @@ jobs:
           npx nx run @junta/api:migration-run
           npx nx run @junta/api:migration-generate --name=AddCiSamples
       - name: Generated code passes every gate
-        run: npx nx run-many -t lint typecheck test build -p @junta/api @junta/admin @junta/contracts @junta/nx-plugin
+        run: npx nx run-many -t lint typecheck test build -p @junta/api @junta/admin @junta/contracts @junta/domain @junta/nx-plugin
       - name: Generated API passes its e2e test
         run: npm run verify:e2e

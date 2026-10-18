@@ -1,6 +1,9 @@
+import { JwtService } from '@nestjs/jwt'
 import request from 'supertest'
 
 import { Permission, Role } from '@junta/contracts'
+
+import { APP_CONFIG, AppConfig } from '@/api/config/app-config'
 
 import {
   E2E_ADMIN,
@@ -102,8 +105,9 @@ describe('Auth (e2e)', () => {
   describe('session revocation (spec 002)', () => {
     const credentials = { email: 'revoke@junta.test', password: 'first-pass' }
     let adminId: string
+    let currentPassword = credentials.password
 
-    const login = async (password = credentials.password): Promise<string> =>
+    const login = async (password = currentPassword): Promise<string> =>
       refreshCookieOf(
         await request(server())
           .post(apiPath('auth/login'))
@@ -148,8 +152,10 @@ describe('Auth (e2e)', () => {
         .patch(`admins/${adminId}`, { password: 'second-pass' })
         .expect(200)
 
+      currentPassword = 'second-pass'
+
       await refresh(before).expect(401)
-      await refresh(await login('second-pass')).expect(200)
+      await refresh(await login()).expect(200)
     })
 
     it('still answers 204 to a logout with a forged cookie', async () => {
@@ -157,6 +163,35 @@ describe('Auth (e2e)', () => {
         .post(apiPath('auth/logout'))
         .set('Cookie', 'refreshToken=forged')
         .expect(204)
+    })
+
+    it('still answers 204 to a logout with an expired cookie, revoking nothing', async () => {
+      const session = await login()
+      const expired = e2e.app
+        .get(JwtService)
+        .sign({ type: 'refresh', sub: adminId, ver: 0 }, { expiresIn: '-1s' })
+
+      await request(server())
+        .post(apiPath('auth/logout'))
+        .set('Cookie', `refreshToken=${expired}`)
+        .expect(204)
+
+      await refresh(session).expect(200)
+    })
+
+    it('refuses cookie endpoints called from another site, so a forged form cannot log the admin out', async () => {
+      const session = await login()
+
+      await request(server())
+        .post(apiPath('auth/logout'))
+        .set('Origin', 'https://evil.example')
+        .set('Cookie', session)
+        .expect(403)
+      await refresh(session).set('Origin', 'https://evil.example').expect(403)
+
+      const allowed = e2e.app.get<AppConfig>(APP_CONFIG).corsOrigins[0]
+
+      await refresh(session).set('Origin', allowed).expect(200)
     })
   })
 })

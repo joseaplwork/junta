@@ -61,23 +61,41 @@ export class AdminsService {
     return toAdminResponse(await this.findEntity(id))
   }
 
+  /**
+   * Writes only the columns the request changes. Saving the loaded entity
+   * would also write back its `tokenVersion`, undoing a logout that happened
+   * in between (spec 002).
+   */
   async update(id: string, dto: UpdateAdminDto): Promise<AdminResponse> {
     const admin = await this.findEntity(id)
+    const adminChanges: Partial<Pick<Admin, 'email' | 'roles' | 'password'>> =
+      {}
+    const participantChanges: Partial<
+      Pick<Participant, 'name' | 'surname' | 'phoneNumber'>
+    > = {}
 
-    if (dto.email !== undefined) admin.email = dto.email
-    if (dto.roles !== undefined) admin.roles = dto.roles
+    if (dto.email !== undefined) adminChanges.email = dto.email
+    if (dto.roles !== undefined) adminChanges.roles = dto.roles
     if (dto.password !== undefined) {
-      admin.password = await bcrypt.hash(dto.password, BCRYPT_ROUNDS)
+      adminChanges.password = await bcrypt.hash(dto.password, BCRYPT_ROUNDS)
     }
-    if (dto.name !== undefined) admin.participant.name = dto.name
-    if (dto.surname !== undefined) admin.participant.surname = dto.surname
+    if (dto.name !== undefined) participantChanges.name = dto.name
+    if (dto.surname !== undefined) participantChanges.surname = dto.surname
     if (dto.phoneNumber !== undefined) {
-      admin.participant.phoneNumber = dto.phoneNumber
+      participantChanges.phoneNumber = dto.phoneNumber
     }
 
     await this.dataSource.transaction(async manager => {
-      await manager.save(admin.participant)
-      await manager.save(admin)
+      if (Object.keys(participantChanges).length > 0) {
+        await manager.update(
+          Participant,
+          { id: admin.participant.id },
+          participantChanges,
+        )
+      }
+      if (Object.keys(adminChanges).length > 0) {
+        await manager.update(Admin, { id }, adminChanges)
+      }
 
       // A new password ends every session of this admin (spec 002).
       if (dto.password !== undefined) {

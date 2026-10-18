@@ -5,10 +5,12 @@ import { MigrationInterface } from 'typeorm'
 import { InitialSchema1792319852909 } from './1792319852909-InitialSchema'
 import { DropLegacyTables1792319963499 } from './1792319963499-DropLegacyTables'
 import { AddAdminTokenVersion1792320664801 } from './1792320664801-AddAdminTokenVersion'
+import { WholeUnitPaymentAmounts1792323266777 } from './1792323266777-WholeUnitPaymentAmounts'
 
 /** Every migration, oldest first. */
 export const MIGRATIONS: (new () => MigrationInterface)[] = [
   InitialSchema1792319852909,
   DropLegacyTables1792319963499,
   AddAdminTokenVersion1792320664801,
+  WholeUnitPaymentAmounts1792323266777,
 ]

@@ -35,16 +35,16 @@ Cursor) under human review. Start with [AGENTS.md](AGENTS.md) and
 
 ## Everyday commands
 
-| Command                                                                        | What it does                                                         |
-| ------------------------------------------------------------------------------ | -------------------------------------------------------------------- |
-| `npm run verify`                                                               | Format check, lint, typecheck, tests and builds of affected projects |
-| `npm run verify:all`                                                           | The same for every project                                           |
-| `npm run verify:e2e`                                                           | API end-to-end tests against the `E2E_DB_NAME` database              |
-| `npm run format`                                                               | Prettier on changed files                                            |
-| `npx nx g @junta/nx-plugin:crud <name> --fields="title:string,amount:decimal"` | New resource: API, contracts, admin page and tests                   |
-| `npx nx run @junta/api:migration-run`                                          | Apply pending database migrations                                    |
-| `npx nx run @junta/api:migration-generate --name=<Name>`                       | Write a migration from entity changes                                |
-| `npx nx graph`                                                                 | Project dependency graph                                             |
+| Command                                                                    | What it does                                                         |
+| -------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| `npm run verify`                                                           | Format check, lint, typecheck, tests and builds of affected projects |
+| `npm run verify:all`                                                       | The same for every project                                           |
+| `npm run verify:e2e`                                                       | API end-to-end tests against the `E2E_DB_NAME` database              |
+| `npm run format`                                                           | Prettier on changed files                                            |
+| `npx nx g @junta/nx-plugin:crud <name> --fields="title:string,amount:int"` | New resource: API, contracts, admin page and tests                   |
+| `npx nx run @junta/api:migration-run`                                      | Apply pending database migrations                                    |
+| `npx nx run @junta/api:migration-generate --name=<Name>`                   | Write a migration from entity changes                                |
+| `npx nx graph`                                                             | Project dependency graph                                             |
 
 ## Repository map
 

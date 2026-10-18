@@ -6,7 +6,6 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm'
 
-import { numericTransformer } from '@/api/database/numeric.transformer'
 import { Junta } from '@/api/juntas/entities/junta.entity'
 import { Participant } from '@/api/participants/entities/participant.entity'
 
@@ -29,10 +28,7 @@ export class Distribution {
 
   @Column({
     name: 'amount_distributed',
-    type: 'decimal',
-    precision: 10,
-    scale: 2,
-    transformer: numericTransformer,
+    type: 'int',
   })
   amountDistributed: number
 

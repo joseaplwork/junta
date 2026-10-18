@@ -50,7 +50,9 @@ src/app/
 - **Styling** uses Ionic's CSS variables and utility classes such as
   `ion-padding`. No Tailwind or Angular Material in this app.
 - **API URL:** browser development uses the proxy. Native and production
-  builds use `apiUrl` in `src/environments/environment.ts`.
+  builds use `apiUrl` in `src/environments/environment.ts`. Never add native
+  origins to the API's `CORS_ORIGIN`; spec 003 decides how native builds call
+  the API.
 - **Native code:** configure native behavior through `capacitor.config.ts` or
   plugins. Edit `ios/` or `android/` only for what Capacitor cannot express,
   and say so in your report. Ask before anything that ships to the stores.

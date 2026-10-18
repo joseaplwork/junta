@@ -7,7 +7,6 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm'
 
-import { numericTransformer } from '@/api/database/numeric.transformer'
 import { Group } from '@/api/juntas/entities/group.entity'
 import { Junta } from '@/api/juntas/entities/junta.entity'
 
@@ -30,10 +29,7 @@ export class Payout {
 
   @Column({
     name: 'amount_received',
-    type: 'decimal',
-    precision: 10,
-    scale: 2,
-    transformer: numericTransformer,
+    type: 'int',
   })
   amountReceived: number
 

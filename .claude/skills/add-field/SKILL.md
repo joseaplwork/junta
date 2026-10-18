@@ -22,8 +22,8 @@ those errors are your checklist.
 2. **Entity** (`entities/<resource>.entity.ts`): add a camelCase property with
    an explicit snake_case column, for example
    `@Column({ name: 'due_date', type: 'timestamptz', nullable: true })`.
-   Use `numericTransformer` for decimals. Existing rows need either
-   `nullable: true` or a `default`, otherwise the migration fails on tables
+   Money is whole units: use `int`. Use `numericTransformer` for other
+   decimals. Existing rows need either `nullable: true` or a `default`, otherwise the migration fails on tables
    that have rows.
    Then write the migration: run `npx nx run @junta/api:migration-run`, then
    `npx nx run @junta/api:migration-generate --name=Add<Resource><Field>`.

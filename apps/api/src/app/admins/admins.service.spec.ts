@@ -51,6 +51,7 @@ describe('AdminsService', () => {
         id: (entity as { id?: string }).id ?? 'generated',
       })
     }),
+    update: jest.fn(),
     increment: jest.fn(),
   }
   const dataSource = {
@@ -95,14 +96,32 @@ describe('AdminsService', () => {
   })
 
   it('updates participant fields through the admin', async () => {
-    const admin = buildAdmin()
-
-    admins.findOne.mockResolvedValue(admin)
+    admins.findOne.mockResolvedValue(buildAdmin())
 
     await service.update('admin-1', { surname: 'Lopez' })
 
-    expect(admin.participant.surname).toBe('Lopez')
+    expect(manager.update).toHaveBeenCalledWith(
+      Participant,
+      { id: 'participant-1' },
+      { surname: 'Lopez' },
+    )
     expect(dataSource.transaction).toHaveBeenCalledTimes(1)
+  })
+
+  it('writes only the changed admin columns, never a stale token version (spec 002)', async () => {
+    admins.findOne.mockResolvedValue(buildAdmin({ tokenVersion: 3 }))
+
+    await service.update('admin-1', {
+      email: 'new@junta.test',
+      roles: [Role.SUPER_ADMIN],
+    })
+
+    expect(manager.update).toHaveBeenCalledWith(
+      Admin,
+      { id: 'admin-1' },
+      { email: 'new@junta.test', roles: [Role.SUPER_ADMIN] },
+    )
+    expect(manager.save).not.toHaveBeenCalled()
   })
 
   it('ends every session of the admin when the password changes (spec 002)', async () => {
