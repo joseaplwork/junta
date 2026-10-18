@@ -8,8 +8,7 @@ under way. The domain is described in [docs/domain.md](docs/domain.md).
 - **API**: NestJS 10, TypeORM, PostgreSQL (`apps/api`)
 - **Admin**: Angular 20, zoneless, signals, Angular Material and Tailwind
   (`apps/admin`)
-- **Mobile**: Angular 20 with Ionic 9, packaged for iOS and Android by
-  Capacitor 8 (`apps/mobile`)
+- **Mobile**: React Native with Expo SDK 58 and Expo Router (`apps/mobile`)
 - **Shared**: `@junta/contracts` (API types) and `@junta/domain` (business
   rules)
 - **Tooling**: Nx 21, Jest, ESLint, Prettier, custom generators in
@@ -29,9 +28,8 @@ Cursor) under human review. Start with [AGENTS.md](AGENTS.md) and
    API refuses to start while migrations are pending.
 5. `npm run start:api` (http://localhost:3000/api),
    `npm run start:admin` (http://localhost:4200) and
-   `npm run start:mobile` (http://localhost:4300).
-6. Native mobile builds also need Xcode for iOS and the Android SDK for
-   Android. See [apps/mobile/AGENTS.md](apps/mobile/AGENTS.md).
+   `npm run start:mobile` (Expo dev server: scan the QR code with Expo Go, or
+   press `i` for the iOS simulator). See [apps/mobile/AGENTS.md](apps/mobile/AGENTS.md).
 
 ## Everyday commands
 

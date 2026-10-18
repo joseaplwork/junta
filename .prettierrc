@@ -29,7 +29,20 @@
   "overrides": [
     {
       "files": "apps/{admin,mobile}/src/**/*.html",
-      "options": { "parser": "angular" }
+      "options": {
+        "parser": "angular"
+      }
+    },
+    {
+      "files": "*.tsx",
+      "options": {
+        "importOrderParserPlugins": [
+          "typescript",
+          "jsx",
+          "classProperties",
+          "decorators-legacy"
+        ]
+      }
     }
   ]
 }

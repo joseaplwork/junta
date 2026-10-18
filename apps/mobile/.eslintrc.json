@@ -1,85 +1,79 @@
 {
   "extends": ["../../.eslintrc.json"],
-  "ignorePatterns": ["!**/*", "index.html", "android/**", "ios/**"],
+  "ignorePatterns": [
+    "!**/*",
+    "node_modules/**",
+    ".expo/**",
+    "ios/**",
+    "android/**",
+    "expo-env.d.ts"
+  ],
   "parserOptions": {
-    "project": [
-      "apps/mobile/tsconfig.app.json",
-      "apps/mobile/tsconfig.spec.json",
-      "apps/mobile/tsconfig.editor.json"
-    ]
+    "project": ["apps/mobile/tsconfig.json"]
   },
   "overrides": [
     {
-      "files": ["*.ts"],
+      "files": ["*.ts", "*.tsx"],
+      "parser": "@typescript-eslint/parser",
+      "plugins": ["@typescript-eslint", "react-hooks"],
       "extends": [
-        "plugin:@nx/angular",
-        "plugin:@angular-eslint/template/process-inline-templates"
+        "eslint:recommended",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:@typescript-eslint/stylistic",
+        "plugin:react-hooks/recommended",
+        "plugin:prettier/recommended"
       ],
       "rules": {
-        "@angular-eslint/component-class-suffix": "off",
-        "@angular-eslint/directive-class-suffix": "off",
-        "@angular-eslint/component-selector": [
-          "error",
-          { "type": "element", "prefix": "jm", "style": "kebab-case" }
-        ],
-        "@angular-eslint/directive-selector": [
-          "error",
-          { "type": "attribute", "prefix": "jm", "style": "camelCase" }
-        ],
-        "@angular-eslint/prefer-on-push-component-change-detection": "error",
-        "@angular-eslint/prefer-signals": "error",
-        "@angular-eslint/prefer-inject": "error",
-        "@angular-eslint/prefer-output-readonly": "error",
-        "@angular-eslint/no-uncalled-signals": "error",
-        "@nx/workspace-no-cross-page-imports": "error",
-        "lines-between-class-members": [
+        "no-console": [
           "error",
           {
-            "enforce": [
-              { "blankLine": "always", "prev": "field", "next": "method" },
-              { "blankLine": "always", "prev": "method", "next": "method" }
-            ]
+            "allow": ["warn", "error"]
           }
         ],
-        "padding-line-between-statements": [
+        "@typescript-eslint/explicit-module-boundary-types": "error",
+        "@typescript-eslint/no-unused-vars": [
           "error",
           {
-            "blankLine": "always",
-            "prev": ["const", "let", "var"],
-            "next": "*"
-          },
+            "argsIgnorePattern": "^_",
+            "varsIgnorePattern": "^_"
+          }
+        ],
+        "@typescript-eslint/no-floating-promises": "error",
+        "@typescript-eslint/no-misused-promises": "error",
+        "react-hooks/exhaustive-deps": "error",
+        "@nx/workspace-no-cross-page-imports": "error"
+      }
+    },
+    {
+      "files": [
+        "src/app/**/*.tsx",
+        "src/screens/**/*.ts",
+        "src/screens/**/*.tsx"
+      ],
+      "excludedFiles": ["*.spec.ts", "*.spec.tsx"],
+      "rules": {
+        "no-restricted-globals": [
+          "error",
           {
-            "blankLine": "any",
-            "prev": ["const", "let", "var"],
-            "next": ["const", "let", "var"]
+            "name": "fetch",
+            "message": "Routes and screens call the typed clients in shared/api instead of fetch."
           }
         ]
       }
     },
     {
-      "files": ["src/app/pages/**/*.ts"],
-      "excludedFiles": ["*.spec.ts"],
+      "files": ["*.spec.ts", "*.spec.tsx"],
+      "env": {
+        "jest": true
+      },
       "rules": {
-        "no-restricted-imports": [
-          "error",
-          {
-            "paths": [
-              {
-                "name": "@angular/common/http",
-                "message": "Pages call the typed clients in shared/api instead of HttpClient."
-              }
-            ]
-          }
-        ]
+        "@typescript-eslint/explicit-module-boundary-types": "off"
       }
     },
     {
-      "files": ["*.html"],
-      "extends": ["plugin:@nx/angular-template"],
-      "rules": {
-        "@angular-eslint/template/prefer-control-flow": "error",
-        "@angular-eslint/template/prefer-self-closing-tags": "error",
-        "@angular-eslint/template/button-has-type": "error"
+      "files": ["*.js"],
+      "env": {
+        "node": true
       }
     }
   ]

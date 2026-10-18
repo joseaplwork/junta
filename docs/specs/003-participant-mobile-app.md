@@ -13,8 +13,8 @@ in `apps/mobile` and shows only whether it can reach the API.
 
 ## Decisions
 
-- Hybrid app with Ionic and Capacitor ([ADR 0006](../decisions/0006-hybrid-mobile-app.md)),
-  proposed and waiting for the owner's confirmation.
+- React Native with Expo ([ADR 0006](../decisions/0006-react-native-mobile-app.md)),
+  chosen by the owner on 2026-10-18.
 - Money changes hands offline (BR-10), so the app takes no payments.
 
 ## Scope
@@ -66,11 +66,10 @@ interface MyJuntaDetailResponse extends MyJuntaSummaryResponse {
 - **Tokens on a phone:** the admin keeps its refresh token in a cookie, which
   a native web view handles poorly. The mobile app should receive the refresh
   token in the response body and keep it in the iOS Keychain or Android
-  Keystore through a secure-storage plugin. Revocation reuses spec 002.
-- **CORS for native builds:** their origins (`capacitor://localhost`,
-  `https://localhost`) must not join `CORS_ORIGIN`, which allows the refresh
-  cookie. Use Capacitor's native HTTP, which bypasses browser CORS, or a
-  separate list served without credentials.
+  Keystore with `expo-secure-store`. Revocation reuses spec 002.
+- **CORS:** React Native's `fetch` applies no browser CORS, so native builds
+  need no `CORS_ORIGIN` entry. Never add one for them: that list grants the
+  refresh cookie.
 
 ## Admin changes (`apps/admin`)
 

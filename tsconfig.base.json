@@ -27,7 +27,7 @@
     "paths": {
       "@/admin/*": ["apps/admin/src/app/*"],
       "@/api/*": ["apps/api/src/app/*"],
-      "@/mobile/*": ["apps/mobile/src/app/*"],
+      "@/mobile/*": ["apps/mobile/src/*"],
       "@junta/contracts": ["libs/contracts/src/index.ts"],
       "@junta/domain": ["libs/domain/src/index.ts"],
       "@junta/nx-plugin": ["tools/nx-plugin/src/index.ts"]

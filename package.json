@@ -6,7 +6,7 @@
     "preinstall": "node tools/scripts/check-node-version.mjs",
     "start:api": "nx serve @junta/api",
     "start:admin": "nx serve @junta/admin",
-    "start:mobile": "nx serve @junta/mobile",
+    "start:mobile": "nx run @junta/mobile:start",
     "format": "nx format:write",
     "verify": "node tools/scripts/verify.mjs",
     "verify:all": "node tools/scripts/verify.mjs --all",
@@ -27,7 +27,6 @@
     "@angular/cli": "20.3.37",
     "@angular/compiler-cli": "20.3.33",
     "@angular/language-service": "20.3.33",
-    "@capacitor/cli": "8.5.2",
     "@nestjs/schematics": "11.0.5",
     "@nestjs/testing": "^10.0.2",
     "@nx/angular": "21.2.0",
@@ -65,6 +64,7 @@
     "eslint-import-resolver-typescript": "^3.7.0",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-prettier": "^5.2.5",
+    "eslint-plugin-react-hooks": "5.2.0",
     "jest": "29.7.0",
     "jest-environment-jsdom": "29.7.0",
     "jest-environment-node": "^29.7.0",
@@ -93,10 +93,6 @@
     "@angular/platform-browser": "20.3.33",
     "@angular/platform-browser-dynamic": "20.3.33",
     "@angular/router": "20.3.33",
-    "@capacitor/android": "8.5.2",
-    "@capacitor/core": "8.5.2",
-    "@capacitor/ios": "8.5.2",
-    "@ionic/angular": "9.0.6",
     "@nestjs/common": "^10.0.2",
     "@nestjs/core": "^10.0.2",
     "@nestjs/jwt": "^10.2.0",
@@ -108,7 +104,6 @@
     "class-transformer": "0.5.1",
     "class-validator": "0.15.1",
     "cookie-parser": "^1.4.6",
-    "ionicons": "8.1.0",
     "jwt-decode": "^4.0.0",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
@@ -118,5 +113,8 @@
     "rxjs": "^7.8.0",
     "tslib": "^2.3.0",
     "typeorm": "^0.3.19"
-  }
+  },
+  "workspaces": [
+    "apps/mobile"
+  ]
 }

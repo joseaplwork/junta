@@ -28,10 +28,10 @@
                   "class-transformer",
                   "bcrypt",
                   "pg",
-                  "@ionic/*",
-                  "@capacitor/*",
-                  "@stencil/*",
-                  "ionicons"
+                  "react",
+                  "react-native",
+                  "expo",
+                  "expo-*"
                 ]
               },
               {

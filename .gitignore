@@ -50,3 +50,9 @@ Thumbs.db
 .nx/cache
 .nx/workspace-data*
 .angular
+
+# Expo: native projects are generated (Continuous Native Generation)
+apps/mobile/.expo
+apps/mobile/ios
+apps/mobile/android
+apps/mobile/expo-env.d.ts

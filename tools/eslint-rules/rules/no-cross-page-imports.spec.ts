@@ -12,10 +12,14 @@ const participantFile = join(
   'list-feat.ts',
 )
 const mobileHomeFile = join(
-  pagesDir('mobile'),
+  '/repo',
+  'apps',
+  'mobile',
+  'src',
+  'screens',
   'home',
-  'status-feat',
-  'status-feat.ts',
+  'status-feature',
+  'status-feature.tsx',
 )
 
 const ruleTester = new RuleTester()
@@ -51,7 +55,7 @@ describe(RULE_NAME, () => {
         filename: join('/repo', 'apps', 'admin', 'src', 'app', 'routes.ts'),
       },
       {
-        code: "import { HomePageState } from '../home-page-state'",
+        code: "import { HomeScreen } from '../home-screen'",
         filename: mobileHomeFile,
       },
     ],
@@ -72,7 +76,7 @@ describe(RULE_NAME, () => {
         errors: [{ messageId: 'crossPage' }],
       },
       {
-        code: "import { ProfilePage } from '../../profile/profile-page'",
+        code: "import { ProfileScreen } from '@/mobile/screens/profile/profile-screen'",
         filename: mobileHomeFile,
         errors: [{ messageId: 'crossPage' }],
       },

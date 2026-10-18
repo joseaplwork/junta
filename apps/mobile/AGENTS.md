@@ -1,67 +1,72 @@
-# Mobile app (Ionic + Capacitor)
+# Mobile app (React Native + Expo)
 
-The app for participants on iOS and Android: Angular 20 with Ionic 9
-components, packaged by Capacitor 8 ([ADR 0006](../../docs/decisions/0006-hybrid-mobile-app.md)).
-What it should do is in [spec 003](../../docs/specs/003-participant-mobile-app.md).
-The canonical example is `src/app/pages/home/`.
+The app for participants on iOS and Android, built with React Native and Expo
+SDK 58 ([ADR 0006](../../docs/decisions/0006-react-native-mobile-app.md)). What
+it should do is in [spec 003](../../docs/specs/003-participant-mobile-app.md).
+The canonical example is `src/screens/home/`.
+
+Expo changes between SDK releases, so do not code Expo or React Native APIs
+from memory. Check the `expo` major version in `package.json` and read the
+matching docs at `https://docs.expo.dev/versions/v<major>.0.0/` or the index at
+https://docs.expo.dev/llms.txt.
 
 ## Commands
 
-| Goal                                               | Command                                                        |
-| -------------------------------------------------- | -------------------------------------------------------------- |
-| Run in the browser at http://localhost:4300        | `npm run start:mobile` (proxies `/api` to the local API)       |
-| Add a native platform, once the app id is decided  | `npx nx run @junta/mobile:cap-add --platform=ios` or `android` |
-| Copy the latest web build into the native projects | `npx nx run @junta/mobile:cap-sync`                            |
-| Open the native project in Xcode or Android Studio | `npx nx run @junta/mobile:cap-open --platform=ios`             |
-| Build, sync and run on a simulator or device       | `npx nx run @junta/mobile:cap-run --platform=android`          |
+| Goal                                          | Command                                        |
+| --------------------------------------------- | ---------------------------------------------- |
+| Start the dev server, then scan the QR code   | `npm run start:mobile`                         |
+| Open in the iOS simulator or Android emulator | `npx nx run @junta/mobile:ios` or `:android`   |
+| Check the bundle builds for both platforms    | `npx nx build @junta/mobile`                   |
+| Diagnose dependency and config problems       | `npx nx run @junta/mobile:doctor`              |
+| Add a library at the SDK-compatible version   | `cd apps/mobile && npx expo install <package>` |
+
+On a phone, install Expo Go and scan the QR code the dev server prints. The
+phone must be on the same Wi-Fi as the API.
 
 ## Layout
 
 ```text
-src/app/
-  routes.ts                lazy routes; route params bind to page inputs
-  app-config.ts            providers: zoneless, Ionic, Ionic route strategy, router, http
-  shared/api/              one typed client per API resource, plus ApiClient
-  pages/<page>/
-    <page>-page.ts|html    ion-header plus ion-content, composes the features
-    <page>-page-state.ts   signals shared by features, once two features need it
-    <name>-feat/
-      <name>-feat.ts|html  container: injects clients, holds its state in signals
-      components/          UI used only by this feature
+apps/mobile/
+  app.json                  name, bundle ids, plugins (native config lives here)
+  src/
+    app/                    Expo Router routes: every file is a route; keep them thin
+      _layout.tsx           root navigator
+      index.tsx             sets the header and renders a screen
+    screens/<screen>/
+      <screen>-screen.tsx   composes the features of one screen
+      <name>-feature/       one feature: state, effects and its UI
+    shared/
+      api/                  one typed client per API resource, plus apiGet
+      config/               API URL resolution
 ```
 
 ## Rules
 
-- **Pages are independent.** Never import from another page; lint fails. Code
-  two pages need moves to `shared/`.
-- **HTTP only through `shared/api` clients.** Pages cannot import
-  `@angular/common/http`. Clients return Promises of contract types.
-- **Components** are standalone and OnPush, use `jm-` selectors
-  (`jm-<page>-<name>-feat` for features), signal `input()` and `output()`, and
-  `inject()`. Private members start with `_`.
-- **Ionic components** are imported one by one from `@ionic/angular`, which is
-  the Ionic 9 path. Never import `IonicModule` or `@ionic/angular/standalone`.
-- **Every routed page** renders `ion-header` and `ion-content`, so Ionic
-  transitions and safe areas work.
-- **Zoneless:** state that changes after an `await`, including overlay
-  results, goes through signals.
-- **Icons** are registered with `addIcons()` from `ionicons` in the component
-  that uses them.
-- **Styling** uses Ionic's CSS variables and utility classes such as
-  `ion-padding`. No Tailwind or Angular Material in this app.
-- **API URL:** browser development uses the proxy. Native and production
-  builds use `apiUrl` in `src/environments/environment.ts`. Never add native
-  origins to the API's `CORS_ORIGIN`; spec 003 decides how native builds call
-  the API.
-- **Native code:** configure native behavior through `capacitor.config.ts` or
-  plugins. Edit `ios/` or `android/` only for what Capacitor cannot express,
-  and say so in your report. Ask before anything that ships to the stores.
+- **Routes are thin.** A file in `src/app/` sets navigation options and renders
+  a screen. Logic goes in screens and features.
+- **Screens are independent.** A screen never imports another screen; lint
+  fails. Code two screens need moves to `shared/`.
+- **HTTP only through `shared/api` clients.** Routes and screens cannot call
+  `fetch`; lint fails. Clients return Promises of contract types.
+- **Components** are function components with explicit return types, named
+  exports, kebab-case file names and `StyleSheet.create` styles. Hooks follow
+  the rules of hooks; `react-hooks/exhaustive-deps` is an error.
+- **Libraries** are added with `npx expo install`, which picks versions that
+  match the SDK. Prefer Expo modules over third-party ones.
+- **Native projects** (`ios/`, `android/`) are generated and git-ignored. Never
+  edit them; configure native behavior in `app.json` and config plugins. A
+  library with native code needs a development build instead of Expo Go.
+- **API URL:** `EXPO_PUBLIC_API_URL` when set; in development, port 3000 on
+  the machine running the dev server; otherwise the production URL in
+  `src/shared/config/api-url.ts`.
+- **Store releases** go through EAS (`npx eas-cli@latest build`, `submit`).
+  Ask the owner before anything that ships to the stores.
 - **Sign-in:** participants cannot sign in yet. Do not add auth before spec 003
   is `ready`.
 
 ## Tests
 
-- **Components**: Testing Library with collaborators mocked through providers.
-  See `status-feat.spec.ts`. Ionic components render in jsdom.
-- **API clients**: `HttpTestingController`. See `health-api.spec.ts`.
-- **Zoneless**: asynchronous updates need `findBy*` queries, not `getBy*`.
+- Jest with the `jest-expo` preset and React Native Testing Library. See
+  `status-feature.spec.tsx` and `health-api.spec.ts`.
+- `render` and `fireEvent` are async: always `await` them. Use `findBy*` for
+  results of asynchronous work.

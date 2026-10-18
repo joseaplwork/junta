@@ -104,6 +104,5 @@ branch protection to require all three:
 - **Generators**: generates a sample resource with every field type and its
   migration, then runs lint, typecheck, test, build and e2e on it.
 
-CI builds and tests the mobile app's web code like any other project. Native
-iOS and Android builds need Xcode and the Android SDK, so they run on a
-developer machine for now.
+CI lints, typechecks and tests the mobile app and exports its bundle for both
+platforms. Store builds go through EAS once the app id is decided.
