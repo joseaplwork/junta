@@ -35,23 +35,9 @@ jobs:
   api-e2e:
     name: API e2e
     runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:16
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: juntas
-        ports: ['5432:5432']
-        options: >-
-          --health-cmd pg_isready --health-interval 5s --health-timeout 5s
-          --health-retries 10
     env:
-      DB_HOST: localhost
-      DB_PORT: '5432'
-      DB_USERNAME: postgres
-      DB_PASSWORD: postgres
-      DB_NAME: juntas
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      DATABASE_URL_UNPOOLED: ${{ secrets.DATABASE_URL_UNPOOLED }}
       E2E_DB_NAME: juntas_e2e
       JWT_SECRET: ci-only-secret
     steps:
@@ -70,24 +56,10 @@ jobs:
   generators:
     name: Generators
     runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:16
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: juntas
-        ports: ['5432:5432']
-        options: >-
-          --health-cmd pg_isready --health-interval 5s --health-timeout 5s
-          --health-retries 10
     env:
-      DB_HOST: localhost
-      DB_PORT: '5432'
-      DB_USERNAME: postgres
-      DB_PASSWORD: postgres
-      DB_NAME: juntas
-      E2E_DB_NAME: juntas_e2e
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      DATABASE_URL_UNPOOLED: ${{ secrets.DATABASE_URL_UNPOOLED }}
+      E2E_DB_NAME: juntas_generators_e2e
       JWT_SECRET: ci-only-secret
     steps:
       - uses: actions/checkout@v4
