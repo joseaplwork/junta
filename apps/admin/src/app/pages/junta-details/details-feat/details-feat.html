@@ -18,7 +18,9 @@
         <mat-icon>arrow_back</mat-icon>
       </button>
       <h1 class="text-2xl font-bold">{{ current.name }}</h1>
-      <mat-chip>{{ current.active ? 'Active' : 'Finished' }}</mat-chip>
+      <mat-chip>{{
+        juntaStatusLabel(current.startDate, current.endDate)
+      }}</mat-chip>
     </div>
 
     <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -64,14 +66,14 @@
             <div>
               <p class="text-muted text-sm">Start Date</p>
               <p class="text-lg font-semibold">
-                {{ current.startDate | date: 'MMMM d, y' }}
+                {{ current.startDate | date: 'MMMM d, y' : 'UTC' }}
               </p>
             </div>
             <mat-divider />
             <div>
               <p class="text-muted text-sm">End Date</p>
               <p class="text-lg font-semibold">
-                {{ current.endDate | date: 'MMMM d, y' }}
+                {{ current.endDate | date: 'MMMM d, y' : 'UTC' }}
               </p>
             </div>
           </div>

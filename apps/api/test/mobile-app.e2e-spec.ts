@@ -67,9 +67,8 @@ describe('Participant app (e2e)', () => {
       name: `Junta ${amount}`,
       amount,
       currency: 'PEN',
-      startDate: '2026-01-15T00:00:00.000Z',
-      endDate: '2026-02-15T00:00:00.000Z',
-      active: true,
+      startDate: '2027-01-15',
+      endDate: '2027-02-15',
       groups: groups.map((participantIds, index) => ({
         order: index + 1,
         participantIds,
@@ -85,7 +84,9 @@ describe('Participant app (e2e)', () => {
         .expect(201)
     ).body.id
     otherJuntaId = (
-      await admin.post('juntas', junta(2000, [[partner.id]])).expect(201)
+      await admin
+        .post('juntas', junta(2000, [[partner.id], [groupMate.id]]))
+        .expect(201)
     ).body.id
   })
 
@@ -114,7 +115,7 @@ describe('Participant app (e2e)', () => {
         id: juntaId,
         currency: 'PEN',
         payoutOrder: 2,
-        payoutDate: '2026-02-15T00:00:00.000Z',
+        payoutDate: '2027-02-15',
         groupAmount: 1500,
         groupSize: 2,
       }),

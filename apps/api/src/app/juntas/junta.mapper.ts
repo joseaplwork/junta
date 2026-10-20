@@ -3,6 +3,7 @@ import {
   JuntaDetailResponse,
   JuntaResponse,
 } from '@junta/contracts'
+import { isJuntaActive, utcToday } from '@junta/domain'
 
 import { Group } from './entities/group.entity'
 import { Junta } from './entities/junta.entity'
@@ -15,9 +16,9 @@ export function toJuntaResponse(junta: Junta): JuntaResponse {
     currency: junta.currency,
     groupCount: junta.groupCount,
     groupAmount: junta.groupAmount,
-    startDate: junta.startDate.toISOString(),
-    endDate: junta.endDate.toISOString(),
-    active: junta.active,
+    startDate: junta.startDate,
+    endDate: junta.endDate,
+    active: isJuntaActive(junta.startDate, junta.endDate, utcToday()),
     organizerId: junta.organizerId,
   }
 }

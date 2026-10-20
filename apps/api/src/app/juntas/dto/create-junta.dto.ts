@@ -2,12 +2,11 @@ import { Type } from 'class-transformer'
 import {
   ArrayMinSize,
   IsArray,
-  IsBoolean,
   IsISO4217CurrencyCode,
-  IsISO8601,
   IsInt,
   IsNotEmpty,
   IsString,
+  Matches,
   Min,
   ValidateNested,
 } from 'class-validator'
@@ -28,14 +27,11 @@ export class CreateJuntaDto implements CreateJuntaRequest {
   @IsISO4217CurrencyCode()
   currency: string
 
-  @IsISO8601()
+  @Matches(/^\d{4}-\d{2}-\d{2}$/)
   startDate: string
 
-  @IsISO8601()
+  @Matches(/^\d{4}-\d{2}-\d{2}$/)
   endDate: string
-
-  @IsBoolean()
-  active: boolean
 
   @IsArray()
   @ArrayMinSize(1)

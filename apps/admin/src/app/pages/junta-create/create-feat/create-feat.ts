@@ -19,6 +19,7 @@ import {
 import { apiErrorMessage } from '@/admin/shared/api/api-error-message'
 import { JuntasApi } from '@/admin/shared/api/juntas-api'
 import { ParticipantsApi } from '@/admin/shared/api/participants-api'
+import { AdminProfile } from '@/admin/shared/services/admin-profile'
 import { Navigation } from '@/admin/shared/services/navigation'
 import { Snackbar } from '@/admin/shared/services/snackbar'
 
@@ -35,6 +36,7 @@ export class CreateFeat implements OnInit {
   private readonly _participantsApi = inject(ParticipantsApi)
   private readonly _navigation = inject(Navigation)
   private readonly _snackbar = inject(Snackbar)
+  readonly roles = inject(AdminProfile).roles
 
   /** Present when editing an existing junta. */
   readonly juntaId = input<string>()

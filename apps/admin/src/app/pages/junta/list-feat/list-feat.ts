@@ -9,6 +9,7 @@ import { MatButtonModule } from '@angular/material/button'
 import { MatIconModule } from '@angular/material/icon'
 
 import { JuntaResponse } from '@junta/contracts'
+import { JuntaPhase } from '@junta/domain'
 
 import { JuntasApi } from '@/admin/shared/api/juntas-api'
 import {
@@ -16,6 +17,10 @@ import {
   ColumnConfig,
   CrudDataTable,
 } from '@/admin/shared/components/crud'
+import {
+  juntaPhaseLabel,
+  juntaStatus,
+} from '@/admin/shared/format/junta-status'
 import { Navigation } from '@/admin/shared/services/navigation'
 import { Snackbar } from '@/admin/shared/services/snackbar'
 
@@ -45,11 +50,13 @@ export class ListFeat {
     { key: 'startDate', header: 'Start Date', type: 'date' },
     { key: 'endDate', header: 'End Date', type: 'date' },
     {
-      key: 'active',
+      key: 'status',
       header: 'Status',
       type: 'chip',
-      chipColor: active => (active ? 'green' : 'gray'),
-      chipLabel: active => (active ? 'Active' : 'Finished'),
+      value: junta => juntaStatus(junta.startDate, junta.endDate),
+      chipColor: phase =>
+        phase === 'active' ? 'green' : phase === 'upcoming' ? 'yellow' : 'gray',
+      chipLabel: phase => juntaPhaseLabel(phase as JuntaPhase),
     },
   ]
 

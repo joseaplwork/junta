@@ -1,5 +1,10 @@
 import { MyJuntaDetailResponse, MyJuntaSummaryResponse } from '@junta/contracts'
-import { findOwnGroup, payoutDate } from '@junta/domain'
+import {
+  findOwnGroup,
+  isJuntaActive,
+  payoutDate,
+  utcToday,
+} from '@junta/domain'
 
 import { Junta } from '@/api/juntas/entities/junta.entity'
 
@@ -37,11 +42,11 @@ export function toMyJuntaDetail(
     name: junta.name,
     amount: junta.amount,
     currency: junta.currency,
-    startDate: junta.startDate.toISOString(),
-    endDate: junta.endDate.toISOString(),
-    active: junta.active,
+    startDate: junta.startDate,
+    endDate: junta.endDate,
+    active: isJuntaActive(junta.startDate, junta.endDate, utcToday()),
     payoutOrder: own.order,
-    payoutDate: payoutDate(junta.startDate, own.order).toISOString(),
+    payoutDate: payoutDate(junta.startDate, own.order),
     groupAmount: junta.groupAmount,
     groupSize: own.members.length,
     groupCount: junta.groupCount,

@@ -17,6 +17,7 @@ import { MatIconModule } from '@angular/material/icon'
 import { JuntaDetailResponse } from '@junta/contracts'
 
 import { JuntasApi } from '@/admin/shared/api/juntas-api'
+import { juntaStatusLabel } from '@/admin/shared/format/junta-status'
 import { MoneyPipe } from '@/admin/shared/pipes/money-pipe'
 import { Navigation } from '@/admin/shared/services/navigation'
 import { Snackbar } from '@/admin/shared/services/snackbar'
@@ -41,6 +42,7 @@ export class DetailsFeat implements OnInit {
   private readonly _navigation = inject(Navigation)
   private readonly _snackbar = inject(Snackbar)
 
+  readonly juntaStatusLabel = juntaStatusLabel
   readonly juntaId = input.required<string>()
   readonly junta = signal<JuntaDetailResponse | null>(null)
   readonly loading = signal(true)

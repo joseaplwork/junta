@@ -5,14 +5,15 @@ export interface MyJuntaSummaryResponse {
   /** Monthly pool, whole units of `currency` (BR-03, BR-13). */
   amount: number
   currency: string
-  /** ISO 8601 date-time. */
+  /** Calendar date, `YYYY-MM-DD`. */
   startDate: string
-  /** ISO 8601 date-time. */
+  /** Calendar date, `YYYY-MM-DD`. */
   endDate: string
+  /** True while today is within the start and end dates. Not stored. */
   active: boolean
   /** Payout order of the participant's group: month n of the junta (BR-02). */
   payoutOrder: number
-  /** ISO 8601 date-time of that month (BR-02). */
+  /** Calendar date of that month, `YYYY-MM-DD` (BR-02). */
   payoutDate: string
   /** What the participant's group collects every month (BR-03). */
   groupAmount: number

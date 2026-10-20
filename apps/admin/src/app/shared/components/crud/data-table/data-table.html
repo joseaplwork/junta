@@ -24,7 +24,10 @@
                 {{ currency(row, column) }}
               }
               @case ('date') {
-                {{ date(row, column) | date: column.dateFormat ?? 'MMM d, y' }}
+                {{
+                  date(row, column)
+                    | date: column.dateFormat ?? 'MMM d, y' : 'UTC'
+                }}
               }
               @case ('chip') {
                 @if (!isMissing(row, column)) {

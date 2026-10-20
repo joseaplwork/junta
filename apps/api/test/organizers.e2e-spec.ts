@@ -11,6 +11,7 @@ describe('Organizers (e2e)', () => {
   let organizerB: string
   let juntaOfA: JuntaResponse
   let participantOfA: ParticipantResponse
+  let secondOfA: ParticipantResponse
   let participantOfB: ParticipantResponse
 
   const server = (): Parameters<typeof request>[0] => e2e.app.getHttpServer()
@@ -49,10 +50,12 @@ describe('Organizers (e2e)', () => {
     name: 'Junta A',
     amount: 2000,
     currency: 'PEN',
-    startDate: '2026-01-15T00:00:00.000Z',
-    endDate: '2026-02-15T00:00:00.000Z',
-    active: true,
-    groups: [{ order: 1, participantIds }],
+    startDate: '2027-01-15',
+    endDate: '2027-02-15',
+    groups: [
+      { order: 1, participantIds: [participantIds[0]] },
+      { order: 2, participantIds: [participantIds[1]] },
+    ],
   })
 
   beforeAll(async () => {
@@ -81,6 +84,15 @@ describe('Organizers (e2e)', () => {
         .post('participants', { name: 'Ana', surname: 'A', phoneNumber: '611' })
         .expect(201)
     ).body
+    secondOfA = (
+      await as(organizerA)
+        .post('participants', {
+          name: 'Luz',
+          surname: 'A',
+          phoneNumber: '612',
+        })
+        .expect(201)
+    ).body
     participantOfB = (
       await as(organizerB)
         .post('participants', {
@@ -92,7 +104,7 @@ describe('Organizers (e2e)', () => {
     ).body
     juntaOfA = (
       await as(organizerA)
-        .post('juntas', junta([participantOfA.id]))
+        .post('juntas', junta([participantOfA.id, secondOfA.id]))
         .expect(201)
     ).body
   })
@@ -125,7 +137,7 @@ describe('Organizers (e2e)', () => {
 
   it("refuses to put someone else's participant into a junta", async () => {
     const response = await as(organizerA)
-      .post('juntas', junta([participantOfB.id]))
+      .post('juntas', junta([participantOfA.id, participantOfB.id]))
       .expect(400)
 
     expect(response.body.rule).toBe('BR-16')
@@ -158,5 +170,30 @@ describe('Organizers (e2e)', () => {
         password: 'secret-password',
       })
       .expect(200)
+  })
+
+  it('locks a started junta for its organizer and leaves it open to an admin (BR-17)', async () => {
+    await e2e.dataSource.query(
+      `UPDATE "Juntas" SET "start_date" = '2020-01-15', "end_date" = '2020-02-15' WHERE "id" = $1`,
+      [juntaOfA.id],
+    )
+
+    const organizer = await as(organizerA)
+      .patch(`juntas/${juntaOfA.id}`, { name: 'Too late' })
+      .expect(400)
+
+    expect(organizer.body.rule).toBe('BR-17')
+    const removed = await request(server())
+      .delete(apiPath(`juntas/${juntaOfA.id}`))
+      .set('Authorization', `Bearer ${organizerA}`)
+      .expect(400)
+
+    expect(removed.body.rule).toBe('BR-17')
+
+    const renamed = await asAdmin(e2e)
+      .patch(`juntas/${juntaOfA.id}`, { name: 'Corrected' })
+      .expect(200)
+
+    expect(renamed.body.name).toBe('Corrected')
   })
 })

@@ -32,8 +32,8 @@ describe('assertValidGroupAssignments', () => {
     ).toBeUndefined()
   })
 
-  it('rejects a junta without groups (BR-01)', () => {
-    expect(violationOf([])).toBe('BR-01')
+  it('rejects a junta without groups (BR-02)', () => {
+    expect(violationOf([])).toBe('BR-02')
   })
 
   it('rejects gaps in the payout order (BR-02)', () => {

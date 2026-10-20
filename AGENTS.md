@@ -11,6 +11,23 @@ money, groups or roles.
 This file is the canonical agent guide for every tool. `CLAUDE.md` imports it,
 and Cursor reads it directly. The app folders add their own `AGENTS.md`.
 
+## Agent skills
+
+### Issue tracker
+
+Issues live as GitHub issues in `joseaplwork/junta`. Use the GitHub MCP server.
+See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Five default roles: `needs-triage`, `needs-info`, `ready-for-agent`,
+`ready-for-human`, `wontfix`. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context. Domain language is `docs/domain.md`; ADRs are
+`docs/decisions/`. See `docs/agents/domain.md`.
+
 ## Commands
 
 | Goal                                    | Command                                                                                                       |

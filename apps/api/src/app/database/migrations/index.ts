@@ -9,6 +9,7 @@ import { WholeUnitPaymentAmounts1792323266777 } from './1792323266777-WholeUnitP
 import { AddJuntaCurrency1792326514520 } from './1792326514520-AddJuntaCurrency'
 import { AddParticipantAccounts1792327064578 } from './1792327064578-AddParticipantAccounts'
 import { AccountsAndOrganizers1792332052955 } from './1792332052955-AccountsAndOrganizers'
+import { CalendarJuntaDates1792400000000 } from './1792400000000-CalendarJuntaDates'
 
 /** Every migration, oldest first. */
 export const MIGRATIONS: (new () => MigrationInterface)[] = [
@@ -19,4 +20,5 @@ export const MIGRATIONS: (new () => MigrationInterface)[] = [
   AddJuntaCurrency1792326514520,
   AddParticipantAccounts1792327064578,
   AccountsAndOrganizers1792332052955,
+  CalendarJuntaDates1792400000000,
 ]

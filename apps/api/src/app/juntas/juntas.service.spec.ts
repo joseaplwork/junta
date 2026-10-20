@@ -33,9 +33,8 @@ const buildJunta = (overrides: Partial<Junta> = {}): Junta =>
     currency: 'MXN',
     groupCount: 2,
     groupAmount: 1000,
-    startDate: new Date('2026-01-15T00:00:00.000Z'),
-    endDate: new Date('2026-02-15T00:00:00.000Z'),
-    active: true,
+    startDate: '2027-01-15',
+    endDate: '2027-02-15',
     organizerId: 'admin-1',
     ...overrides,
   })
@@ -45,9 +44,8 @@ const createDto = (overrides: Partial<CreateJuntaDto> = {}): CreateJuntaDto =>
     name: 'Main Junta',
     amount: 2000,
     currency: 'MXN',
-    startDate: '2026-01-15T00:00:00.000Z',
-    endDate: '2026-02-15T00:00:00.000Z',
-    active: true,
+    startDate: '2027-01-15',
+    endDate: '2027-02-15',
     groups: [
       { order: 1, participantIds: ['p1'] },
       { order: 2, participantIds: ['p2', 'p3'] },
@@ -108,7 +106,7 @@ describe('JuntasService', () => {
         name: 'Main Junta',
         groupCount: 2,
         groupAmount: 1000,
-        startDate: '2026-01-15T00:00:00.000Z',
+        startDate: '2027-01-15',
         organizerId: 'admin-1',
       })
       expect(saved.filter(entity => entity instanceof Group)).toHaveLength(2)
@@ -181,6 +179,7 @@ describe('JuntasService', () => {
 
       const response = await service.update(admin, 'junta-1', {
         amount: 3000,
+        endDate: '2027-03-15',
         groups: [
           { order: 1, participantIds: ['p1'] },
           { order: 2, participantIds: ['p2'] },
@@ -194,7 +193,9 @@ describe('JuntasService', () => {
     })
 
     it('rejects a pool that does not split evenly across the groups (BR-03)', async () => {
-      manager.findOne.mockResolvedValue(buildJunta())
+      manager.findOne.mockResolvedValue(
+        buildJunta({ endDate: '2027-03-15', groupCount: 3 }),
+      )
 
       await expect(
         service.update(admin, 'junta-1', {
@@ -214,6 +215,18 @@ describe('JuntasService', () => {
       await expect(
         service.update(admin, 'junta-1', { currency: 'PEN' }),
       ).resolves.toMatchObject({ currency: 'PEN' })
+    })
+
+    it('refuses an organizer change once the junta has started (BR-17)', async () => {
+      manager.findOne.mockResolvedValue(
+        buildJunta({ startDate: '2020-01-15', endDate: '2020-02-15' }),
+      )
+
+      await expect(
+        service.update(viewer('admin-1', [Role.ORGANIZER]), 'junta-1', {
+          name: 'Later',
+        }),
+      ).rejects.toMatchObject({ rule: 'BR-17' })
     })
 
     it('locks the junta row inside the transaction', async () => {
@@ -237,6 +250,17 @@ describe('JuntasService', () => {
   })
 
   describe('remove', () => {
+    it('refuses an organizer delete once the junta has started (BR-17)', async () => {
+      manager.findOne.mockResolvedValue(
+        buildJunta({ startDate: '2020-01-15', endDate: '2020-02-15' }),
+      )
+
+      await expect(
+        service.remove(viewer('admin-1', [Role.ORGANIZER]), 'junta-1'),
+      ).rejects.toMatchObject({ rule: 'BR-17' })
+      expect(manager.delete).not.toHaveBeenCalled()
+    })
+
     it('deletes memberships, groups and the junta in one transaction', async () => {
       manager.findOne.mockResolvedValue(buildJunta())
       manager.findBy.mockResolvedValue([{ id: 'g1' }])

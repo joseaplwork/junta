@@ -1,4 +1,5 @@
 import { JuntaDetailResponse, ParticipantResponse } from '@junta/contracts'
+import { utcToday } from '@junta/domain'
 
 import { E2eApp, asAdmin, createE2eApp } from './support/e2e-app'
 
@@ -13,9 +14,8 @@ describe('Juntas (e2e)', () => {
     name: 'Neighbourhood junta',
     amount: 2000,
     currency: 'PEN',
-    startDate: '2026-01-15T00:00:00.000Z',
-    endDate: '2026-02-15T00:00:00.000Z',
-    active: true,
+    startDate: '2027-01-15',
+    endDate: '2027-02-15',
     groups,
   })
 
@@ -107,6 +107,7 @@ describe('Juntas (e2e)', () => {
     const updated = await api
       .patch(`juntas/${created.body.id}`, {
         amount: 3000,
+        endDate: '2027-03-15',
         groups: [
           { order: 1, participantIds: [marta.id] },
           { order: 2, participantIds: [ana.id] },
@@ -136,7 +137,7 @@ describe('Juntas (e2e)', () => {
           { order: 2, participantIds: [luis.id] },
           { order: 3, participantIds: [marta.id] },
         ]),
-        endDate: '2026-03-15T00:00:00.000Z',
+        endDate: '2027-03-15',
       })
       .expect(400)
 
@@ -152,5 +153,49 @@ describe('Juntas (e2e)', () => {
         currency: 'PESOS',
       })
       .expect(400)
+  })
+
+  it('rejects a group count that does not match the months (BR-01)', async () => {
+    const [ana, luis, marta] = participants
+    const response = await api
+      .post(
+        'juntas',
+        juntaRequest([
+          { order: 1, participantIds: [ana.id] },
+          { order: 2, participantIds: [luis.id] },
+          { order: 3, participantIds: [marta.id] },
+        ]),
+      )
+      .expect(400)
+
+    expect(response.body.rule).toBe('BR-01')
+  })
+
+  it('rejects a junta shorter than two months (BR-01)', async () => {
+    const [ana] = participants
+    const response = await api
+      .post('juntas', {
+        ...juntaRequest([{ order: 1, participantIds: [ana.id] }]),
+        endDate: '2027-01-31',
+      })
+      .expect(400)
+
+    expect(response.body.rule).toBe('BR-01')
+  })
+
+  it('rejects a start date of today or earlier (BR-17)', async () => {
+    const [ana, luis] = participants
+    const response = await api
+      .post('juntas', {
+        ...juntaRequest([
+          { order: 1, participantIds: [ana.id] },
+          { order: 2, participantIds: [luis.id] },
+        ]),
+        startDate: utcToday(),
+        endDate: '2099-02-15',
+      })
+      .expect(400)
+
+    expect(response.body.rule).toBe('BR-17')
   })
 })

@@ -13,7 +13,6 @@ import { toSignal } from '@angular/core/rxjs-interop'
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
 import { MatButtonModule } from '@angular/material/button'
 import { MatCardModule } from '@angular/material/card'
-import { MatCheckboxModule } from '@angular/material/checkbox'
 import { MatNativeDateModule } from '@angular/material/core'
 import { MatDatepickerModule } from '@angular/material/datepicker'
 import { MatFormFieldModule } from '@angular/material/form-field'
@@ -26,8 +25,16 @@ import {
   CreateJuntaRequest,
   JuntaDetailResponse,
   ParticipantResponse,
+  Role,
 } from '@junta/contracts'
-import { countJuntaMonths, shuffle, splitsEvenly } from '@junta/domain'
+import {
+  DomainRuleViolation,
+  assertJuntaWrite,
+  countJuntaMonths,
+  shuffle,
+  splitsEvenly,
+  utcToday,
+} from '@junta/domain'
 
 /** Form safety limit, not a business rule: stops half-typed years from rendering thousands of groups. */
 export const MAX_FORM_MONTHS = 120
@@ -45,6 +52,29 @@ export const JUNTA_CURRENCIES = [
 
 const startOfDay = (date: Date): Date =>
   new Date(date.getFullYear(), date.getMonth(), date.getDate())
+
+/** The calendar day the datepicker shows, as `YYYY-MM-DD`. */
+function toCalendarDate(date: Date): string {
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+
+  return `${date.getFullYear()}-${month}-${day}`
+}
+
+/** A stored `YYYY-MM-DD` as a local date, so the picker shows that day. */
+function calendarDate(value: string): Date {
+  const [year, month, day] = value.split('-').map(Number)
+
+  return new Date(year, month - 1, day)
+}
+
+function dayAfter(value: string): Date {
+  const date = calendarDate(value)
+
+  date.setDate(date.getDate() + 1)
+
+  return date
+}
 
 const daysInMonth = (year: number, month: number): number =>
   new Date(year, month + 1, 0).getDate()
@@ -84,7 +114,6 @@ const ordinalRules = new Intl.PluralRules('en-US', { type: 'ordinal' })
     DragDropModule,
     MatButtonModule,
     MatCardModule,
-    MatCheckboxModule,
     MatDatepickerModule,
     MatFormFieldModule,
     MatIconModule,
@@ -96,9 +125,9 @@ const ordinalRules = new Intl.PluralRules('en-US', { type: 'ordinal' })
 })
 export class JuntaForm {
   private readonly _fb = inject(FormBuilder).nonNullable
-  private readonly _today = startOfDay(new Date())
 
   readonly initialJunta = input<JuntaDetailResponse | null>(null)
+  readonly roles = input<readonly Role[]>([])
   readonly participants = input<ParticipantResponse[]>([])
   readonly loadingParticipants = input(false)
   readonly submitting = input(false)
@@ -118,8 +147,9 @@ export class JuntaForm {
       { value: null, disabled: true },
       Validators.required,
     ),
-    active: [true],
   })
+
+  readonly writeError = signal<string | null>(null)
 
   /** Participant ids by payout order (index 0 is order 1). Only explicit admin actions change it. */
   private readonly _assignments = signal<string[][]>([])
@@ -132,10 +162,17 @@ export class JuntaForm {
   readonly isEditMode = computed(() => this.initialJunta() !== null)
   readonly dragOverGroupIndex = signal<number | null>(null)
 
-  /** Running juntas started in the past, so the minimum only applies when creating. */
-  readonly minStartDate = computed(() =>
-    this.isEditMode() ? null : this._today,
-  )
+  /**
+   * A new junta starts after today. Editing a started junta keeps the stored
+   * start selectable; any other start date still has to be after today.
+   */
+  readonly minStartDate = computed(() => {
+    const stored = this.initialJunta()?.startDate
+
+    if (stored && stored <= utcToday()) return null
+
+    return dayAfter(utcToday())
+  })
 
   readonly minEndDate = computed(() => {
     const { startDate } = this._formValue()
@@ -146,7 +183,9 @@ export class JuntaForm {
   private readonly _monthSpan = computed(() => {
     const { startDate, endDate } = this._formValue()
 
-    return startDate && endDate ? countJuntaMonths(startDate, endDate) : 0
+    return startDate && endDate
+      ? countJuntaMonths(toCalendarDate(startDate), toCalendarDate(endDate))
+      : 0
   })
 
   readonly durationTooLong = computed(() => this._monthSpan() > MAX_FORM_MONTHS)
@@ -226,9 +265,8 @@ export class JuntaForm {
         name: junta.name,
         amount: junta.amount,
         currency: junta.currency,
-        startDate: new Date(junta.startDate),
-        endDate: new Date(junta.endDate),
-        active: junta.active,
+        startDate: calendarDate(junta.startDate),
+        endDate: calendarDate(junta.endDate),
       })
       this._assignments.set(
         [...junta.groups]
@@ -236,6 +274,18 @@ export class JuntaForm {
           .map(group => group.members.map(member => member.id)),
       )
     })
+  }
+
+  /** The stored start stays selectable. Every other start date is after today. */
+  readonly startDateFilter = (date: Date | null): boolean => {
+    if (!date) return false
+
+    const picked = toCalendarDate(date)
+    const stored = this.initialJunta()?.startDate
+
+    if (stored && picked === stored) return true
+
+    return picked > utcToday()
   }
 
   /** Creating: the end falls whole months after the start. Editing keeps stored dates valid. */
@@ -289,7 +339,7 @@ export class JuntaForm {
   }
 
   onSubmit(): void {
-    const { name, amount, currency, startDate, endDate, active } =
+    const { name, amount, currency, startDate, endDate } =
       this.form.getRawValue()
 
     if (this.form.invalid || this.submitting()) return
@@ -297,17 +347,45 @@ export class JuntaForm {
     if (!this.groupsMatchMonths() || !this.hasAssignedParticipants()) return
     if (!this.amountSplitsEvenly()) return
 
+    const groups = this.paymentGroups().map((participantIds, index) => ({
+      order: index + 1,
+      participantIds,
+    }))
+
+    try {
+      assertJuntaWrite(
+        {
+          startDate: toCalendarDate(startDate),
+          endDate: toCalendarDate(endDate),
+          poolAmount: amount,
+          groupCount: groups.length,
+          groups,
+        },
+        {
+          roles: this.roles(),
+          today: utcToday(),
+          operation: this.isEditMode() ? 'update' : 'create',
+          storedStartDate: this.initialJunta()?.startDate,
+        },
+      )
+    } catch (error) {
+      if (error instanceof DomainRuleViolation) {
+        this.writeError.set(error.message)
+
+        return
+      }
+
+      throw error
+    }
+
+    this.writeError.set(null)
     this.submitRequest.emit({
       name,
       amount,
       currency,
-      startDate: startDate.toISOString(),
-      endDate: endDate.toISOString(),
-      active,
-      groups: this.paymentGroups().map((participantIds, index) => ({
-        order: index + 1,
-        participantIds,
-      })),
+      startDate: toCalendarDate(startDate),
+      endDate: toCalendarDate(endDate),
+      groups,
     })
   }
 }

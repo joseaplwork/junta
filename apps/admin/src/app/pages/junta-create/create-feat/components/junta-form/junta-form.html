@@ -42,7 +42,8 @@
               matInput
               formControlName="startDate"
               [matDatepicker]="startPicker"
-              [min]="minStartDate()" />
+              [min]="minStartDate()"
+              [matDatepickerFilter]="startDateFilter" />
             <mat-datepicker-toggle matIconSuffix [for]="startPicker" />
             <mat-datepicker #startPicker />
             <mat-error>This field is required</mat-error>
@@ -67,8 +68,6 @@
             A junta can last at most {{ maxMonths }} months. Check the dates.
           </p>
         }
-
-        <mat-checkbox formControlName="active">Active</mat-checkbox>
       </div>
     </mat-card-content>
   </mat-card>
@@ -210,6 +209,10 @@
         </p>
       </mat-card-content>
     </mat-card>
+  }
+
+  @if (writeError()) {
+    <p class="text-error text-sm">{{ writeError() }}</p>
   }
 
   <div class="flex justify-end gap-4">

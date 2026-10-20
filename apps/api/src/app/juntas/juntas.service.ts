@@ -8,10 +8,12 @@ import {
   JuntaResponse,
 } from '@junta/contracts'
 import {
-  assertValidGroupAssignments,
+  assertJuntaDeletable,
+  assertJuntaWrite,
   calculateGroupAmount,
   canManageJunta,
   managesEverything,
+  utcToday,
 } from '@junta/domain'
 
 import { AuthenticatedAccount } from '@/api/common/auth/authenticated-account'
@@ -37,7 +39,16 @@ export class JuntasService {
     dto: CreateJuntaDto,
     viewer: AuthenticatedAccount,
   ): Promise<JuntaResponse> {
-    assertValidGroupAssignments(dto.groups)
+    assertJuntaWrite(
+      {
+        startDate: dto.startDate,
+        endDate: dto.endDate,
+        poolAmount: dto.amount,
+        groupCount: dto.groups.length,
+        groups: dto.groups,
+      },
+      { roles: viewer.roles, today: utcToday(), operation: 'create' },
+    )
 
     const junta = await this.dataSource.transaction(async manager => {
       await assertParticipantsVisible(manager, viewer, memberIds(dto.groups))
@@ -49,9 +60,8 @@ export class JuntasService {
           currency: dto.currency,
           groupCount: dto.groups.length,
           groupAmount: calculateGroupAmount(dto.amount, dto.groups.length),
-          startDate: new Date(dto.startDate),
-          endDate: new Date(dto.endDate),
-          active: dto.active,
+          startDate: dto.startDate,
+          endDate: dto.endDate,
           organizerId: viewer.id,
         }),
       )
@@ -94,26 +104,38 @@ export class JuntasService {
     id: string,
     dto: UpdateJuntaDto,
   ): Promise<JuntaResponse> {
-    if (dto.groups) assertValidGroupAssignments(dto.groups)
-
     const saved = await this.dataSource.transaction(async manager => {
       const junta = await this.lockEntity(manager, viewer, id)
+      const groups = dto.groups
 
-      if (dto.groups) {
-        await assertParticipantsVisible(manager, viewer, memberIds(dto.groups))
+      assertJuntaWrite(
+        {
+          startDate: dto.startDate ?? junta.startDate,
+          endDate: dto.endDate ?? junta.endDate,
+          poolAmount: dto.amount ?? junta.amount,
+          groupCount: groups ? groups.length : junta.groupCount,
+          groups,
+        },
+        {
+          roles: viewer.roles,
+          today: utcToday(),
+          operation: 'update',
+          storedStartDate: junta.startDate,
+        },
+      )
+
+      if (groups) {
+        await assertParticipantsVisible(manager, viewer, memberIds(groups))
       }
       if (dto.name !== undefined) junta.name = dto.name
       if (dto.currency !== undefined) junta.currency = dto.currency
       if (dto.amount !== undefined) junta.amount = dto.amount
-      if (dto.startDate !== undefined) {
-        junta.startDate = new Date(dto.startDate)
-      }
-      if (dto.endDate !== undefined) junta.endDate = new Date(dto.endDate)
-      if (dto.active !== undefined) junta.active = dto.active
-      if (dto.groups) {
-        junta.groupCount = dto.groups.length
+      if (dto.startDate !== undefined) junta.startDate = dto.startDate
+      if (dto.endDate !== undefined) junta.endDate = dto.endDate
+      if (groups) {
+        junta.groupCount = groups.length
         await this.deleteGroups(manager, id)
-        await this.saveGroups(manager, id, dto.groups)
+        await this.saveGroups(manager, id, groups)
       }
       junta.groupAmount = calculateGroupAmount(junta.amount, junta.groupCount)
 
@@ -125,7 +147,13 @@ export class JuntasService {
 
   async remove(viewer: AuthenticatedAccount, id: string): Promise<void> {
     await this.dataSource.transaction(async manager => {
-      await this.lockEntity(manager, viewer, id)
+      const junta = await this.lockEntity(manager, viewer, id)
+
+      assertJuntaDeletable({
+        roles: viewer.roles,
+        today: utcToday(),
+        storedStartDate: junta.startDate,
+      })
       await this.deleteGroups(manager, id)
       await manager.delete(Junta, { id })
     })

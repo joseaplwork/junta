@@ -3,6 +3,10 @@
     "nx-mcp": {
       "command": "npx",
       "args": ["nx-mcp"]
+    },
+    "github": {
+      "command": "sh",
+      "args": ["-lc", "exec \"$HOME/.local/bin/github-mcp-stdio\""]
     }
   }
 }

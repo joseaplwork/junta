@@ -14,6 +14,15 @@ import { Payout } from '@/api/payments/entities/payout.entity'
 
 import { Group } from './group.entity'
 
+/** Postgres `date` stays a `YYYY-MM-DD` string on the way in and out. */
+const calendarDate = {
+  to: (value: string): string => value,
+  from: (value: string | Date): string =>
+    typeof value === 'string'
+      ? value.slice(0, 10)
+      : value.toISOString().slice(0, 10),
+}
+
 @Entity('Juntas')
 export class Junta {
   @PrimaryGeneratedColumn('uuid')
@@ -35,14 +44,13 @@ export class Junta {
   @Column({ name: 'partial_amount', type: 'int' })
   groupAmount: number
 
-  @Column({ name: 'start_date', type: 'timestamptz' })
-  startDate: Date
+  /** Calendar date, `YYYY-MM-DD`. */
+  @Column({ name: 'start_date', type: 'date', transformer: calendarDate })
+  startDate: string
 
-  @Column({ name: 'end_date', type: 'timestamptz' })
-  endDate: Date
-
-  @Column({ type: 'boolean' })
-  active: boolean
+  /** Calendar date, `YYYY-MM-DD`. */
+  @Column({ name: 'end_date', type: 'date', transformer: calendarDate })
+  endDate: string
 
   /** The account that runs this junta (BR-16). */
   @Column({ name: 'organizer_id', type: 'uuid' })
