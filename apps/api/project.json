@@ -106,6 +106,16 @@
       "options": {
         "command": "node tools/scripts/migrations.mjs baseline"
       }
+    },
+    "seed-admin": {
+      "executor": "nx:run-commands",
+      "cache": false,
+      "options": {
+        "command": "node -r ts-node/register/transpile-only -r tsconfig-paths/register apps/api/src/app/database/seed-admin.cli.ts",
+        "env": {
+          "TS_NODE_PROJECT": "apps/api/tsconfig.app.json"
+        }
+      }
     }
   }
 }

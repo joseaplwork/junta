@@ -1,21 +1,17 @@
 import { INestApplication } from '@nestjs/common'
 import { Test } from '@nestjs/testing'
-import * as bcrypt from 'bcrypt'
 import request from 'supertest'
 import { DataSource } from 'typeorm'
 
-import { API_PREFIX, Role } from '@junta/contracts'
+import { API_PREFIX } from '@junta/contracts'
 
-import { Account } from '@/api/accounts/entities/account.entity'
 import { AppModule } from '@/api/app.module'
 import { APP_CONFIG, AppConfig, loadAppConfig } from '@/api/config/app-config'
 import { configureApp } from '@/api/configure-app'
-import { Participant } from '@/api/participants/entities/participant.entity'
+import { postgresConnectionOptions } from '@/api/database/database-options'
+import { DEV_ADMIN, seedAdminAccount } from '@/api/database/seed-admin'
 
-export const E2E_ADMIN = {
-  email: 'e2e-admin@junta.test',
-  password: 'e2e-password',
-}
+export const E2E_ADMIN = DEV_ADMIN
 
 export interface E2eApp {
   app: INestApplication
@@ -23,14 +19,19 @@ export interface E2eApp {
   accessToken: string
 }
 
-/** Loads apps/api/.env values but always targets a throwaway `*_e2e` database. */
+/**
+ * Loads apps/api/.env values but always targets an `*_e2e` database. That
+ * database must already exist (created once on the Neon CI branch, or locally).
+ * Each run clears its schema with TypeORM, then re-applies migrations; it never
+ * creates or drops the database catalog entry.
+ */
 function e2eConfig(): AppConfig {
   const config = loadAppConfig({ ...process.env, DB_LOGGING: 'false' })
   const name = process.env['E2E_DB_NAME'] || 'juntas_e2e'
 
   if (!name.endsWith('_e2e')) {
     throw new Error(
-      `E2E_DB_NAME must end with "_e2e" because the suite drops it. Got "${name}".`,
+      `E2E_DB_NAME must end with "_e2e" because the suite wipes that database's schema. Got "${name}".`,
     )
   }
 
@@ -41,45 +42,35 @@ function e2eConfig(): AppConfig {
   }
 }
 
-async function ensureDatabaseExists(config: AppConfig): Promise<void> {
-  const maintenance = new DataSource({
-    type: 'postgres',
-    host: config.database.host,
-    port: config.database.port,
-    username: config.database.username,
-    password: config.database.password,
-    database: 'postgres',
+/**
+ * Confirms the e2e database is reachable. Databases are provisioned once
+ * (Neon Console/SQL or local Postgres), not per run — Neon CI does not use
+ * CREATE DATABASE from this suite.
+ */
+async function assertE2eDatabaseExists(config: AppConfig): Promise<void> {
+  const probe = new DataSource({
+    ...postgresConnectionOptions(config.database, 'migration'),
+    database: config.database.name,
   })
-
-  await maintenance.initialize()
 
   try {
-    const existing: unknown[] = await maintenance.query(
-      'SELECT 1 FROM pg_database WHERE datname = $1',
-      [config.database.name],
+    await probe.initialize()
+  } catch (error) {
+    const detail = error instanceof Error ? error.message : String(error)
+
+    throw new Error(
+      [
+        `E2E database "${config.database.name}" is missing or unreachable.`,
+        'Create it once on the Neon CI branch (for example juntas_e2e and juntas_generators_e2e)',
+        'or on local Postgres, then set E2E_DB_NAME. The suite no longer runs CREATE DATABASE.',
+        detail,
+      ].join(' '),
     )
-
-    if (existing.length === 0) {
-      await maintenance.query(`CREATE DATABASE "${config.database.name}"`)
-    }
   } finally {
-    await maintenance.destroy()
+    if (probe.isInitialized) {
+      await probe.destroy()
+    }
   }
-}
-
-async function seedSuperAdmin(dataSource: DataSource): Promise<void> {
-  const participant = await dataSource.getRepository(Participant).save({
-    name: 'E2E',
-    surname: 'Admin',
-    phoneNumber: '000000000',
-  })
-
-  await dataSource.getRepository(Account).save({
-    email: E2E_ADMIN.email,
-    password: await bcrypt.hash(E2E_ADMIN.password, 4),
-    roles: [Role.ADMIN],
-    participant,
-  })
 }
 
 /**
@@ -113,7 +104,7 @@ export const apiPath = (path: string): string => `/${API_PREFIX}/${path}`
 export async function createE2eApp(): Promise<E2eApp> {
   const config = e2eConfig()
 
-  await ensureDatabaseExists(config)
+  await assertE2eDatabaseExists(config)
 
   const moduleRef = await Test.createTestingModule({ imports: [AppModule] })
     .overrideProvider(APP_CONFIG)
@@ -129,7 +120,7 @@ export async function createE2eApp(): Promise<E2eApp> {
   await dataSource.dropDatabase()
   await dataSource.runMigrations({ transaction: 'each' })
   await assertMigrationsMatchEntities(dataSource)
-  await seedSuperAdmin(dataSource)
+  await seedAdminAccount(dataSource, { ...E2E_ADMIN, bcryptRounds: 4 })
 
   const login = await request(app.getHttpServer())
     .post(apiPath('auth/login'))

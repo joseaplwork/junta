@@ -95,10 +95,10 @@ Sources:
 
 ### To create and delete branches (Neon's CI Actions)
 
-| Name | Kind | Purpose |
-| --- | --- | --- |
-| `NEON_API_KEY` | repository **secret** | Neon API authentication for create/delete/reset branch actions |
-| `NEON_PROJECT_ID` | repository **variable** | Which Neon project the actions target |
+| Name              | Kind                    | Purpose                                                        |
+| ----------------- | ----------------------- | -------------------------------------------------------------- |
+| `NEON_API_KEY`    | repository **secret**   | Neon API authentication for create/delete/reset branch actions |
+| `NEON_PROJECT_ID` | repository **variable** | Which Neon project the actions target                          |
 
 The Neon GitHub integration can create both when a project is connected to the repo. Manual setup: create an API key in the Neon console, add the secret, copy the project id from project Settings into the variable.
 
@@ -106,15 +106,15 @@ The Neon GitHub integration can create both when a project is connected to the r
 
 Jobs already pass discrete fields, not a URL. Whatever stores the Neon connection later (issue 22) must supply at least:
 
-| Setting | Role on Neon |
-| --- | --- |
-| Host | Neon **direct** endpoint hostname for `migration-run`, `migration-check`, `migration-generate`, and any TypeORM migration path; pooled (`-pooler`) only if used for app runtime under load |
-| Port | `5432` (Neon default) |
-| Username / password | A Console/CLI/API role that owns the database (or has `CREATE` on `public`), member of `neon_superuser` if `CREATE DATABASE` remains |
-| Database name | User database on the branch (`neondb`, `juntas`, or `juntas_e2e` — layout ticket) |
-| SSL | Required; TypeORM needs `ssl: true` (or equivalent). Neon recommends `sslmode=require` and `channel_binding=require` on URLs |
-| `E2E_DB_NAME` | Still required by e2e-app if the suite keeps a separate e2e database name; with branch-per-run it can equal the branch's primary database name if create is dropped, but the `_e2e` suffix rule still applies in code today |
-| `JWT_SECRET` | Unchanged; not Neon-related |
+| Setting             | Role on Neon                                                                                                                                                                                                                |
+| ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Host                | Neon **direct** endpoint hostname for `migration-run`, `migration-check`, `migration-generate`, and any TypeORM migration path; pooled (`-pooler`) only if used for app runtime under load                                  |
+| Port                | `5432` (Neon default)                                                                                                                                                                                                       |
+| Username / password | A Console/CLI/API role that owns the database (or has `CREATE` on `public`), member of `neon_superuser` if `CREATE DATABASE` remains                                                                                        |
+| Database name       | User database on the branch (`neondb`, `juntas`, or `juntas_e2e` — layout ticket)                                                                                                                                           |
+| SSL                 | Required; TypeORM needs `ssl: true` (or equivalent). Neon recommends `sslmode=require` and `channel_binding=require` on URLs                                                                                                |
+| `E2E_DB_NAME`       | Still required by e2e-app if the suite keeps a separate e2e database name; with branch-per-run it can equal the branch's primary database name if create is dropped, but the `_e2e` suffix rule still applies in code today |
+| `JWT_SECRET`        | Unchanged; not Neon-related                                                                                                                                                                                                 |
 
 If the workflow uses create-branch-action outputs, map `db_url` / `db_host` into those fields (or into a URL shape if issue 22 chooses URLs). Do not log connection strings; they contain credentials. Action outputs are marked secret.
 
@@ -153,9 +153,9 @@ Sources:
 
 ## Summary
 
-| Topic | Answer |
-| --- | --- |
-| Maintenance DB `postgres` | Replace with a user database on the branch (e.g. `neondb`); Neon reserves and does not expose `postgres` for app maintenance the way local Postgres does |
-| Create/drop `juntas_e2e` every run | `CREATE DATABASE` is allowed; the suite does not `DROP DATABASE` today (it clears schema). Viable on a dedicated exclusive CI database after fixing maintenance SSL/host. Neon documents **branch per run** (create → migrate/test → delete) instead of shared create/drop |
-| GitHub secrets | `NEON_API_KEY` (secret), `NEON_PROJECT_ID` (variable) for branch actions; plus Neon host/user/password/database (direct for migrations), SSL, existing `JWT_SECRET` / `E2E_DB_NAME` as needed |
-| Blocks migration-run / check / generators | Missing SSL; pooled host for migrations; hardcoded `postgres` maintenance; concurrent jobs on one Neon DB; weak role; no Neon endpoint once the Docker service is removed |
+| Topic                                     | Answer                                                                                                                                                                                                                                                                     |
+| ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Maintenance DB `postgres`                 | Replace with a user database on the branch (e.g. `neondb`); Neon reserves and does not expose `postgres` for app maintenance the way local Postgres does                                                                                                                   |
+| Create/drop `juntas_e2e` every run        | `CREATE DATABASE` is allowed; the suite does not `DROP DATABASE` today (it clears schema). Viable on a dedicated exclusive CI database after fixing maintenance SSL/host. Neon documents **branch per run** (create → migrate/test → delete) instead of shared create/drop |
+| GitHub secrets                            | `NEON_API_KEY` (secret), `NEON_PROJECT_ID` (variable) for branch actions; plus Neon host/user/password/database (direct for migrations), SSL, existing `JWT_SECRET` / `E2E_DB_NAME` as needed                                                                              |
+| Blocks migration-run / check / generators | Missing SSL; pooled host for migrations; hardcoded `postgres` maintenance; concurrent jobs on one Neon DB; weak role; no Neon endpoint once the Docker service is removed                                                                                                  |

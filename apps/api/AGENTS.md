@@ -98,8 +98,10 @@ The schema changes only through migrations in
   from the entities.
 - A database that schema sync built before 2026-10-18 runs
   `npx nx run @junta/api:migration-baseline` once. Never use `--fake`.
-- e2e tests use `E2E_DB_NAME`, which must end in `_e2e`. The suite drops that
-  database and rebuilds it from the migrations on every run.
+- e2e tests use `E2E_DB_NAME`, which must end in `_e2e`. That database must
+  already exist (created once on the Neon CI branch or locally). Each run
+  clears its schema and rebuilds it from the migrations; it never runs
+  `CREATE DATABASE`.
 
 ## Tests
 
